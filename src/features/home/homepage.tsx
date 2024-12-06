@@ -1,11 +1,34 @@
 import React, { useState } from "react";
 import Navbar from "../../app/components/navbar";
 import "../../app/static/styles/index.css";
+import Agent from "../../app/api/agent";
 
 const HomePage = () => {
+<<<<<<< HEAD
   const [searchName, setSearchName] = useState("");
   const [roleFilter, setRoleFilter] = useState("");
   const [accountStatusFilter, setAccountStatusFilter] = useState("");
+=======
+
+  const userList = async () => {
+    console.log(process.env.REACT_APP_API_URL);
+  };
+
+  return (
+    <div>
+      <Navbar />
+      <div className="container">
+        <div className="row">
+          <div className="col-md-12">
+            <h1>Home Page</h1>
+            <button onClick={userList}>List Users</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );    
+}
+>>>>>>> origin/Develop
 
   const employees = [
     { id: 1, rut: "17.132.083-6", firstName: "Camila", lastName: "Tessini", role: "Administrador", username: "ctessini" },
