@@ -1,6 +1,23 @@
 import React from "react";
 import colors from "../static/colors";
 
+const selectFilter = (props) => {
+    return (
+        <select
+            value={props.valueFilter}
+            onChange={(e) => props.setOnChangeFilter(e.target.value)}
+            className="p-2 border border-gray-300 rounded-lg shadow-sm w-1/3"
+        >
+            <option value="">{props.placeholder}</option>
+            {props.options.map((option, index) => (
+                <option key={index} value={option.value}>
+                    {option.label}
+                </option>
+            ))}
+        </select>
+    );
+}
+
 const table = (props) => {
     return (
         <table className="table-auto w-full bg-white shadow-md rounded-lg overflow-hidden">
@@ -26,7 +43,7 @@ const table = (props) => {
 
 const pagination = (props) => {
     return (
-        <div className="flex justify-center mt-4 space-x-2">
+        <div className="flex justify-end mt-6 space-x-2">
             {[...Array(Math.ceil(props.length / props.perPage)).keys()].map(
                 (page) => (
                     <button
@@ -47,6 +64,7 @@ const pagination = (props) => {
 }
 
 const tablemodule = {
+    selectFilter,
     table,
     pagination
 };

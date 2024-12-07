@@ -8,6 +8,26 @@ import TableModule from "../../app/components/tablemodule";
 import { User } from "../../app/models/user";
 
 const headers = ["Código", "RUT", "Nombre", "Apellido", "Rol", "Nombre de Usuario", "Acciones"];
+const roleOptions = [
+  {
+    value: "Admin",
+    label: "Administrador"
+  },
+  {
+    value: "Employee",
+    label: "Empleado"
+  }
+];
+const accountStatusOptions = [
+  {
+    value: "Activo",
+    label: "Activo"
+  },
+  {
+    value: "Inactivo",
+    label: "Inactivo"
+  }
+];
 
 const UserPage = () => {
 
@@ -55,24 +75,18 @@ const UserPage = () => {
             onChange={(e) => setSearchName(e.target.value)}
             className="p-2 border border-gray-300 rounded-lg shadow-sm w-1/3"
           />
-          <select
-            value={roleFilter}
-            onChange={(e) => setRoleFilter(e.target.value)}
-            className="p-2 border border-gray-300 rounded-lg shadow-sm w-1/3"
-          >
-            <option value="">Rol</option>
-            <option value="Admin">Administrador</option>
-            <option value="Employee">Empleado</option>
-          </select>
-          <select
-            value={accountStatusFilter}
-            onChange={(e) => setAccountStatusFilter(e.target.value)}
-            className="p-2 border border-gray-300 rounded-lg shadow-sm w-1/3"
-          >
-            <option value="">Estado de cuenta</option>
-            <option value="Activo">Activo</option>
-            <option value="Inactivo">Inactivo</option>
-          </select>
+          {TableModule.selectFilter({
+            valueFilter: roleFilter,
+            setOnChangeFilter: setRoleFilter,
+            placeholder: "Rol",
+            options: roleOptions
+          })}
+          {TableModule.selectFilter({
+            valueFilter: accountStatusFilter,
+            setOnChangeFilter: setAccountStatusFilter,
+            placeholder: "Estado de la Cuenta",
+            options: accountStatusOptions
+          })}
         </div>
 
         {/* Tabla */}
@@ -98,7 +112,7 @@ const UserPage = () => {
         })}
         
         {/* Botón Agregar */}
-        <div className="flex justify-center mt-4">
+        <div className="flex justify-end mt-4">
           {buttons.turquoiseButton({ text: "Añadir" })}
         </div>
       </div>
