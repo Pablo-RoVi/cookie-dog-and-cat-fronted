@@ -24,7 +24,7 @@ const table = (props) => {
             <thead>
                 <tr className="text-white" style={{backgroundColor: colors.fuchsia}}>
                     {props.headers.map((header) => (
-                        <th className="text-left py-3 px-4 font-semibold text-sm">{header}</th>
+                        <th className="text-center py-3 px-4 font-semibold text-sm">{header}</th>
                     ))}
                 </tr>
             </thead>
@@ -32,7 +32,7 @@ const table = (props) => {
                 {props.data.map((row, index) => (
                     <tr key={index} className={index % 2 === 0 ? "bg-gray-100" : ""}>
                         {row.map((cell, index) => (
-                            <td key={index} className="py-3 px-4">{cell}</td>
+                            <td key={index} className="py-3 px-4 text-center">{cell}</td>
                         ))}
                     </tr>
                 ))}
@@ -49,11 +49,12 @@ const pagination = (props) => {
                     <button
                         key={page + 1}
                         onClick={() => props.paginate(page + 1)}
-                        className={`px-3 py-1 rounded ${
+                        className={"px-3 py-1 rounded text-white"}
+                        style={
                             props.currentPage === page + 1
-                                ? "bg-pink-500 text-white"
-                                : "bg-gray-300"
-                        }`}
+                                ? {backgroundColor: colors.fuchsia}
+                                : {backgroundColor: colors.gray}
+                        }
                     >
                         {page + 1}
                     </button>
