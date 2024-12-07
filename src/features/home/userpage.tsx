@@ -3,6 +3,11 @@ import Navbar from "../../app/components/navbar";
 import "../../app/static/styles/index.css";
 import Agent from "../../app/api/agent";
 import colors from "../../app/static/colors";
+import buttons from "../../app/components/buttons";
+import TableModule from "../../app/components/tablemodule";
+import { User } from "../../app/models/user";
+
+const headers = ["Código", "RUT", "Nombre", "Apellido", "Rol", "Nombre de Usuario", "Acciones"];
 
 const UserPage = () => {
 
@@ -71,53 +76,30 @@ const UserPage = () => {
         </div>
 
         {/* Tabla */}
-        <table className="table-auto w-full bg-white shadow-md rounded-lg overflow-hidden">
-          <thead>
-            <tr className="bg-pink-500 text-white">
-              <th className="px-4 py-2">Código</th>
-              <th className="px-4 py-2">RUT</th>
-              <th className="px-4 py-2">Nombre</th>
-              <th className="px-4 py-2">Apellido</th>
-              <th className="px-4 py-2">Rol</th>
-              <th className="px-4 py-2">Nombre de Usuario</th>
-              <th className="px-4 py-2">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentUsers.map((user) => (
-              <tr key={user.id} className="border-b">
-                <td className="px-4 py-2 text-center">{user.id}</td>
-                <td className="px-4 py-2 text-center">{user.rut}</td>
-                <td className="px-4 py-2 text-center">{user.name}</td>
-                <td className="px-4 py-2 text-center">{user.last_name}</td>
-                <td className="px-4 py-2 text-center">{user.role.role_name}</td>
-                <td className="px-4 py-2 text-center">{user.nick_name}</td>
-                <td className="px-4 py-2 text-center">
-                  <button className="text-blue-500 hover:underline mr-2">✏️</button>
-                  <button className="text-green-500 hover:underline">✔️</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {TableModule.table({headers: headers, data: currentUsers.map((user: User) => [
+          user.id,
+          user.rut,
+          user.name,
+          user.last_name,
+          user.role.role_name,
+          user.nick_name,
+          <>
+            {buttons.turquoiseButton({ text: "Editar" })}
+            {buttons.fuchsiaButton({ text: "Eliminar" })}
+          </>
+        ])})}
 
         {/* Paginación */}
-        <div className="flex justify-center mt-4 space-x-2">
-          {[...Array(Math.ceil(filteredUsers.length / usersPerPage)).keys()].map(
-            (page) => (
-              <button
-                key={page + 1}
-                onClick={() => paginate(page + 1)}
-                className={`px-3 py-1 rounded ${
-                  currentPage === page + 1
-                    ? "bg-pink-500 text-white"
-                    : "bg-gray-200 text-gray-700"
-                }`}
-              >
-                {page + 1}
-              </button>
-            )
-          )}
+        {TableModule.pagination({
+          length: filteredUsers.length, 
+          perPage: usersPerPage, 
+          currentPage: currentPage, 
+          paginate: paginate
+        })}
+        
+        {/* Botón Agregar */}
+        <div className="flex justify-center mt-4">
+          {buttons.turquoiseButton({ text: "Añadir" })}
         </div>
       </div>
     </div>
