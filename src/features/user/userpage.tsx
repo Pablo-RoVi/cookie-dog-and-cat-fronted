@@ -31,11 +31,11 @@ const accountStatusOptions = [
 
 const UserPage = () => {
 
-  const [searchName, setSearchName] = useState("");
-  const [roleFilter, setRoleFilter] = useState("");
-  const [accountStatusFilter, setAccountStatusFilter] = useState("");
+  const [searchName, setSearchName] = useState<string>("");
+  const [roleFilter, setRoleFilter] = useState<string>("");
+  const [accountStatusFilter, setAccountStatusFilter] = useState<string>("");
   const [users, setUsers] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const usersPerPage = 8;
 
   const indexOfLastUser = currentPage * usersPerPage;
