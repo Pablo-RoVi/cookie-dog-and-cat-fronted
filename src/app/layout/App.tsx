@@ -1,11 +1,11 @@
 import React from "react";
-import HomePage from "../../features/home/homepage";
+import UserPage from "../../features/home/userpage";
 
 function App() {
 
   return (
     <div>
-      <HomePage />
+      <UserPage />
     </div>
   );
 }

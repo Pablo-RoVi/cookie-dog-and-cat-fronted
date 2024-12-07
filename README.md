@@ -1,4 +1,4 @@
-# Cookie Dog + Cat Inventory Systema
+# Cookie Dog + Cat Inventory System
 
 Dog + Cat Inventory System is an open source project that helps inventory, sales, and employee management.
 
@@ -19,7 +19,7 @@ Follow these steps to get the project up and running on your local machine:
 
 2. Navigate to the root folder.
    ```bash
-   cd frontend
+   cd cookie-dog-and-cat-frontend
    ```
 3. Inside the folder exists a file called *.env.development* change their name to *.env* 
 
@@ -40,3 +40,5 @@ To start the development server use the following command:
 ```bash
 npm start
 ```
+
+This will start the development server, and you can access the app in your web browser by visiting http://localhost:3000.
