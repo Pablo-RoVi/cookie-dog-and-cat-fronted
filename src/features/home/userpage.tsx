@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Navbar from "../../app/components/navbar";
 import "../../app/static/styles/index.css";
 import Agent from "../../app/api/agent";
+import colors from "../../app/static/colors";
 
 const UserPage = () => {
 
@@ -14,7 +15,6 @@ const UserPage = () => {
 
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
-  const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -33,11 +33,13 @@ const UserPage = () => {
     );
   });
 
+  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
+
   return (
     <div className="min-h-screen bg-gray-100">
       <Navbar />
       <div className="container mx-auto px-4 py-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-4">Empleados</h1>
+        <h1 className="text-2xl font-bold" style={{color: colors.turquoise}}>Empleados</h1>
 
         {/* Filtros */}
         <div className="flex space-x-4 mb-6">
@@ -54,8 +56,8 @@ const UserPage = () => {
             className="p-2 border border-gray-300 rounded-lg shadow-sm w-1/3"
           >
             <option value="">Rol</option>
-            <option value="Administrador">Administrador</option>
-            <option value="Empleado">Empleado</option>
+            <option value="Admin">Administrador</option>
+            <option value="Employee">Empleado</option>
           </select>
           <select
             value={accountStatusFilter}
