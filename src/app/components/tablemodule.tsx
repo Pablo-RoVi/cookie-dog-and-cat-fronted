@@ -20,7 +20,7 @@ const selectFilter = (props) => {
 
 const table = (props) => {
     return (
-        <table className="table-auto w-full bg-white shadow-md rounded-lg overflow-hidden">
+        <table className="table-fixed w-full bg-white shadow-md rounded-lg overflow-hidden">
             <thead>
                 <tr className="text-white" style={{backgroundColor: colors.fuchsia}}>
                     {props.headers.map((header) => (
