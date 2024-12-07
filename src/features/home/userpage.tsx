@@ -60,6 +60,14 @@ const UserPage = () => {
 
   const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
 
+  const translateRole = (role: string) => {
+    const roleTranslation = {
+      Admin: "Administrador",
+      Employee: "Empleado"
+    };
+    return roleTranslation[role] || role;
+  }
+
   return (
     <div className="min-h-screen bg-gray-100">
       <Navbar />
@@ -95,8 +103,8 @@ const UserPage = () => {
           user.rut,
           user.name,
           user.last_name,
+          translateRole(user.role.role_name),
           user.nick_name,
-          user.role.role_name,
           <>
             <div className="flex justify-between items-center">
               {buttons.editButton({user})}
