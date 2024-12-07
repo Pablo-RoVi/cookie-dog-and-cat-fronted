@@ -8,12 +8,15 @@ const turquoiseLight = "#DCFCFF";
 
 const gray = "#BEBEBD";
 
+const white = "#FFFFFF";
+
 const colors = {
     fuchsia,
     fuchsiaLight,
     turquoise,
     turquoiseLight,
-    gray
+    gray,
+    white
 };
 
 export default colors;

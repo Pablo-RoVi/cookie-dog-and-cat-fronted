@@ -3,8 +3,9 @@ export interface User {
     rut: string;
     name: string;
     last_name: string;
-    role: Role;
+    is_active: boolean;
     nick_name: string;
+    role: Role;
 }
 
 export interface Role {

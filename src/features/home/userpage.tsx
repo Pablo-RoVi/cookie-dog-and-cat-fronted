@@ -64,7 +64,7 @@ const UserPage = () => {
     <div className="min-h-screen bg-gray-100">
       <Navbar />
       <div className="container mx-auto px-4 py-6">
-        <h1 className="text-2xl font-bold" style={{color: colors.turquoise}}>Empleados</h1>
+        <h1 className="text-2xl font-bold mb-4" style={{color: colors.turquoise}}>Empleados</h1>
 
         {/* Filtros */}
         <div className="flex space-x-4 mb-6">
@@ -95,10 +95,13 @@ const UserPage = () => {
           user.rut,
           user.name,
           user.last_name,
-          user.role.role_name,
           user.nick_name,
+          user.role.role_name,
           <>
-            
+            <div className="flex justify-between items-center">
+              {buttons.editButton({user})}
+              {buttons.setStatusButton({id: user.id, is_active: user.is_active})}
+            </div>
           </>
         ])})}
 
