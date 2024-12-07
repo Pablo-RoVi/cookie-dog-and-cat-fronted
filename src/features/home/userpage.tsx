@@ -98,8 +98,7 @@ const UserPage = () => {
           user.role.role_name,
           user.nick_name,
           <>
-            {buttons.turquoiseButton({ text: "Editar" })}
-            {buttons.fuchsiaButton({ text: "Eliminar" })}
+            
           </>
         ])})}
 
@@ -112,9 +111,7 @@ const UserPage = () => {
         })}
         
         {/* Botón Agregar */}
-        <div className="flex justify-end mt-4">
-          {buttons.turquoiseButton({ text: "Añadir" })}
-        </div>
+        {buttons.turquoiseButton({ text: "Añadir" })}
       </div>
     </div>
   );
