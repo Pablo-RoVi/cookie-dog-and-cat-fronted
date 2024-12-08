@@ -48,6 +48,10 @@ const UserPage = () => {
     });
   }, []);
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchName, roleFilter, accountStatusFilter]);
+
   const filteredUsers = users.filter((user) => {
     return (
       user.name.toLowerCase().includes(searchName.toLowerCase()) &&
@@ -104,7 +108,7 @@ const UserPage = () => {
           translateRole(user.role.role_name),
           user.nick_name,
           <>
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center ml-4 mr-4">
               {buttons.editButton({user})}
               {buttons.setStatusButton({id: user.id, is_active: user.is_active})}
             </div>
