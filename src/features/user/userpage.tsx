@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Navbar from "../../app/components/navbar";
 import "../../app/static/styles/index.css";
 import Agent from "../../app/api/agent";
 import colors from "../../app/static/colors";
@@ -31,11 +30,11 @@ const accountStatusOptions = [
 
 const UserPage = () => {
 
-  const [searchName, setSearchName] = useState("");
-  const [roleFilter, setRoleFilter] = useState("");
-  const [accountStatusFilter, setAccountStatusFilter] = useState("");
+  const [searchName, setSearchName] = useState<string>("");
+  const [roleFilter, setRoleFilter] = useState<string>("");
+  const [accountStatusFilter, setAccountStatusFilter] = useState<string>("");
   const [users, setUsers] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const usersPerPage = 8;
 
   const indexOfLastUser = currentPage * usersPerPage;
@@ -69,8 +68,7 @@ const UserPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <Navbar />
+    <div className="min-h-screen bg-white">
       <div className="container mx-auto px-4 py-6">
         <h1 className="text-2xl font-bold mb-4" style={{color: colors.turquoise}}>Empleados</h1>
 
