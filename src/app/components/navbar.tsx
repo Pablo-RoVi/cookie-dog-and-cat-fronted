@@ -1,19 +1,58 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import "../static/styles/navbar.css";
 import colors from "../static/colors";
 import cookie from "../static/images/cookie.png";
 
-const adminMenu = ["Empleados", "Productos", "Ventas", "Informes"];
-const employeeMenu= ["Productos", "Ventas"];
-const adminSettings = ["Cerrar Sesión"];
-const employeeSettings = ["Cambiar Contraseña", "Cerrar Sesión"];
-const isAdmin = true;
+const adminMenu = [
+    {
+        value: "/users",
+        label: "Empleados"
+        
+    },
+    {
+        value: "/products",
+        label: "Productos"
+    },
+    {
+        value: "/sales",
+        label: "Ventas"
+    },
+    {
+        value: "/reports",
+        label: "Reportes"
+    }
+];
+const employeeMenu = [
+    {
+        value: "/products",
+        label: "Productos"
+    },
+    {
+        value: "/sales",
+        label: "Ventas"
+    }
+];
+const adminSettings = [{value: "/login", label: "Cerrar Sesión"}];
+const employeeSettings = [
+    {
+        value: "/profile",
+        lable: "Cambiar Contraseña"
+    },
+    {
+        value: "/login",
+        label: "Cerrar Sesión"
+    }
+];
 
 const Navbar = () => {
 
     const [menuOpen, setMenuOpen] = useState<boolean>(false);
     const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
     const [loggedName, setLoggedName] = useState<string>("");
+    const [isAdmin, setIsAdmin] = useState<boolean>(false);
+
+    const navigate = useNavigate();
 
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
@@ -43,7 +82,14 @@ const Navbar = () => {
                 {menuOpen && (
                     <ul className="absolute top-full shadow-md rounded p-4" style={{background: colors.turquoiseLight}}>
                         {menu.map((item) => (
-                            <li className="cursor-pointer" style={{color: colors.turquoise, textDecorationColor: colors.turquoise}}>{item}</li>
+                            <li
+                                key={item.label}
+                                className="cursor-pointer"
+                                style={{color: colors.turquoise, textDecorationColor: colors.turquoise}}
+                                onClick={() => navigate(item.value)}
+                            >
+                                {item.label}
+                            </li>
                         ))}
                     </ul>
                 )}
@@ -68,7 +114,14 @@ const Navbar = () => {
                     <ul className="absolute top-full shadow-md rounded p-4" style={{background: colors.fuchsiaLight}}>
                         <li className="cursor-pointer" style={{color: colors.fuchsia, textDecorationColor: colors.fuchsia}}>{loggedName}</li>
                         {settings.map((item) => (
-                            <li className="cursor-pointer" style={{color: colors.fuchsia, textDecorationColor: colors.fuchsia}}>{item}</li>
+                            <li 
+                                key={item.label}
+                                className="cursor-pointer"
+                                style={{color: colors.fuchsia, textDecorationColor: colors.fuchsia}}
+                                onClick={() => navigate(item.value)}
+                            >
+                                {item.label}
+                            </li>
                         ))}
                     </ul>
                 )}
