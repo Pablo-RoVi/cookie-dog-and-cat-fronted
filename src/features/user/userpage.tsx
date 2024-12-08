@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Navbar from "../../app/components/navbar";
 import "../../app/static/styles/index.css";
 import Agent from "../../app/api/agent";
 import colors from "../../app/static/colors";
@@ -70,7 +69,6 @@ const UserPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <Navbar />
       <div className="container mx-auto px-4 py-6">
         <h1 className="text-2xl font-bold mb-4" style={{color: colors.turquoise}}>Empleados</h1>
 
