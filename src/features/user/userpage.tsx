@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../../app/static/styles/index.css";
 import Agent from "../../app/api/agent";
 import colors from "../../app/static/colors";
-import buttons from "../../app/components/buttons";
+import Buttons from "../../app/components/buttons";
 import TableModule from "../../app/components/tablemodule";
 import { User } from "../../app/models/user";
 
@@ -72,7 +72,7 @@ const UserPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="max-h-screen bg-white">
       <div className="container mx-auto px-4 py-6">
         <h1 className="text-2xl font-bold mb-4" style={{color: colors.turquoise}}>Empleados</h1>
 
@@ -108,10 +108,10 @@ const UserPage = () => {
           translateRole(user.role.role_name),
           user.nick_name,
           <>
-            <div className="flex justify-between items-center ml-4 mr-4">
-              {buttons.editButton({user})}
-              {buttons.setStatusButton({id: user.id, is_active: user.is_active})}
-            </div>
+              <div className="flex justify-between items-center ml-4 mr-4">
+                  {Buttons.EditButton({data: user, path: "/edit-user"})}
+                  {Buttons.SetStatusButton({id: user.id, is_active: user.is_active})}
+              </div>
           </>
         ])})}
 
@@ -124,7 +124,7 @@ const UserPage = () => {
         })}
         
         {/* Botón Agregar */}
-        {buttons.turquoiseButton({ text: "Añadir" })}
+        {Buttons.TurquoiseButton({ text: "Añadir" })}
       </div>
     </div>
   );

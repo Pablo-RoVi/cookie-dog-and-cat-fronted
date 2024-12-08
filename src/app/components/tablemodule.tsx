@@ -24,7 +24,7 @@ const table = (props) => {
             <thead>
                 <tr className="text-white" style={{backgroundColor: colors.fuchsia}}>
                     {props.headers.map((header) => (
-                        <th className="text-center py-3 px-4 font-semibold text-sm">{header}</th>
+                        <th key={header} className="text-center py-3 px-4 font-semibold text-sm">{header}</th>
                     ))}
                 </tr>
             </thead>
