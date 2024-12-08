@@ -50,7 +50,7 @@ const Navbar = () => {
     const [menuOpen, setMenuOpen] = useState<boolean>(false);
     const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
     const [loggedName, setLoggedName] = useState<string>("");
-    const [isAdmin, setIsAdmin] = useState<boolean>(false);
+    const [isAdmin, setIsAdmin] = useState<boolean>(true);
 
     const navigate = useNavigate();
 
@@ -70,12 +70,15 @@ const Navbar = () => {
             <div className="flex-1 text-white flex items-center justify-start relative" style={{background: colors.turquoise}}>
                 <svg 
                     onClick={toggleMenu}
-                    className="h-10 w-10 text-white m-4"
+                    className="w-10 h-10 text-gray-800 dark:text-white ml-6 mr-4"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
                     fill="none"
                     viewBox="0 0 24 24"
-                    stroke="currentColor"
                 >
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    <path stroke="currentColor" strokeLinecap="round" strokeWidth="2" d="M5 7h14M5 12h14M5 17h14"/>
                 </svg>
                 <img className="h-14 w-14 m-2" src={cookie} alt="Logo Cookie"></img>
                 <text className="text-2xl m-4">COOKIE DOG AND CAT</text>
@@ -84,7 +87,7 @@ const Navbar = () => {
                         {menu.map((item) => (
                             <li
                                 key={item.label}
-                                className="cursor-pointer"
+                                className="cursor-pointer mb-2"
                                 style={{color: colors.turquoise, textDecorationColor: colors.turquoise}}
                                 onClick={() => navigate(item.value)}
                             >
@@ -98,17 +101,15 @@ const Navbar = () => {
             <div className="flex-1 flex items-center justify-end relative" style={{background: colors.fuchsia}}>
                 <svg
                     onClick={toggleSettings}
-                    className="h-12 w-12 text-white cursor-pointer m-4"
-                    fill="none"
+                    className="w-12 h-12 text-gray-800 dark:text-white mr-6"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    fill="currentColor"
                     viewBox="0 0 24 24"
-                    stroke="currentColor"
                 >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
+                    <path fill-rule="evenodd" d="M12 20a7.966 7.966 0 0 1-5.002-1.756l.002.001v-.683c0-1.794 1.492-3.25 3.333-3.25h3.334c1.84 0 3.333 1.456 3.333 3.25v.683A7.966 7.966 0 0 1 12 20ZM2 12C2 6.477 6.477 2 12 2s10 4.477 10 10c0 5.5-4.44 9.963-9.932 10h-.138C6.438 21.962 2 17.5 2 12Zm10-5c-1.84 0-3.333 1.455-3.333 3.25S10.159 13.5 12 13.5c1.84 0 3.333-1.455 3.333-3.25S13.841 7 12 7Z" clip-rule="evenodd"/>
                 </svg>
                 {settingsOpen && (
                     <ul className="absolute top-full shadow-md rounded p-4" style={{background: colors.fuchsiaLight}}>
@@ -116,7 +117,7 @@ const Navbar = () => {
                         {settings.map((item) => (
                             <li 
                                 key={item.label}
-                                className="cursor-pointer"
+                                className="cursor-pointer mb-2"
                                 style={{color: colors.fuchsia, textDecorationColor: colors.fuchsia}}
                                 onClick={() => navigate(item.value)}
                             >
