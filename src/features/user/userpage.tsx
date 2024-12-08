@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Navbar from "../../app/components/navbar";
 import "../../app/static/styles/index.css";
 import Agent from "../../app/api/agent";
 import colors from "../../app/static/colors";
@@ -31,11 +30,11 @@ const accountStatusOptions = [
 
 const UserPage = () => {
 
-  const [searchName, setSearchName] = useState("");
-  const [roleFilter, setRoleFilter] = useState("");
-  const [accountStatusFilter, setAccountStatusFilter] = useState("");
+  const [searchName, setSearchName] = useState<string>("");
+  const [roleFilter, setRoleFilter] = useState<string>("");
+  const [accountStatusFilter, setAccountStatusFilter] = useState<string>("");
   const [users, setUsers] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const usersPerPage = 8;
 
   const indexOfLastUser = currentPage * usersPerPage;
@@ -48,6 +47,10 @@ const UserPage = () => {
       setUsers(response);
     });
   }, []);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchName, roleFilter, accountStatusFilter]);
 
   const filteredUsers = users.filter((user) => {
     return (
@@ -69,8 +72,7 @@ const UserPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <Navbar />
+    <div className="min-h-screen bg-white">
       <div className="container mx-auto px-4 py-6">
         <h1 className="text-2xl font-bold mb-4" style={{color: colors.turquoise}}>Empleados</h1>
 
@@ -106,7 +108,7 @@ const UserPage = () => {
           translateRole(user.role.role_name),
           user.nick_name,
           <>
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center ml-4 mr-4">
               {buttons.editButton({user})}
               {buttons.setStatusButton({id: user.id, is_active: user.is_active})}
             </div>
