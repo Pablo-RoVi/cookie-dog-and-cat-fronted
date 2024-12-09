@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 import "../../app/static/styles/index.css";
 import Agent from "../../app/api/agent";
 import colors from "../../app/static/colors";
@@ -35,6 +36,7 @@ const UserPage = () => {
   const [accountStatusFilter, setAccountStatusFilter] = useState<string>("");
   const [users, setUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const navigate = useNavigate();
   const usersPerPage = 8;
 
   const indexOfLastUser = currentPage * usersPerPage;
@@ -70,6 +72,11 @@ const UserPage = () => {
     };
     return roleTranslation[role] || role;
   }
+
+  const handleNavigate = (path: string, state?: any) => {
+    navigate(path, state ? { state } : undefined);
+  };
+
 
   return (
     <div className="max-h-screen bg-white">
@@ -109,8 +116,8 @@ const UserPage = () => {
           user.nick_name,
           <>
               <div className="flex justify-between items-center ml-4 mr-4">
-                  {Buttons.EditButton({data: user, path: "/edit-user"})}
-                  {Buttons.SetStatusButton({id: user.id, is_active: user.is_active})}
+                  <Buttons.EditButton onClick={() => handleNavigate("/edit-user", user)} />
+                  {Buttons.SetStatusButton(user)}
               </div>
           </>
         ])})}
@@ -124,7 +131,7 @@ const UserPage = () => {
         })}
         
         {/* Botón Agregar */}
-        {Buttons.TurquoiseButton({ text: "Añadir" })}
+        <Buttons.TurquoiseButton text="Añadir" onClick={() => handleNavigate("/add-user")} />
       </div>
     </div>
   );
