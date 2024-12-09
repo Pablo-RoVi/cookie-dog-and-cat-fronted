@@ -4,30 +4,12 @@ import "../../app/static/styles/index.css";
 import Agent from "../../app/api/agent";
 import colors from "../../app/static/colors";
 import Buttons from "../../app/components/buttons";
+import Options from "../../app/components/options";
 import TableModule from "../../app/components/tablemodule";
 import { User } from "../../app/models/user";
+import options from "../../app/components/options";
 
 const headers = ["Código", "RUT", "Nombre", "Apellido", "Rol", "Nombre de Usuario", "Acciones"];
-const roleOptions = [
-  {
-    value: "Admin",
-    label: "Administrador"
-  },
-  {
-    value: "Employee",
-    label: "Empleado"
-  }
-];
-const accountStatusOptions = [
-  {
-    value: "Activo",
-    label: "Activo"
-  },
-  {
-    value: "Inactivo",
-    label: "Inactivo"
-  }
-];
 
 const UserPage = () => {
 
@@ -81,28 +63,28 @@ const UserPage = () => {
   return (
     <div className="max-h-screen bg-white">
       <div className="container mx-auto px-4 py-6">
-        <h1 className="text-2xl font-bold mb-4" style={{color: colors.turquoise}}>Empleados</h1>
-
+        {TableModule.title({title: "Empleados"})}
         {/* Filtros */}
         <div className="flex space-x-4 mb-6">
-          <input
-            type="text"
-            placeholder="Nombre"
-            value={searchName}
-            onChange={(e) => setSearchName(e.target.value)}
-            className="p-2 border border-gray-300 rounded-lg shadow-sm w-1/3"
-          />
+          {TableModule.inputFilter({
+            label: "Nombre",
+            valueFilter: searchName,
+            setOnChangeFilter: setSearchName,
+            placeholder: "Nombre"
+          })}
           {TableModule.selectFilter({
+            label: "Rol",
             valueFilter: roleFilter,
             setOnChangeFilter: setRoleFilter,
             placeholder: "Rol",
-            options: roleOptions
+            options: options.roleOptions
           })}
           {TableModule.selectFilter({
+            label: "Estado de la Cuenta",
             valueFilter: accountStatusFilter,
             setOnChangeFilter: setAccountStatusFilter,
             placeholder: "Estado de la Cuenta",
-            options: accountStatusOptions
+            options: options.accountStatusOptions
           })}
         </div>
 
