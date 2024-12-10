@@ -10,6 +10,10 @@ import EditSalePage from '../../features/sale/editsalepage';
 import DetailSalePage from '../../features/sale/detailsalepage';
 import AddSalePage from '../../features/sale/addsalepage';
 import ReportPage from '../../features/report/reportpage';
+import ProductPage from '../../features/product/productpage';
+import NotFound from '../../features/error/notfound';
+import EditProductPage from '../../features/product/editproductpage';
+import AddProductPage from '../../features/product/addproductpage';
 
 type Props = {};
 
@@ -25,6 +29,10 @@ const Routes = (props: Props) => {
         "/detail-sale",
         "/add-sale",
         "/reports",
+        "/products",
+        "/products/edit-product/1",
+        "/products/add-product",
+        "*"
     ];
 
     return (
@@ -47,6 +55,12 @@ const Routes = (props: Props) => {
             <Route path="/detail-sale" element={<DetailSalePage />} />
             <Route path="/add-sale" element={<AddSalePage />} />
             <Route path="/reports" element={<ReportPage />} />
+            <Route path="/products" element={<Outlet />}>
+                <Route path="" element={<ProductPage />} />
+                <Route path="edit-product/:id" element={<EditProductPage />} />
+                <Route path="add-product" element={<AddProductPage />} />
+            </Route>
+            <Route path="*" element={<NotFound />} />
         </Route>
         </Router>
     );

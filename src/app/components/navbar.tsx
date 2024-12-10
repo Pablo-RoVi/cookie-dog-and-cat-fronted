@@ -70,7 +70,7 @@ const Navbar = () => {
             <div className="flex-1 text-white flex items-center justify-start relative" style={{background: colors.turquoise}}>
                 <svg 
                     onClick={toggleMenu}
-                    className="w-10 h-10 text-gray-800 dark:text-white ml-6 mr-4"
+                    className="w-10 h-10 text-gray-800 dark:text-white ml-6 mr-4 cursor-pointer"
                     aria-hidden="true"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"

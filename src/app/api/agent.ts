@@ -15,7 +15,7 @@ const requests = {
     axios.get(url, { params }).then(responseBody),
   post: (url: string, body: {}) => axios.post(url, body).then(responseBody),
   put: (url: string, body: {}) => axios.put(url, body).then(responseBody),
-  delete: (url: string) => axios.delete(url).then(responseBody),
+  delete: (url: string, body: {}) => axios.delete(url,body),
   patch: (url: string, body: {}) => axios.patch(url, body).then(responseBody),
 };
 
@@ -28,11 +28,19 @@ const Users = {
   list: () => requests.get("user/"),
   active: () => requests.get("user/ActiveUsers"),
   updateUser: (form: any) => requests.post("user/UpdateUser", form),
-  changeState: (form: any) => requests.post("user/ChangeState/", form),
+  changeState: (form: any) => requests.put("user/ChangeState/{id}", form),
   changePasswordEmployee: (form: any) => requests.post("user/ChangePasswordEmployee", form),
   changePasswordAdmin: (form: any) => requests.post("user/ChangePasswordAdmin", form),
 };
 
-const agent = { Auth, requests, Users };
+const Products = {
+  list: () => requests.get("product/allProducts"),
+  available: () => requests.get("product/availableProducts"),
+  //create: (form: any) => requests.post("product/", form),
+  update: (form: any) => requests.put("product/editProduct/{id}", form),
+  deleteProduct: (unique_id:string ) => requests.delete(`product/deleteProduct/${unique_id}`,unique_id),
+};
+
+const agent = { Auth, requests, Users, Products};
 
 export default agent;
