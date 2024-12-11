@@ -3,7 +3,7 @@ import colors from "../static/colors";
 
 const title = (props) => {
     return (
-        <h1 className="text-4xl font-bold mb-4" style={{color: colors.turquoise}}>
+        <h1 className="text-4xl font-bold mb-6" style={{color: colors.turquoise}}>
             {props.title}
         </h1>
     );
@@ -11,7 +11,7 @@ const title = (props) => {
 
 const inputFilter = (props) => {
     return (
-        <div className="container mx-auto  flex flex-col space-y-2 w-auto">
+        <div className="container mx-auto  flex flex-col space-y-2 w-auto mb-6">
             {/* Texto arriba del input */}
             <label className="text-xl font-bold" style={{color: colors.turquoise}}>
                 {props.label}
@@ -31,7 +31,7 @@ const inputFilter = (props) => {
 
 const selectFilter = (props) => {
     return (
-        <div className="flex flex-col space-y-2 w-auto">
+        <div className="flex flex-col space-y-2 w-auto mb-4">
             {/* Texto arriba del select */}
             <label className="text-xl font-bold" style={{color: colors.turquoise}}>
                 {props.label}

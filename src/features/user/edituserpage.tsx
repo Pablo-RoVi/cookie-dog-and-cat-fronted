@@ -99,7 +99,7 @@ const EditUserPage = () => {
                 <img src={cookie} alt="cookie" className="h-auto w-auto opacity-10" />
             </div>
             <div className="container mx-auto mt-6 mr-52">
-                {TableModule.title({title: "Editar Contraseña"})}
+                {TableModule.title({title: "Editar contraseña"})}
                 {TableModule.inputFilter({
                     label: "Nueva Contraseña",
                     valueFilter: newPassword,

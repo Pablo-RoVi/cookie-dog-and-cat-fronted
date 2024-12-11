@@ -17,6 +17,8 @@ const UserPage = () => {
   const [roleFilter, setRoleFilter] = useState<string>("");
   const [accountStatusFilter, setAccountStatusFilter] = useState<string>("");
   const [users, setUsers] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const navigate = useNavigate();
   const usersPerPage = 8;
@@ -59,13 +61,12 @@ const UserPage = () => {
     navigate(path, state ? { state } : undefined);
   };
 
-
   return (
     <div className="max-h-screen bg-white">
       <div className="container mx-auto px-4 py-6">
         {TableModule.title({title: "Empleados"})}
         {/* Filtros */}
-        <div className="flex space-x-4 mb-6">
+        <div className="flex space-x-4">
           <div className="container max-w-[20%]">
             {TableModule.inputFilter({
               label: "Nombre",
