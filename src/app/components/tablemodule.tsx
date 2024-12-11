@@ -11,7 +11,7 @@ const title = (props) => {
 
 const inputFilter = (props) => {
     return (
-        <div className="flex flex-col space-y-2 w-1/3">
+        <div className="flex flex-col space-y-2 w-auto">
             {/* Texto arriba del input */}
             <label className="text-xl font-bold" style={{color: colors.turquoise}}>
                 {props.label}
@@ -30,7 +30,7 @@ const inputFilter = (props) => {
 
 const selectFilter = (props) => {
     return (
-        <div className="flex flex-col space-y-2 w-1/3">
+        <div className="flex flex-col space-y-2 w-auto">
             {/* Texto arriba del select */}
             <label className="text-xl font-bold" style={{color: colors.turquoise}}>
                 {props.label}

@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Buttons from '../../app/components/buttons';
 import Options from '../../app/components/options';
 import colors from '../../app/static/colors';
+import cookie from '../../app/static/images/cookie.png';
 import TableModule from '../../app/components/tablemodule';
 import { User } from '../../app/models/user';
 
@@ -40,8 +41,8 @@ const EditUserPage = () => {
     };
 
     return (
-        <div className="max-h-screen bg-white flex-auto flex space-x-4 h-1/2">
-            <div className="container mx-auto px-4 py-6">
+        <div className="max-h-screen bg-white flex-auto flex h-1/2">
+            <div className="container mx-auto mt-6 ml-52">
                 {TableModule.title({title: "Editar empleado"})}
                 {TableModule.inputFilter({
                         label: "Código",
@@ -79,7 +80,10 @@ const EditUserPage = () => {
                     <Buttons.FuchsiaButton text="Cancelar" onClick={handleNavigate} />
                 </div>
             </div>
-            <div className="container mx-auto px-4 py-6">
+            <div className="container mx-auto">
+                <img src={cookie} alt="cookie" className="h-auto w-auto opacity-10" />
+            </div>
+            <div className="container mx-auto mt-6 mr-52">
                 {TableModule.title({title: "Editar Contraseña"})}
                 {TableModule.inputFilter({
                     label: "Nueva Contraseña",
