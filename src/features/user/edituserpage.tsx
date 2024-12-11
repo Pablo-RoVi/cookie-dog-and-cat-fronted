@@ -95,7 +95,7 @@ const EditUserPage = () => {
                     <Buttons.FuchsiaButton text="Cancelar" onClick={handleNavigate} />
                 </div>
             </div>
-            <div className="container mx-auto">
+            <div className="container mx-auto mt-20">
                 <img src={cookie} alt="cookie" className="h-auto w-auto opacity-10" />
             </div>
             <div className="container mx-auto mt-6 mr-52">
