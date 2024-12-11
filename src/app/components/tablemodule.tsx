@@ -11,7 +11,7 @@ const title = (props) => {
 
 const inputFilter = (props) => {
     return (
-        <div className="flex flex-col space-y-2 w-auto">
+        <div className="container mx-auto  flex flex-col space-y-2 w-auto">
             {/* Texto arriba del input */}
             <label className="text-xl font-bold" style={{color: colors.turquoise}}>
                 {props.label}
@@ -23,6 +23,7 @@ const inputFilter = (props) => {
                 onChange={(e) => props.setOnChangeFilter(e.target.value)}
                 placeholder={props.placeholder}
                 className="p-2 border border-gray-300 rounded-lg shadow-sm"
+                disabled={props.isDisabled}
             />
         </div>
     );
@@ -41,7 +42,7 @@ const selectFilter = (props) => {
                 onChange={(e) => props.setOnChangeFilter(e.target.value)}
                 className="p-2 border border-gray-300 rounded-lg shadow-sm"
             >
-                <option value="">{props.placeholder}</option>
+                <option value="">SIN ELECCIÓN</option>
                 {props.options.map((option, index) => (
                     <option key={index} value={option.value}>
                         {option.label}

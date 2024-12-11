@@ -66,26 +66,29 @@ const UserPage = () => {
         {TableModule.title({title: "Empleados"})}
         {/* Filtros */}
         <div className="flex space-x-4 mb-6">
-          {TableModule.inputFilter({
-            label: "Nombre",
-            valueFilter: searchName,
-            setOnChangeFilter: setSearchName,
-            placeholder: "Nombre"
-          })}
-          {TableModule.selectFilter({
-            label: "Rol",
-            valueFilter: roleFilter,
-            setOnChangeFilter: setRoleFilter,
-            placeholder: "Rol",
-            options: options.roleOptions
-          })}
-          {TableModule.selectFilter({
-            label: "Estado de la Cuenta",
-            valueFilter: accountStatusFilter,
-            setOnChangeFilter: setAccountStatusFilter,
-            placeholder: "Estado de la Cuenta",
-            options: options.accountStatusOptions
-          })}
+          <div className="container max-w-[20%]">
+            {TableModule.inputFilter({
+              label: "Nombre",
+              valueFilter: searchName,
+              setOnChangeFilter: setSearchName,
+            })}
+          </div>
+          <div className="container max-w-[20%]">
+            {TableModule.selectFilter({
+              label: "Rol",
+              valueFilter: roleFilter,
+              setOnChangeFilter: setRoleFilter,
+              options: options.roleOptions
+            })}
+          </div>
+          <div className="container max-w-[20%]">
+            {TableModule.selectFilter({
+              label: "Estado de la Cuenta",
+              valueFilter: accountStatusFilter,
+              setOnChangeFilter: setAccountStatusFilter,
+              options: options.accountStatusOptions
+            })}
+          </div>
         </div>
 
         {/* Tabla */}

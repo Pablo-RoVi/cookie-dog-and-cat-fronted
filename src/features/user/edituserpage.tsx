@@ -7,14 +7,27 @@ import cookie from '../../app/static/images/cookie.png';
 import TableModule from '../../app/components/tablemodule';
 import { User } from '../../app/models/user';
 
+const defaultUser: User = {
+    id: 0,
+    name: "",
+    last_name: "",
+    rut: "",
+    nick_name: "",
+    is_active: false,
+    role: {
+        id: 0,
+        role_name: "",
+    },
+};
+
 const EditUserPage = () => {
     const [roleFilter, setRoleFilter] = useState<string>("");
     const [id, setId] = useState<number>(0);
-    const [newName, setNewName] = useState<string>("");
-    const [newLastName, setNewLastName] = useState<string>("");
+    const [name, setName] = useState<string>("");
+    const [lastName, setLastName] = useState<string>("");
     const [rut, setRut] = useState<string>("");
     const [nickName, setNickName] = useState<string>("");
-    const [newRole, setNewRole] = useState<string>("");
+    const [role, setRole] = useState<string>("");
     const [newPassword, setNewPassword] = useState<string>("");
     const [confirmNewPassword, setConfirmNewPassword] = useState<string>("");
     const location = useLocation();
@@ -24,11 +37,11 @@ const EditUserPage = () => {
     useEffect(() => {
         if (user) {
             setId(user.id);
-            setNewName(user.name);
-            setNewLastName(user.last_name);
+            setName(user.name);
+            setLastName(user.last_name);
             setRut(user.rut);
             setNickName(user.nick_name);
-            setNewRole(user.role.role_name);
+            setRole(user.role.role_name);
         }
     }, [user]);
 
@@ -47,33 +60,35 @@ const EditUserPage = () => {
                 {TableModule.inputFilter({
                         label: "Código",
                         valueFilter: id.toString(),
+                        isDisabled: true,
                 })}
                 {TableModule.inputFilter({
                     label: "Nombre",
-                    valueFilter: newName,
-                    onChangeFilter: setNewName,
+                    valueFilter: name,
+                    setOnChangeFilter: setName,
                     placeholder: "Nombre",
                 })}
                 {TableModule.inputFilter({
                     label: "Apellido",
-                    valueFilter: newLastName,
-                    onChangeFilter: setNewLastName,
+                    valueFilter: lastName,
+                    setOnChangeFilter: setLastName,
                     placeholder: "Apellido",
                 })}
                 {TableModule.inputFilter({
                     label: "RUT",
                     valueFilter: rut,
+                    isDisabled: true,
                 })}
                 {TableModule.inputFilter({
                     label: "Nombre de usuario",
                     valueFilter: nickName,
+                    isDisabled: true,
                 })}
                 {TableModule.selectFilter({
                     label: "Rol",
-                    valueFilter: newRole,
-                    onChangeFilter: setNewRole,
+                    valueFilter: role,
+                    setOnChangeFilter: setRole,
                     options: Options.roleOptions,
-                    placeholder: "Rol",
                 })}
                 <div className="flex items-center space-x-4">
                     <Buttons.TurquoiseButton text="Editar" onClick={handleNavigate} />
@@ -88,13 +103,13 @@ const EditUserPage = () => {
                 {TableModule.inputFilter({
                     label: "Nueva Contraseña",
                     valueFilter: newPassword,
-                    onChangeFilter: setNewPassword,
+                    setOnChangeFilter: setNewPassword,
                     placeholder: "Nueva Contraseña",
                 })}
                 {TableModule.inputFilter({
                     label: "Confirmar Contraseña",
                     valueFilter: confirmNewPassword,
-                    onChangeFilter: setConfirmNewPassword,
+                    setOnChangeFilter: setConfirmNewPassword,
                     placeholder: "Confirmar Contraseña",
                 })}
                 <div className="flex items-center space-x-4">
