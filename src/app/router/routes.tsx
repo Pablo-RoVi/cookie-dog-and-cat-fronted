@@ -1,6 +1,7 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useLocation } from "react-router-dom";
 import { Routes as Router, Navigate, Outlet, Route } from "react-router-dom";
+import Login from '../../features/auth/login' ;
 import Navbar from '../components/navbar';
 import UserPage from '../../features/user/userpage';
 import EditUserPage from '../../features/user/edituserpage';
@@ -10,13 +11,33 @@ import EditSalePage from '../../features/sale/editsalepage';
 import DetailSalePage from '../../features/sale/detailsalepage';
 import AddSalePage from '../../features/sale/addsalepage';
 import ReportPage from '../../features/report/reportpage';
+import { AuthProvider,useAuth } from "../context/authcontext";
+
 
 type Props = {};
 
+const RoleBasedRoute = ({ roles, children }: { roles: number[]; children: React.ReactNode }) => {
+  const role = parseInt(localStorage.getItem("role") || "0", 10);
+  console.log(localStorage.getItem("role"));
+  if (!roles.includes(role)) {
+    return <Navigate to="/" replace />; // Redirige si el rol no coincide
+  }
+  return <>{children}</>;
+};
+
+
+const PrivateRoutes = () => {
+  const { authenticated } = useAuth();
+  return authenticated ? <Outlet /> : <Navigate to="/" replace />;
+};
+
+
+  
 const Routes = (props: Props) => {
+      const { authenticated } = useAuth();
     const location = useLocation();
     const views = [
-        "/",
+        "/Login",
         "/users",
         "/edit-user",
         "/add-user",
@@ -26,9 +47,12 @@ const Routes = (props: Props) => {
         "/add-sale",
         "/reports",
     ];
-
     return (
+      <AuthProvider>
         <Router>
+          <Route 
+            path="/" 
+            element={authenticated ? <Navigate to="/users" replace /> : <Login />} />
         <Route
             path="/"
             element={
@@ -36,19 +60,21 @@ const Routes = (props: Props) => {
                 {views.includes(location.pathname) && <Navbar />}
                 <Outlet />
             </>
-            }
+            } 
         >
-            <Route path="/" element={<UserPage />} />
-            <Route path="/users" element={<UserPage />} />
-            <Route path="/edit-user" element={<EditUserPage />} />
-            <Route path="/add-user" element={<AddUserPage />} />
-            <Route path="/sales" element={<SalePage />} />
-            <Route path="/edit-sale" element={<EditSalePage />} />
-            <Route path="/detail-sale" element={<DetailSalePage />} />
-            <Route path="/add-sale" element={<AddSalePage />} />
-            <Route path="/reports" element={<ReportPage />} />
+          <Route element={<PrivateRoutes />}>
+              <Route path="/users" element={<UserPage />} />
+              <Route path="/edit-user" element={<EditUserPage />} />
+              <Route path="/add-user" element={<AddUserPage />} />
+              <Route path="/sales" element={<SalePage />} />
+              <Route path="/edit-sale" element={<EditSalePage />} />
+              <Route path="/detail-sale" element={<DetailSalePage />} />
+              <Route path="/add-sale" element={<AddSalePage />} />
+              <Route path="/reports"element={ <RoleBasedRoute roles={[1]}> <ReportPage /> </RoleBasedRoute>}/>
+          </Route>
         </Route>
         </Router>
+      </AuthProvider>
     );
 };
 
