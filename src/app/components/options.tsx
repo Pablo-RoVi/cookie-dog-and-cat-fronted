@@ -20,9 +20,49 @@ const accountStatusOptions = [
   }
 ];
 
+const brandOptions = [
+  {
+    value: "Hills",
+    label: "Hills"
+  },
+  {
+    value: "ProPlan",
+    label: "ProPlan"
+  }
+];
+
+const categoryOptions = [
+  {
+    value: "Alimento",
+    label: "Alimento"
+  },
+  {
+    value: "Higiene",
+    label: "Higiene"
+  }
+];
+
+const specieOptions = [
+  {
+    value: "Perro",
+    label: "Perro"
+  },
+  {
+    value: "Gato",
+    label: "Gato"
+  },
+  {
+    value: "Roedor",
+    label: "Roedor"
+  }
+];
+
 const options = {
     roleOptions,
-    accountStatusOptions
+    accountStatusOptions,
+    brandOptions,
+    categoryOptions,
+    specieOptions
 }
 
 export default options;
