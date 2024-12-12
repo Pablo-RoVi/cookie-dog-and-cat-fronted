@@ -83,18 +83,18 @@ const ProductPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-white">
+        <div className="max-h-screen bg-white flex-auto flex h-1/2">
             <div className="container mx-auto px-4 py-6">
                 <h1 className="text-2xl font-bold mb-4" style={{color: colors.turquoise}}>Productos</h1>
                 {/* Filtros */}
                 <div className="flex space-x-4 mb-6">
-                    <input
-                        type="text"
-                        placeholder="Nombre"
-                        value={searchName}
-                        onChange={(e) => setSearchName(e.target.value)}
-                        className="p-2 border border-gray-300 rounded-lg shadow-sm w-1/3"
-                    />
+                    <div className="container max-w-[20%]">
+                        {TableModule.inputFilter({
+                        label: "Nombre",
+                        valueFilter: searchName,
+                        setOnChangeFilter: setSearchName,
+                        })}
+                    </div>
                 </div>
 
                 {/* Tabla */}
@@ -108,8 +108,8 @@ const ProductPage = () => {
                 product.specieName,
                 <>
                     <div className="flex justify-between items-center ml-4 mr-4">
-                    {buttons.editButton({onClick: () => { setSelectedProduct(product); navigate(`/products/edit-product/${product.unique_id}`) }})}
-                    {buttons.deleteButton({onClick: () => { setSelectedProduct(product); toggleConfirmationModal();}})}
+                    {buttons.EditButton({onClick: () => { setSelectedProduct(product); navigate(`/products/edit-product/${product.unique_id}`) }})}
+                    {buttons.DeleteButton({onClick: () => { setSelectedProduct(product); toggleConfirmationModal();}})}
                     </div>
                 </>
                 ])})}
@@ -140,7 +140,7 @@ const ProductPage = () => {
                 })}
 
                 {/* Botón Agregar */}
-                {buttons.turquoiseButton({ text: "Añadir", onClick: () => navigate("/products/add-product") })}
+                {buttons.TurquoiseButton({ text: "Añadir", onClick: () => navigate("/products/add-product") })}
             </div>
         </div>
     );
