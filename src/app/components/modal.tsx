@@ -9,8 +9,8 @@ const modal = (props) => {
                     <h2 className="text-xl font-bold">{props.title}</h2>
                 </div>
                 <div className="flex justify-center gap-8">
-                    {props.activateConfirm && buttons.turquoiseButton({text: props.confirmation, onClick: props.confirmAction})}
-                    {props.activateCancel && buttons.fuchsiaButton({text: "Cancelar", onClick: props.confirmCancel})}
+                    {props.activateConfirm && buttons.TurquoiseButton({text: props.confirmation, onClick: props.confirmAction})}
+                    {props.activateCancel && buttons.FuchsiaButton({text: "Cancelar", onClick: props.confirmCancel})}
                 </div>
             </div>
         </div>
