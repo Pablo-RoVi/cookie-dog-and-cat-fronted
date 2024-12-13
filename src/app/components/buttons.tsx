@@ -55,7 +55,11 @@ const SetStatusButton = ({isActive, onClick}) => {
 const TurquoiseButton = ({ onClick, text }) => {
     return (
         <div className="flex justify-end mt-4">
-            <button className="text-white font-bold py-2 px-4 rounded" style={{backgroundColor: colors.turquoise}} onClick={onClick}>
+            <button 
+                className="text-white font-bold py-2 px-4 rounded"
+                style={{backgroundColor: colors.turquoise}}
+                onClick={onClick}
+            >
                 {text}
             </button>
         </div>
@@ -65,7 +69,11 @@ const TurquoiseButton = ({ onClick, text }) => {
 const FuchsiaButton = ({ onClick, text }) => {
     return (
         <div className="flex justify-end mt-4">
-            <button className="text-white font-bold py-2 px-4 rounded" style={{backgroundColor: colors.fuchsia}} onClick={onClick}>
+            <button
+                className="text-white font-bold py-2 px-4 rounded"
+                style={{backgroundColor: colors.fuchsia}}
+                onClick={onClick}
+            >
                 {text}
             </button>
         </div>
