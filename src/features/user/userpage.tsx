@@ -51,7 +51,9 @@ const UserPage = () => {
       user.name.toLowerCase().includes(searchName.toLowerCase()) &&
       (roleFilter === "" || user.role.role_name === roleFilter) &&
       (accountStatusFilter === "" || 
+        // eslint-disable-next-line no-mixed-operators
         (accountStatusFilter === "Activo" && user.is_active ||
+        // eslint-disable-next-line no-mixed-operators
         accountStatusFilter === "Inactivo" && !user.is_active
         ))
     );
