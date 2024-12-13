@@ -8,6 +8,8 @@ import Options from "../../app/components/options";
 import TableModule from "../../app/components/tablemodule";
 import { User } from "../../app/models/user";
 import options from "../../app/components/options";
+import Modal from "../../app/components/modal";
+import { AxiosResponse } from "axios";
 
 const headers = ["Código", "RUT", "Nombre", "Apellido", "Rol", "Nombre de Usuario", "Acciones"];
 
@@ -17,7 +19,8 @@ const UserPage = () => {
   const [roleFilter, setRoleFilter] = useState<string>("");
   const [accountStatusFilter, setAccountStatusFilter] = useState<string>("");
   const [users, setUsers] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState<boolean>(false);
+      const [isDeletedModal, setIsDeletedModal] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const navigate = useNavigate();
@@ -59,6 +62,43 @@ const UserPage = () => {
 
   const handleNavigate = (path: string, state?: any) => {
     navigate(path, state ? { state } : undefined);
+  };
+
+
+  const deleteUser = (unique_id) => { if (selectedUser) 
+      {   
+          if(unique_id){
+              toggleConfirmationModal();
+              Agent.Products.deleteProduct(unique_id).then(
+                  (response : AxiosResponse) => { 
+                  if(response.status === 200) 
+                  {                    
+                      toggleDeletedModal();
+                  } else if(response.status === 400)
+                  {
+                      console.error(response.statusText);
+                  }
+              }).catch(error => 
+                  { 
+                      console.error("Error al eliminar el producto:", error); 
+              }); 
+          }
+          else{
+              console.log("No tengo id");
+          }
+      } 
+  };
+
+  const toggleConfirmationModal = () => {
+      setIsConfirmationModalOpen(!isConfirmationModalOpen);
+  };
+
+  const toggleDeletedModal = () => {
+      setIsDeletedModal(!isDeletedModal);
+  };
+
+  const refreshPage = () => {
+      window.location.reload();
   };
 
   return (
@@ -103,10 +143,35 @@ const UserPage = () => {
           <>
               <div className="flex justify-between items-center ml-4 mr-4">
                   <Buttons.EditButton onClick={() => handleNavigate("/edit-user", user)} />
-                  {Buttons.SetStatusButton(user)}
+                  {
+                    Buttons.SetStatusButton({
+                      isActive: user.is_active,
+                      onClick: () => {
+                        setSelectedUser(user);
+                        toggleConfirmationModal();
+                      }
+                    })
+                  }
               </div>
           </>
         ])})}
+
+        {isConfirmationModalOpen && (
+          <Modal title={`¿Desear eliminar a '${selectedUser.name} ${selectedUser.last_name}' de RUT '${selectedUser.rut}'?`} 
+          confirmAction={() => deleteUser(selectedUser.id)} 
+          confirmation="Eliminar" 
+          confirmCancel={toggleConfirmationModal}
+          activateCancel={true}
+          activateConfirm={true}/>
+        )}
+
+        {isDeletedModal && (
+          <Modal title={'Producto eliminado con éxito'} 
+          confirmation="Aceptar" 
+          confirmAction={() => {toggleDeletedModal(); refreshPage();}}
+          activateCancel={false}
+          activateConfirm={true}/>
+        )}
 
         {/* Paginación */}
         {TableModule.pagination({
