@@ -46,6 +46,7 @@ const AddSalesPage = () => {
 
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleQuantityChange = (id, change) => {
     const updatedProducts = products.map((product) => {
@@ -198,11 +199,20 @@ const AddSalesPage = () => {
         {modalOpen && (
           <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
             <div className="bg-white rounded-lg shadow-lg p-6 w-[80%]">
-              <h2 className="text-2xl font-bold text-[#6FC9D1] mb-4">Añadir producto</h2>
+              <h2 className="text-2xl font-bold text-[#FC67C4] mb-4">Añadir producto</h2>
+
+              {/* Campo de búsqueda */}
+              <input
+                type="text"
+                placeholder="Buscar producto por nombre..."
+                className="w-full p-3 border border-gray-300 rounded-md mb-4"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
 
               {/* Tabla del modal */}
               <table className="w-full border-collapse border border-gray-300 text-left">
-                <thead className="bg-[#FF4081] text-white">
+                <thead className="bg-[#FC67C4] text-white">
                   <tr>
                     <th className="p-3 border border-gray-300">Nombre</th>
                     <th className="p-3 border border-gray-300">Marca</th>
@@ -213,32 +223,36 @@ const AddSalesPage = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {availableProducts.map((product) => (
-                    <tr key={product.id} className="hover:bg-gray-100">
-                      <td className="p-3 border border-gray-300">{product.name}</td>
-                      <td className="p-3 border border-gray-300">{product.brand}</td>
-                      <td className="p-3 border border-gray-300">{product.category}</td>
-                      <td className="p-3 border border-gray-300">{product.species}</td>
-                      <td className="p-3 border border-gray-300">
-                        ${product.price.toLocaleString()}
-                      </td>
-                      <td className="p-3 border border-gray-300 text-center">
-                        <input
-                          type="checkbox"
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setSelectedProducts([...selectedProducts, product]);
-                            } else {
-                              setSelectedProducts(
-                                selectedProducts.filter((p) => p.id !== product.id)
-                              );
-                            }
-                          }}
-                          className="h-5 w-5"
-                        />
-                      </td>
-                    </tr>
-                  ))}
+                  {availableProducts
+                    .filter((product) =>
+                      product.name.toLowerCase().includes(searchTerm.toLowerCase())
+                    )
+                    .map((product) => (
+                      <tr key={product.id} className="hover:bg-gray-100">
+                        <td className="p-3 border border-gray-300">{product.name}</td>
+                        <td className="p-3 border border-gray-300">{product.brand}</td>
+                        <td className="p-3 border border-gray-300">{product.category}</td>
+                        <td className="p-3 border border-gray-300">{product.species}</td>
+                        <td className="p-3 border border-gray-300">
+                          ${product.price.toLocaleString()}
+                        </td>
+                        <td className="p-3 border border-gray-300 text-center">
+                          <input
+                            type="checkbox"
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setSelectedProducts([...selectedProducts, product]);
+                              } else {
+                                setSelectedProducts(
+                                  selectedProducts.filter((p) => p.id !== product.id)
+                                );
+                              }
+                            }}
+                            className="h-5 w-5"
+                          />
+                        </td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
 
