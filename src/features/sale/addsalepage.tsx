@@ -164,6 +164,34 @@ const AddSalesPage = () => {
             </>,
           ]),
         })}
+
+        {/* Total y botones */}
+        <div className="mt-8">
+          <div className="text-right mb-4">
+            <span className="text-xl font-semibold text-[#6FC9D1]">
+              Total producto(s):{" "}
+              <span className="text-black">${total.toLocaleString()}</span>
+            </span>
+          </div>
+          <div className="flex justify-end space-x-4">
+            {/* Botón Añadir */}
+            <button
+              onClick={() => console.log("Venta añadida")}
+              className="bg-[#6FC9D1] text-white px-6 py-2 rounded-lg shadow-md hover:bg-[#5ab5c2]"
+            >
+              Añadir
+            </button>
+            {/* Botón Cancelar */}
+            <button
+              onClick={() => console.log("Venta cancelada")}
+              className="bg-pink-500 text-white px-6 py-2 rounded-lg shadow-md hover:bg-pink-600"
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
