@@ -27,8 +27,10 @@ const Auth = {
 const Users = {
   list: () => requests.get("user/"),
   active: () => requests.get("user/ActiveUsers"),
+  getNickName: () => requests.get("user/GetUserNameByNickName"),
+  registerUser: (form: any) => requests.post("user/RegisterUser", form),
   updateUser: (form: any) => requests.post("user/UpdateUser", form),
-  changeState: (form: any) => requests.put("user/ChangeState/{id}", form),
+  changeState: (form: any) => requests.put("user/ChangeState/", form),
   changePasswordEmployee: (form: any) => requests.post("user/ChangePasswordEmployee", form),
   changePasswordAdmin: (form: any) => requests.post("user/ChangePasswordAdmin", form),
 };
