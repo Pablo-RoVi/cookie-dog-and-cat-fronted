@@ -2,10 +2,78 @@ import React, { useState } from "react";
 import "../../app/static/styles/index.css";
 import TableModule from "../../app/components/tablemodule";
 
-
+const headers = ["Producto", "Marca", "Categoría", "Especie", "Precio", "Cantidad", "Acciones"];
 
 const AddSalesPage = () => {
-  
+  const [products, setProducts] = useState([
+    {
+      id: 1,
+      name: "Cachitos",
+      brand: "Cookie Dog + Cat",
+      category: "Comida Natural",
+      species: "Perro",
+      price: 2000,
+      quantity: 1,
+    },
+    {
+      id: 2,
+      name: "Bolsas de paseo",
+      brand: "PetSafe",
+      category: "Paseo",
+      species: "-",
+      price: 6000,
+      quantity: 3,
+    },
+    {
+      id: 3,
+      name: "Churu de Pollo",
+      brand: "Purina!",
+      category: "Alimento",
+      species: "Gato",
+      price: 50000,
+      quantity: 10,
+    },
+  ]);
+
+  const [employees] = useState([
+    { id: 1, name: "Camila Tessini" },
+    { id: 2, name: "Carlos Martínez" },
+    { id: 3, name: "Ana López" },
+    { id: 4, name: "Javier Fernández" },
+  ]);
+  const [selectedEmployee, setSelectedEmployee] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [total, setTotal] = useState(
+    products.reduce((acc, product) => acc + product.price * product.quantity, 0)
+  );
+
+  const handleQuantityChange = (id, change) => {
+    const updatedProducts = products.map((product) => {
+      if (product.id === id) {
+        const newQuantity = product.quantity + change;
+        if (newQuantity < 1) return product;
+        return { ...product, quantity: newQuantity };
+      }
+      return product;
+    });
+    setProducts(updatedProducts);
+    updateTotal(updatedProducts);
+  };
+
+  const handleRemoveProduct = (id) => {
+    const updatedProducts = products.filter((product) => product.id !== id);
+    setProducts(updatedProducts);
+    updateTotal(updatedProducts);
+  };
+
+  const updateTotal = (updatedProducts) => {
+    const newTotal = updatedProducts.reduce(
+      (acc, product) => acc + product.price * product.quantity,
+      0
+    );
+    setTotal(newTotal);
+  };
+
   return (
     <div className="max-h-screen bg-white">
       <div className="container mx-auto px-4 py-6">
@@ -60,7 +128,42 @@ const AddSalesPage = () => {
               <option value="transferencia">Transferencia</option>
             </select>
           </div>
-        </div>   
+        </div>
+
+        {/* Tabla */}
+        {TableModule.table({
+          headers: headers,
+          data: products.map((product) => [
+            product.name,
+            product.brand,
+            product.category,
+            product.species,
+            `$${product.price.toLocaleString()}`,
+            product.quantity,
+            <>
+              <div className="flex justify-center space-x-2">
+                <button
+                  onClick={() => handleQuantityChange(product.id, -1)}
+                  className="bg-gray-200 text-black font-bold px-2 py-1 rounded-md shadow hover:bg-gray-300"
+                >
+                  −
+                </button>
+                <button
+                  onClick={() => handleQuantityChange(product.id, 1)}
+                  className="bg-gray-200 text-black font-bold px-2 py-1 rounded-md shadow hover:bg-gray-300"
+                >
+                  +
+                </button>
+                <button
+                  onClick={() => handleRemoveProduct(product.id)}
+                  className="bg-gray-200 text-black font-bold px-2 py-1 rounded-md shadow hover:bg-gray-300"
+                >
+                  ✖
+                </button>
+              </div>
+            </>,
+          ]),
+        })}
   );
 };
 
