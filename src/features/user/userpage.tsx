@@ -9,7 +9,6 @@ import TableModule from "../../app/components/tablemodule";
 import { User } from "../../app/models/user";
 import options from "../../app/components/options";
 import Modal from "../../app/components/modal";
-import { AxiosResponse } from "axios";
 
 const headers = ["Código", "RUT", "Nombre", "Apellido", "Rol", "Nombre de Usuario", "Acciones"];
 
@@ -20,7 +19,7 @@ const UserPage = () => {
   const [accountStatusFilter, setAccountStatusFilter] = useState<string>("");
   const [users, setUsers] = useState([]);
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState<boolean>(false);
-      const [isDeletedModal, setIsDeletedModal] = useState<boolean>(false);
+      const [isChangedStateModal, setIsChangedStateModal] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const navigate = useNavigate();
@@ -41,12 +40,20 @@ const UserPage = () => {
     setCurrentPage(1);
   }, [searchName, roleFilter, accountStatusFilter]);
 
+  const deleteText = (selectedUser: User) => {
+    const actionText = selectedUser.is_active ? "eliminar" : "restaurar";
+    const text = `¿Desear ${actionText} a '${selectedUser.name} ${selectedUser.last_name}' de RUT '${selectedUser.rut}'?`;
+    return text;
+  };
+
   const filteredUsers = users.filter((user) => {
     return (
       user.name.toLowerCase().includes(searchName.toLowerCase()) &&
       (roleFilter === "" || user.role.role_name === roleFilter) &&
       (accountStatusFilter === "" || 
-        (accountStatusFilter === "Activo" && user.is_active))
+        (accountStatusFilter === "Activo" && user.is_active ||
+        accountStatusFilter === "Inactivo" && !user.is_active
+        ))
     );
   });
 
@@ -64,37 +71,26 @@ const UserPage = () => {
     navigate(path, state ? { state } : undefined);
   };
 
-
-  const deleteUser = (unique_id) => { if (selectedUser) 
-      {   
-          if(unique_id){
-              toggleConfirmationModal();
-              Agent.Products.deleteProduct(unique_id).then(
-                  (response : AxiosResponse) => { 
-                  if(response.status === 200) 
-                  {                    
-                      toggleDeletedModal();
-                  } else if(response.status === 400)
-                  {
-                      console.error(response.statusText);
-                  }
-              }).catch(error => 
-                  { 
-                      console.error("Error al eliminar el producto:", error); 
-              }); 
-          }
-          else{
-              console.log("No tengo id");
-          }
-      } 
-  };
-
   const toggleConfirmationModal = () => {
       setIsConfirmationModalOpen(!isConfirmationModalOpen);
   };
 
-  const toggleDeletedModal = () => {
-      setIsDeletedModal(!isDeletedModal);
+  const toggleChangedStateModal = () => {
+      setIsChangedStateModal(!isChangedStateModal);
+  };
+
+  const changeStateUser = (id: string) => { if (selectedUser) { 
+    console.log(id);
+    Agent.Users.changeState(id)
+      .then((response) => {
+        console.log("response", response);
+        toggleConfirmationModal();
+        toggleChangedStateModal();
+      })
+      .catch((error) => {
+        console.log("error", error);
+      });
+    } 
   };
 
   const refreshPage = () => {
@@ -157,18 +153,18 @@ const UserPage = () => {
         ])})}
 
         {isConfirmationModalOpen && (
-          <Modal title={`¿Desear eliminar a '${selectedUser.name} ${selectedUser.last_name}' de RUT '${selectedUser.rut}'?`} 
-          confirmAction={() => deleteUser(selectedUser.id)} 
-          confirmation="Eliminar" 
+          <Modal title={deleteText(selectedUser)} 
+          confirmAction={() => changeStateUser(selectedUser.id.toString())} 
+          confirmation={selectedUser.is_active ? "Eliminar" : "Restaurar"} 
           confirmCancel={toggleConfirmationModal}
           activateCancel={true}
           activateConfirm={true}/>
         )}
 
-        {isDeletedModal && (
-          <Modal title={'Producto eliminado con éxito'} 
+        {isChangedStateModal && (
+          <Modal title={`Usuario ${selectedUser.is_active ? "eliminado" : "restaurado"} con éxito`} 
           confirmation="Aceptar" 
-          confirmAction={() => {toggleDeletedModal(); refreshPage();}}
+          confirmAction={() => {toggleChangedStateModal(); refreshPage();}}
           activateCancel={false}
           activateConfirm={true}/>
         )}
