@@ -139,7 +139,6 @@ const AddSalesPage = () => {
         <div className="relative">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold text-[#333333]">Productos</h2>
-            {/* Botón del carrito */}
             <button
               onClick={() => setModalOpen(true)}
               className="bg-[#6FC9D1] p-3 rounded-full shadow-md hover:bg-[#5ab5c2] transition"
@@ -161,7 +160,6 @@ const AddSalesPage = () => {
             </button>
           </div>
 
-          {/* Tabla */}
           {TableModule.table({
             headers: headers,
             data: products.map((product) => [
@@ -198,19 +196,19 @@ const AddSalesPage = () => {
         {/* Modal */}
         {modalOpen && (
           <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
-            <div className="bg-white rounded-lg shadow-lg p-6 w-[80%]">
-              <h2 className="text-2xl font-bold text-[#FC67C4] mb-4">Añadir producto</h2>
+            <div className="bg-white rounded-lg shadow-lg p-6 w-[60%]">
+              <h2 className="text-2xl font-bold text-[#6FC9D1] mb-4">Añadir producto</h2>
 
-              {/* Campo de búsqueda */}
-              <input
-                type="text"
-                placeholder="Buscar producto por nombre..."
-                className="w-full p-3 border border-gray-300 rounded-md mb-4"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+              <div className="mb-4">
+                <input
+                  type="text"
+                  placeholder="Buscar producto por nombre..."
+                  className="w-1/2 p-2 border border-gray-300 rounded-md"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
 
-              {/* Tabla del modal */}
               <table className="w-full border-collapse border border-gray-300 text-left">
                 <thead className="bg-[#FC67C4] text-white">
                   <tr>
@@ -256,7 +254,6 @@ const AddSalesPage = () => {
                 </tbody>
               </table>
 
-              {/* Botones del modal */}
               <div className="flex justify-end space-x-4 mt-4">
                 <button
                   onClick={handleAddProducts}
