@@ -15,21 +15,12 @@ const AddSalesPage = () => {
       price: 2000,
       quantity: 1,
     },
-    {
-      id: 2,
-      name: "Bolsas de paseo",
-      brand: "PetSafe",
-      category: "Paseo",
-      species: "-",
-      price: 6000,
-      quantity: 3,
-    },
   ]);
 
   const [availableProducts] = useState([
-    { id: 3, name: "Cepillo de pelo", brand: "KONG", category: "Higiene", species: "Perro", price: 7000 },
-    { id: 4, name: "Collar", brand: "Royal Canin", category: "Paseo", species: "Perro", price: 8000 },
-    { id: 5, name: "Bozal XL", brand: "PetSafe", category: "Paseo", species: "Perro", price: 12000 },
+    { id: 2, name: "Cepillo de pelo", brand: "KONG", category: "Higiene", species: "Perro", price: 7000 },
+    { id: 3, name: "Collar", brand: "Royal Canin", category: "Paseo", species: "Perro", price: 8000 },
+    { id: 4, name: "Bozal XL", brand: "PetSafe", category: "Paseo", species: "Perro", price: 12000 },
   ]);
 
   const [employees] = useState([
@@ -138,7 +129,7 @@ const AddSalesPage = () => {
         {/* Tabla y botón del carrito */}
         <div className="relative">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-[#333333]">Productos</h2>
+            <h2 className="text-xl font-semibold text-[#6FC9D1]">Productos</h2> {/* Color ajustado */}
             <button
               onClick={() => setModalOpen(true)}
               className="bg-[#6FC9D1] p-3 rounded-full shadow-md hover:bg-[#5ab5c2] transition"
