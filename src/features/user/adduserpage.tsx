@@ -56,6 +56,7 @@ const AddUserPage = () => {
             confirmPassword: confirmNewPassword,
             roleName: role,
         }).then((response) => {
+            console.log("response", response);
             toggleConfimartionModal();
             toggleChangedRegisterUser();
         })
