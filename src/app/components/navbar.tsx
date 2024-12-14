@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import "../static/styles/navbar.css";
 import colors from "../static/colors";
 import cookie from "../static/images/cookie.png";
-
+import { useAuth } from "../../app/context/authcontext";
 const adminMenu = [
     {
         value: "/users",
@@ -40,12 +40,13 @@ const employeeSettings = [
         lable: "Cambiar Contraseña"
     },
     {
-        value: "/login",
+        value: "/Login",
         label: "Cerrar Sesión"
     }
 ];
 
 const Navbar = () => {
+    const { logout } = useAuth();
 
     const [menuOpen, setMenuOpen] = useState<boolean>(false);
     const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
@@ -119,7 +120,10 @@ const Navbar = () => {
                                 key={item.label}
                                 className="cursor-pointer mb-2"
                                 style={{color: colors.fuchsia, textDecorationColor: colors.fuchsia}}
-                                onClick={() => navigate(item.value)}
+                                onClick={() => {
+                                    logout();
+                                    navigate(item.value);
+                                }}
                             >
                                 {item.label}
                             </li>
