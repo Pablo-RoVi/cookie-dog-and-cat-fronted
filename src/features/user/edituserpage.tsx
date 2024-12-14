@@ -4,7 +4,7 @@ import Buttons from '../../app/components/buttons';
 import Options from '../../app/components/options';
 import cookie from '../../app/static/images/cookie.png';
 import TableModule from '../../app/components/tablemodule';
-import { User } from '../../app/models/user';
+import Modal from '../../app/components/modal';
 import Agent from "../../app/api/agent";
 
 const EditUserPage = () => {
@@ -16,9 +16,16 @@ const EditUserPage = () => {
     const [role, setRole] = useState<string>("");
     const [newPassword, setNewPassword] = useState<string>("");
     const [confirmNewPassword, setConfirmNewPassword] = useState<string>("");
+    const [isConfirmationUserModalOpen, setIsConfirmationUserModalOpen] = useState<boolean>(false);
+    const[isChangedUserModal, setIsChangedUserModal] = useState<boolean>(false);
+    const [isConfirmationPasswordModalOpen, setIsConfirmationPasswordModalOpen] = useState<boolean>(false);
+    const[isChangedPasswordModal, setIsChangedPasswordModal] = useState<boolean>(false);
     const location = useLocation();
     const navigate = useNavigate();
     const user = location.state;
+
+    const confirmText = isConfirmationUserModalOpen ? "¿Desea editar al usuario?" : "¿Desea editar la contraseña?";
+    const changedText = isChangedUserModal ? "Usuario editado con éxito" : "Contraseña editada con éxito"; 
 
     useEffect(() => {
         if (user) {
@@ -31,15 +38,27 @@ const EditUserPage = () => {
         }
     }, [user]);
 
-    if (!user) {
-        return <div>Usuario no encontrado</div>;
-    }
-
     const handleNavigate = () => {
         navigate('/users');
     };
+    
+    const toggleConfirmationUserModal = () => {
+        setIsConfirmationUserModalOpen(!isConfirmationUserModalOpen);
+    };
+  
+    const toggleChangedUserModal = () => {
+        setIsChangedUserModal(!isChangedUserModal);
+    };
 
-    const handleEditUser = () => {
+    const toggleConfirmationPasswordModal = () => {
+        setIsConfirmationPasswordModalOpen(!isConfirmationPasswordModalOpen);
+    };
+
+    const toggleChangedPasswordModal = () => {
+        setIsChangedPasswordModal(!isChangedPasswordModal);
+    };
+
+    const editUser = () => {
         console.log("Editando usuario:",id,name,lastName,role);
         Agent.Users.updateUser({
             id: id,
@@ -49,23 +68,29 @@ const EditUserPage = () => {
         })
         .then(() => {
             console.log("Usuario actualizado");
-            handleNavigate();
         })
         .catch((error) => {});
     };
 
-    const handleEditPassword = () => {
+    const editPassword = () => {
         console.log("Editando contraseña:",id,newPassword);
-        Agent.Users.changePasswordEmployee({
+        if (newPassword !== confirmNewPassword) {
+            console.log("Las contraseñas no coinciden");
+            return;
+        }
+        Agent.Users.changePasswordAdmin({
             nick_name: nickName,
             newPassword: newPassword,
             confirmPassword: confirmNewPassword,
         })
         .then(() => {
             console.log("Contraseña actualizada");
-            handleNavigate();
         })
         .catch((error) => {});
+    };
+
+    const refreshPage = () => {
+        window.location.reload();
     };
 
     return (
@@ -107,13 +132,32 @@ const EditUserPage = () => {
                     options: Options.roleOptions,
                 })}
                 <div className="flex items-center space-x-4">
-                    <Buttons.TurquoiseButton text="Editar" onClick={handleEditUser} />
+                    <Buttons.TurquoiseButton text="Editar" onClick={toggleConfirmationUserModal} />
                     <Buttons.FuchsiaButton text="Cancelar" onClick={handleNavigate} />
                 </div>
             </div>
+            
+            {/* Confirmation User Modal */}
+            {isConfirmationUserModalOpen && (
+                <Modal title={confirmText} 
+                confirmAction={() => editUser()} 
+                confirmation="Editar"
+                confirmCancel={toggleConfirmationUserModal}
+                activateCancel={true}
+                activateConfirm={true}/>
+            )}
+            {isChangedUserModal && (
+                <Modal title="Usuario editado con éxito"
+                confirmation="Aceptar" 
+                confirmAction={() => {toggleChangedUserModal(); refreshPage();}}
+                activateCancel={false}
+                activateConfirm={true}/>
+            )}
+            
             <div className="container mx-auto mt-20">
                 <img src={cookie} alt="cookie" className="h-auto w-auto opacity-10" />
             </div>
+            
             {/* Edit Password */}
             <div className="container mx-auto mt-6 mr-52">
                 {TableModule.title({title: "Editar contraseña"})}
@@ -130,10 +174,27 @@ const EditUserPage = () => {
                     placeholder: "Confirmar Contraseña",
                 })}
                 <div className="flex items-center space-x-4">
-                    <Buttons.TurquoiseButton text="Editar" onClick={handleNavigate} />
+                    <Buttons.TurquoiseButton text="Editar" onClick={toggleConfirmationPasswordModal} />
                     <Buttons.FuchsiaButton text="Cancelar" onClick={handleNavigate} />
                 </div>
             </div>
+            
+            {/* Confirmation Password Modal */}
+            {isConfirmationPasswordModalOpen && (
+                <Modal title={confirmText} 
+                confirmAction={() => editPassword()} 
+                confirmation="Editar"
+                confirmCancel={toggleConfirmationPasswordModal}
+                activateCancel={true}
+                activateConfirm={true}/>
+            )}
+            {isChangedUserModal && (
+                <Modal title="Contraseña editada con éxito"
+                confirmation="Aceptar" 
+                confirmAction={() => {toggleChangedPasswordModal(); refreshPage();}}
+                activateCancel={false}
+                activateConfirm={true}/>
+            )}
         </div>
     );
 };
