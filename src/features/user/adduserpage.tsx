@@ -8,8 +8,6 @@ import Options from '../../app/components/options';
 import Modal from '../../app/components/modal';
 import Agent from '../../app/api/agent';
 
-const rutRegex = /^[0-9]+[-|‐]{1}[0-9kK]{1}$/;
-
 const AddUserPage = () => {
     
     const [name, setName] = useState<string>("");
@@ -27,8 +25,11 @@ const AddUserPage = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (name && lastName && rut && role && newPassword && confirmNewPassword && 
-            newPassword === confirmNewPassword && rutRegex.test(rut)) {
+        if (role &&
+            Functions.verifyName(name + " " + lastName) && 
+            Functions.verifyPasswords(newPassword, confirmNewPassword) && 
+            Functions.verifyRut(rut)
+        ) {
             setIsFormCompleted(true);
         } else {
             setIsFormCompleted(false);
@@ -72,16 +73,22 @@ const AddUserPage = () => {
                     label: "Nombres",
                     valueFilter: name,
                     setOnChangeFilter: setName,
+                    errorInput: !Functions.verifyName(name) && name !== "",
+                    errorMessage: "Nombre inválido",
                 })}
                 {TableModule.inputFilter({
                     label: "Apellidos",
                     valueFilter: lastName,
                     setOnChangeFilter: setLastName,
+                    errorInput: !Functions.verifyName(lastName) && lastName !== "",
+                    errorMessage: "Apellido inválido",
                 })}
                 {TableModule.inputFilter({
                     label: "RUT",
                     valueFilter: rut,
                     setOnChangeFilter: setRut,
+                    errorInput: !Functions.verifyRut(rut) && rut !== "",
+                    errorMessage: "RUT inválido",
                 })}
                 {TableModule.inputFilter({
                     label: "Nombre de usuario",
@@ -98,11 +105,13 @@ const AddUserPage = () => {
                     label: "Contraseña",
                     valueFilter: newPassword,
                     setOnChangeFilter: setNewPassword,
+                    isPassword: true,
                 })}
                 {TableModule.inputFilter({
                     label: "Confirmar contraseña",
                     valueFilter: confirmNewPassword,
                     setOnChangeFilter: setConfirmNewPassword,
+                    isPassword: true,
                 })}
                 <div className="flex items-center space-x-4">
                     {

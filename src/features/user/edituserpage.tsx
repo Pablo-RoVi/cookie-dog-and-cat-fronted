@@ -4,6 +4,7 @@ import Buttons from '../../app/components/buttons';
 import Options from '../../app/components/options';
 import cookie from '../../app/static/images/cookie.png';
 import TableModule from '../../app/components/tablemodule';
+import Functions from '../../app/components/functions';
 import Modal from '../../app/components/modal';
 import Agent from "../../app/api/agent";
 
@@ -68,7 +69,7 @@ const EditUserPage = () => {
     }, [name, lastName, role, originalData]);
 
     useEffect(() => {
-        setIsPasswordModified(newPassword === confirmNewPassword && newPassword !== "" && confirmNewPassword !== "");
+        setIsPasswordModified(Functions.verifyPasswords(newPassword, confirmNewPassword));
     }, [newPassword, confirmNewPassword]);
 
     const handleNavigate = () => {
@@ -138,12 +139,16 @@ const EditUserPage = () => {
                     valueFilter: name,
                     setOnChangeFilter: setName,
                     placeholder: "Nombre",
+                    errorInput: !Functions.verifyName(name),
+                    errorMessage: "Nombre inválido",
                 })}
                 {TableModule.inputFilter({
                     label: "Apellido",
                     valueFilter: lastName,
                     setOnChangeFilter: setLastName,
                     placeholder: "Apellido",
+                    errorInput: !Functions.verifyName(lastName),
+                    errorMessage: "Apellido inválido",
                 })}
                 {TableModule.inputFilter({
                     label: "RUT",
@@ -204,13 +209,13 @@ const EditUserPage = () => {
                     label: "Nueva Contraseña",
                     valueFilter: newPassword,
                     setOnChangeFilter: setNewPassword,
-                    placeholder: "Nueva Contraseña",
+                    isPassword: true,
                 })}
                 {TableModule.inputFilter({
                     label: "Confirmar Contraseña",
                     valueFilter: confirmNewPassword,
                     setOnChangeFilter: setConfirmNewPassword,
-                    placeholder: "Confirmar Contraseña",
+                    isPassword: true,
                 })}
                 <div className="flex items-center space-x-4">
                     {

@@ -18,13 +18,17 @@ const inputFilter = (props) => {
             </label>
             {/* Input */}
             <input
-                type="text"
+                type={props.isPassword ? "password" : "text"}
                 value={props.valueFilter}
                 onChange={(e) => props.setOnChangeFilter(e.target.value)}
                 placeholder={props.placeholder}
                 className="p-2 border border-gray-300 rounded-lg shadow-sm"
                 disabled={props.isDisabled}
             />
+            {/* Mensaje de error */}
+            {props.errorInput && (
+                <span className="text-red-500">{props.errorMessage}</span>
+            )}
         </div>
     );
 };
