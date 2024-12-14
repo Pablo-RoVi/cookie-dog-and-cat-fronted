@@ -16,9 +16,11 @@ const UserPage = () => {
   const [roleFilter, setRoleFilter] = useState<string>("");
   const [accountStatusFilter, setAccountStatusFilter] = useState<string>("");
   const [users, setUsers] = useState([]);
-  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState<boolean>(false);
-      const [isChangedStateModal, setIsChangedStateModal] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState<boolean>(false);
+  const [isChangedStateModal, setIsChangedStateModal] = useState<boolean>(false);
+  
   const [currentPage, setCurrentPage] = useState<number>(1);
   const navigate = useNavigate();
   const usersPerPage = 8;

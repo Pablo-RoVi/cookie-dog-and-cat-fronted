@@ -172,19 +172,23 @@ const EditUserPage = () => {
             
             {/* Confirmation User Modal */}
             {isConfirmationUserModalOpen && (
-                <Modal title={confirmText} 
-                confirmAction={() => editUser()} 
-                confirmation="Editar"
-                confirmCancel={toggleConfirmationUserModal}
-                activateCancel={true}
-                activateConfirm={true}/>
+                <Modal
+                    title={confirmText} 
+                    confirmAction={() => editUser()} 
+                    confirmation="Editar"
+                    confirmCancel={toggleConfirmationUserModal}
+                    activateCancel={true}
+                    activateConfirm={true}
+                />
             )}
             {isChangedUserModal && (
-                <Modal title={changedText}
-                confirmation="Aceptar" 
-                confirmAction={() => {toggleChangedUserModal()}}
-                activateCancel={false}
-                activateConfirm={true}/>
+                <Modal
+                    title={changedText}
+                    confirmation="Aceptar" 
+                    confirmAction={() => {toggleChangedUserModal()}}
+                    activateCancel={false}
+                    activateConfirm={true}
+                />
             )}
             
             <div className="container mx-auto mt-20">
@@ -219,19 +223,23 @@ const EditUserPage = () => {
             
             {/* Confirmation Password Modal */}
             {isConfirmationPasswordModalOpen && (
-                <Modal title={confirmText} 
-                confirmAction={() => editPassword()} 
-                confirmation="Editar"
-                confirmCancel={toggleConfirmationPasswordModal}
-                activateCancel={true}
-                activateConfirm={true}/>
+                <Modal
+                    title={confirmText} 
+                    confirmAction={() => editPassword()} 
+                    confirmation="Editar"
+                    confirmCancel={toggleConfirmationPasswordModal}
+                    activateCancel={true}
+                    activateConfirm={true}
+                />
             )}
             {isChangedPasswordModal && (
-                <Modal title={changedText}
-                confirmation="Aceptar" 
-                confirmAction={() => {toggleChangedPasswordModal()}}
-                activateCancel={false}
-                activateConfirm={true}/>
+                <Modal
+                    title={changedText}
+                    confirmation="Aceptar" 
+                    confirmAction={() => {toggleChangedPasswordModal()}}
+                    activateCancel={false}
+                    activateConfirm={true}
+                />
             )}
         </div>
     );

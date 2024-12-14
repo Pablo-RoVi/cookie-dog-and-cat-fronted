@@ -121,12 +121,14 @@ const AddUserPage = () => {
                 </div>
             </div>
             {isConfirmationModalOpen && (
-                <Modal title={`¿Estás seguro de que deseas registrar a ${name} ${lastName} de RUT ${rut} y rol ${translateRole(role)}?`}
-                confirmAction={() => registerUser()} 
-                confirmation="Editar"
-                confirmCancel={toggleConfimartionModal}
-                activateCancel={true}
-                activateConfirm={true}/>
+                <Modal
+                    title={`¿Estás seguro de que deseas registrar a ${name} ${lastName} de RUT ${rut} y rol ${translateRole(role)}?`}
+                    confirmAction={() => registerUser()} 
+                    confirmation="Editar"
+                    confirmCancel={toggleConfimartionModal}
+                    activateCancel={true}
+                    activateConfirm={true}
+                />
             )}
             <div className="container mx-auto mr-52 ml-40">
                 <img src={cookie} alt="cookie" className="h-auto w-auto opacity-10" />
