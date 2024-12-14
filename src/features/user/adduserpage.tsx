@@ -56,10 +56,10 @@ const AddUserPage = () => {
             password: newPassword,
             confirmPassword: confirmNewPassword,
             roleName: role,
-        }).then((response) => {
-            console.log("response", response);
+        }).then(() => {
             toggleConfimartionModal();
             toggleChangedRegisterUser();
+            handleNavigate();
         })
         .catch((error) => {
           console.log("error", error);});

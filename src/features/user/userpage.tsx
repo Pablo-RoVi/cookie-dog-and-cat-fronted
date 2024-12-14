@@ -34,7 +34,6 @@ const UserPage = () => {
   useEffect(() => {
     Agent.Users.list()
     .then((response) => {
-      console.log("response", response);
       setUsers(response);
     })
     .catch((error) => {
@@ -80,8 +79,7 @@ const UserPage = () => {
 
   const changeStateUser = (id: string) => { if (selectedUser) { 
     Agent.Users.changeState(id)
-      .then((response) => {
-        console.log("response", response);
+      .then(() => {
         toggleConfirmationModal();
         toggleChangedStateModal();
       })

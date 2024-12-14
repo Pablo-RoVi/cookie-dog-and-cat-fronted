@@ -99,8 +99,7 @@ const EditUserPage = () => {
             last_name: lastName,
             role_name: role,
         })
-        .then((response) => {
-            console.log("response", response);
+        .then(() => {
             toggleConfirmationUserModal();
             toggleChangedUserModal();
             setNickName(`${name.charAt(0).toUpperCase()}${lastName.split(" ")[0].charAt(0).toUpperCase()}${lastName.split(" ")[0].slice(1).toLowerCase()}`);
@@ -115,8 +114,7 @@ const EditUserPage = () => {
             newPassword: newPassword,
             confirmPassword: confirmNewPassword,
         })
-        .then((response) => {
-            console.log("response", response);
+        .then(() => {
             toggleConfirmationPasswordModal();
             toggleChangedPasswordModal();
         })
