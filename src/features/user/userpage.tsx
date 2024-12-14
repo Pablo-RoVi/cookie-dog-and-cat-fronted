@@ -146,12 +146,20 @@ const UserPage = () => {
           </>
         ])})}
 
-        {isConfirmationModalOpen && (
+        {isConfirmationModalOpen && selectedUser.role.role_name !== "Admin" && (
           <Modal title={deleteText(selectedUser)} 
           confirmAction={() => changeStateUser(selectedUser.id.toString())} 
           confirmation={selectedUser.is_active ? "Eliminar" : "Restaurar"} 
           confirmCancel={toggleConfirmationModal}
           activateCancel={true}
+          activateConfirm={true}/>
+        )}
+
+        {isConfirmationModalOpen && selectedUser.role.role_name === "Admin" && (
+          <Modal title={`No puedes eliminar a ${selectedUser.name} ${selectedUser.last_name} porque es administrador`} 
+          confirmation="Aceptar" 
+          confirmAction={toggleConfirmationModal}
+          activateCancel={false}
           activateConfirm={true}/>
         )}
 
