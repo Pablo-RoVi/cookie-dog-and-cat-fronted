@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import cookie from '../../app/static/images/cookie.png';
 import TableModule from '../../app/components/tablemodule';
+import Functions from '../../app/components/functions';
 import Buttons from '../../app/components/buttons';
 import Options from '../../app/components/options';
 import Modal from '../../app/components/modal';
@@ -62,14 +63,6 @@ const AddUserPage = () => {
           console.log("error", error);});
     };
 
-    const translateRole = (role: string) => {
-        const roleTranslation = {
-          Admin: "Administrador",
-          Employee: "Empleado"
-        };
-        return roleTranslation[role] || role;
-    };
-
     return (
         <div className="max-h-screen bg-white flex-auto flex h-1/2">
             <div className="container mx-auto mt-6 ml-52 max-w-[30%]">
@@ -122,7 +115,7 @@ const AddUserPage = () => {
             </div>
             {isConfirmationModalOpen && (
                 <Modal
-                    title={`¿Estás seguro de que deseas registrar a ${name} ${lastName} de RUT ${rut} y rol ${translateRole(role)}?`}
+                    title={`¿Estás seguro de que deseas registrar a ${name} ${lastName} de RUT ${rut} y rol ${Functions.translateRole(role)}?`}
                     confirmAction={() => registerUser()} 
                     confirmation="Editar"
                     confirmCancel={toggleConfimartionModal}

@@ -4,6 +4,7 @@ import "../../app/static/styles/index.css";
 import Agent from "../../app/api/agent";
 import Buttons from "../../app/components/buttons";
 import TableModule from "../../app/components/tablemodule";
+import Functions from "../../app/components/functions";
 import { User } from "../../app/models/user";
 import options from "../../app/components/options";
 import Modal from "../../app/components/modal";
@@ -64,14 +65,6 @@ const UserPage = () => {
 
   const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
 
-  const translateRole = (role: string) => {
-    const roleTranslation = {
-      Admin: "Administrador",
-      Employee: "Empleado"
-    };
-    return roleTranslation[role] || role;
-  }
-
   const handleNavigate = (path: string, state?: any) => {
     navigate(path, state ? { state } : undefined);
   };
@@ -94,10 +87,6 @@ const UserPage = () => {
         console.log("error", error);
       });
     } 
-  };
-
-  const refreshPage = () => {
-      window.location.reload();
   };
 
   return (
@@ -137,7 +126,7 @@ const UserPage = () => {
           user.rut,
           user.name,
           user.last_name,
-          translateRole(user.role.role_name),
+          Functions.translateRole(user.role.role_name),
           user.nick_name,
           <>
               <div className="flex justify-between items-center ml-4 mr-4">
@@ -167,7 +156,7 @@ const UserPage = () => {
         {isChangedStateModal && (
           <Modal title={`Usuario ${selectedUser.is_active ? "eliminado" : "restaurado"} con éxito`} 
           confirmation="Aceptar" 
-          confirmAction={() => {toggleChangedStateModal(); refreshPage();}}
+          confirmAction={() => {toggleChangedStateModal(); Functions.refreshPage();}}
           activateCancel={false}
           activateConfirm={true}/>
         )}

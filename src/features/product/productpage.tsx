@@ -4,6 +4,7 @@ import Agent from "../../app/api/agent";
 import colors from "../../app/static/colors";
 import buttons from "../../app/components/buttons";
 import TableModule from "../../app/components/tablemodule";
+import Functions from "../../app/components/functions";
 import { Product } from '../../app/models/product';
 import Modal from "../../app/components/modal";
 import { useNavigate } from "react-router-dom";
@@ -78,10 +79,6 @@ const ProductPage = () => {
         setIsDeletedModal(!isDeletedModal);
     };
 
-    const refreshPage = () => {
-        window.location.reload();
-    };
-
     return (
         <div className="max-h-screen bg-white flex-auto flex h-1/2">
             <div className="container mx-auto px-4 py-6">
@@ -126,7 +123,7 @@ const ProductPage = () => {
                 {isDeletedModal && (
                     <Modal title={'Producto eliminado con éxito'} 
                     confirmation="Aceptar" 
-                    confirmAction={() => {toggleDeletedModal(); refreshPage();}}
+                    confirmAction={() => {toggleDeletedModal(); Functions.refreshPage();}}
                     activateCancel={false}
                     activateConfirm={true}/>
                 )}
