@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import cookie from '../../app/static/images/cookie.png';
 import TableModule from '../../app/components/tablemodule';
@@ -6,6 +6,8 @@ import Buttons from '../../app/components/buttons';
 import Options from '../../app/components/options';
 import Modal from '../../app/components/modal';
 import Agent from '../../app/api/agent';
+
+const rutRegex = /^[0-9]+[-|‐]{1}[0-9kK]{1}$/;
 
 const AddUserPage = () => {
     
@@ -15,9 +17,22 @@ const AddUserPage = () => {
     const [role, setRole] = useState<string>("");
     const [newPassword, setNewPassword] = useState<string>("");
     const [confirmNewPassword, setConfirmNewPassword] = useState<string>("");
+
     const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState<boolean>(false);
     const [isChangedRegisterModal, setIsChangedRegisterModal] = useState<boolean>(false);
+
+    const [isFormCompleted, setIsFormCompleted] = useState<boolean>(false);
+
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (name && lastName && rut && role && newPassword && confirmNewPassword && 
+            newPassword === confirmNewPassword && rutRegex.test(rut)) {
+            setIsFormCompleted(true);
+        } else {
+            setIsFormCompleted(false);
+        }
+    }, [name, lastName, rut, role, newPassword, confirmNewPassword]);
 
     const handleNavigate = () => {
         navigate('/users');
@@ -96,7 +111,12 @@ const AddUserPage = () => {
                     setOnChangeFilter: setConfirmNewPassword,
                 })}
                 <div className="flex items-center space-x-4">
-                    <Buttons.TurquoiseButton text="Editar" onClick={toggleConfimartionModal} />
+                    {
+                        isFormCompleted ? 
+                            <Buttons.TurquoiseButton text="Añadir" onClick={toggleConfimartionModal} />
+                            :
+                            <Buttons.GrayButton text="Añadir" onClick={null} />
+                    }
                     <Buttons.FuchsiaButton text="Cancelar" onClick={handleNavigate} />
                 </div>
             </div>
