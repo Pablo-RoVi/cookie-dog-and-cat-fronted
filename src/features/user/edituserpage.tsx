@@ -59,7 +59,6 @@ const EditUserPage = () => {
     };
 
     const editUser = () => {
-        console.log("Editando usuario:",id,name,lastName,role);
         Agent.Users.updateUser({
             id: id,
             name: name,
@@ -67,13 +66,14 @@ const EditUserPage = () => {
             role_name: role,
         })
         .then(() => {
-            console.log("Usuario actualizado");
+            toggleConfirmationUserModal();
+            toggleChangedUserModal();
+            setNickName(`${name.charAt(0).toUpperCase()}${lastName.charAt(0).toUpperCase()}${lastName.slice(1).toLowerCase()}`);
         })
         .catch((error) => {});
     };
 
     const editPassword = () => {
-        console.log("Editando contraseña:",id,newPassword);
         if (newPassword !== confirmNewPassword) {
             console.log("Las contraseñas no coinciden");
             return;
@@ -84,13 +84,10 @@ const EditUserPage = () => {
             confirmPassword: confirmNewPassword,
         })
         .then(() => {
-            console.log("Contraseña actualizada");
+            toggleConfirmationPasswordModal();
+            toggleChangedPasswordModal();
         })
         .catch((error) => {});
-    };
-
-    const refreshPage = () => {
-        window.location.reload();
     };
 
     return (
@@ -147,9 +144,9 @@ const EditUserPage = () => {
                 activateConfirm={true}/>
             )}
             {isChangedUserModal && (
-                <Modal title="Usuario editado con éxito"
+                <Modal title={changedText}
                 confirmation="Aceptar" 
-                confirmAction={() => {toggleChangedUserModal(); refreshPage();}}
+                confirmAction={() => {toggleChangedUserModal()}}
                 activateCancel={false}
                 activateConfirm={true}/>
             )}
@@ -157,7 +154,7 @@ const EditUserPage = () => {
             <div className="container mx-auto mt-20">
                 <img src={cookie} alt="cookie" className="h-auto w-auto opacity-10" />
             </div>
-            
+
             {/* Edit Password */}
             <div className="container mx-auto mt-6 mr-52">
                 {TableModule.title({title: "Editar contraseña"})}
@@ -188,14 +185,15 @@ const EditUserPage = () => {
                 activateCancel={true}
                 activateConfirm={true}/>
             )}
-            {isChangedUserModal && (
-                <Modal title="Contraseña editada con éxito"
+            {isChangedPasswordModal && (
+                <Modal title={changedText}
                 confirmation="Aceptar" 
-                confirmAction={() => {toggleChangedPasswordModal(); refreshPage();}}
+                confirmAction={() => {toggleChangedPasswordModal()}}
                 activateCancel={false}
                 activateConfirm={true}/>
             )}
         </div>
     );
 };
+
 export default EditUserPage;
