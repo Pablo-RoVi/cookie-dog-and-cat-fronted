@@ -115,6 +115,8 @@ const AddUserPage = () => {
                     valueFilter: confirmNewPassword,
                     setOnChangeFilter: setConfirmNewPassword,
                     isPassword: true,
+                    errorInput: !Functions.verifyPasswords(newPassword, confirmNewPassword),
+                    errorMessage: newPassword ? "Contraseñas no coinciden" : "",
                 })}
                 <div className="flex items-center space-x-4">
                     {
