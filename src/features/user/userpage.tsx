@@ -20,6 +20,8 @@ const headers = [
 ];
 
 const UserPage = () => {
+  const [nickNameLogged, setNickNameLogged] = useState<string>("");
+
   const [searchName, setSearchName] = useState<string>("");
   const [roleFilter, setRoleFilter] = useState<string>("");
   const [accountStatusFilter, setAccountStatusFilter] = useState<string>("");
@@ -41,13 +43,19 @@ const UserPage = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   useEffect(() => {
-    Agent.Users.list()
-      .then((response) => {
+    const initializeData = async () => {
+      const nickName = localStorage.getItem("nick_name");
+      setNickNameLogged(nickName);
+  
+      try {
+        const response = await Agent.Users.list();
         setUsers(response);
-      })
-      .catch((error) => {
-        console.log("error", error);
-      });
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+  
+    initializeData();
   }, []);
 
   useEffect(() => {
