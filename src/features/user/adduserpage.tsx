@@ -73,6 +73,7 @@ const AddUserPage = () => {
                     label: "Nombres",
                     valueFilter: name,
                     setOnChangeFilter: setName,
+                    placeholder: "Ejemplo: Gonzalo Hernán",
                     errorInput: !Functions.verifyName(name) && name !== "",
                     errorMessage: "Nombre inválido",
                 })}
@@ -80,6 +81,7 @@ const AddUserPage = () => {
                     label: "Apellidos",
                     valueFilter: lastName,
                     setOnChangeFilter: setLastName,
+                    placeholder: "Ejemplo: González Hernández",
                     errorInput: !Functions.verifyName(lastName) && lastName !== "",
                     errorMessage: "Apellido inválido",
                 })}
@@ -87,11 +89,12 @@ const AddUserPage = () => {
                     label: "RUT",
                     valueFilter: rut,
                     setOnChangeFilter: setRut,
+                    placeholder: "Ejemplo: 12345678-9",
                     errorInput: !Functions.verifyRut(rut) && rut !== "",
                     errorMessage: "RUT inválido",
                 })}
                 {TableModule.inputFilter({
-                    label: "Nombre de usuario",
+                    label: "Nombre de Usuario",
                     valueFilter: `${name.charAt(0).toUpperCase()}${lastName.split(" ")[0].charAt(0).toUpperCase()}${lastName.split(" ")[0].slice(1).toLowerCase()}`,
                     isDisabled: true,
                 })}
@@ -108,7 +111,7 @@ const AddUserPage = () => {
                     isPassword: true,
                 })}
                 {TableModule.inputFilter({
-                    label: "Confirmar contraseña",
+                    label: "Confirmar Contraseña",
                     valueFilter: confirmNewPassword,
                     setOnChangeFilter: setConfirmNewPassword,
                     isPassword: true,
