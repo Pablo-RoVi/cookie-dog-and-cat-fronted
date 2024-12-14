@@ -8,7 +8,7 @@ axios.interceptors.request.use((config) => {
   return config;
 });
 
-const responseBody = (response: AxiosResponse) => response.data;
+const responseBody = (response: AxiosResponse) => response;
 
 const requests = {
   get: (url: string, params?: URLSearchParams) =>

@@ -49,7 +49,7 @@ const UserPage = () => {
   
       try {
         const response = await Agent.Users.list();
-        setUsers(response);
+        setUsers(response.data);
       } catch (error) {
         console.error("Error fetching users:", error);
       }

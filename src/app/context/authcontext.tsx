@@ -28,10 +28,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = async (nick_name: string, password: string) => {
     try {
       const response = await Agent.Auth.login({ Nick_name: nick_name, Password: password });
-      localStorage.setItem("nick_name", response.nick_name);
-      localStorage.setItem("role", response.roleId);
+      localStorage.setItem("nick_name", response.data.nick_name);
+      localStorage.setItem("role", response.data.roleId);
       setAuthenticated(true);
-      setUserRole(response.roleId);
+      setUserRole(response.data.roleId);
       navigate("/users");
     } catch (err) {
       console.error("Login error:", err);

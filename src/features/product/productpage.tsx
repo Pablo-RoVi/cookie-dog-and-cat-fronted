@@ -32,7 +32,7 @@ const ProductPage = () => {
 
     useEffect(() => {
         Agent.Products.list().then((response) => {
-          setProducts(response);
+          setProducts(response.data);
         });
     }, []);
 
