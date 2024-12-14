@@ -13,9 +13,9 @@ const responseBody = (response: AxiosResponse) => response.data;
 const requests = {
   get: (url: string, params?: URLSearchParams) =>
     axios.get(url, { params }).then(responseBody),
-  post: (url: string, body: {}) =>axios.post(url, body).then(responseBody),
+  post: (url: string, body: {}) => axios.post(url, body).then(responseBody),
   put: (url: string, body: {}) => axios.put(url, body).then(responseBody),
-  delete: (url: string, body: {}) => axios.delete(url,body),
+  delete: (url: string, body: {}) => axios.delete(url, body),
   patch: (url: string, body: {}) => axios.patch(url, body).then(responseBody),
 };
 
@@ -31,8 +31,10 @@ const Users = {
   registerUser: (form: any) => requests.post("user/RegisterUser", form),
   updateUser: (form: any) => requests.put("user/UpdateUser", form),
   changeState: (id: string) => requests.put(`user/ChangeState/${id}`, id),
-  changePasswordEmployee: (form: any) => requests.post("user/ChangePasswordEmployee", form),
-  changePasswordAdmin: (form: any) => requests.post("user/ChangePasswordAdmin", form),
+  changePasswordEmployee: (form: any) =>
+    requests.post("user/ChangePasswordEmployee", form),
+  changePasswordAdmin: (form: any) =>
+    requests.post("user/ChangePasswordAdmin", form),
 };
 
 const Products = {
@@ -40,9 +42,10 @@ const Products = {
   available: () => requests.get("product/availableProducts"),
   //create: (form: any) => requests.post("product/", form),
   update: (form: any) => requests.put("product/editProduct/{id}", form),
-  deleteProduct: (unique_id:string ) => requests.delete(`product/deleteProduct/${unique_id}`,unique_id),
+  deleteProduct: (unique_id: string) =>
+    requests.delete(`product/deleteProduct/${unique_id}`, unique_id),
 };
 
-const agent = { Auth, requests, Users, Products};
+const agent = { Auth, requests, Users, Products };
 
 export default agent;
