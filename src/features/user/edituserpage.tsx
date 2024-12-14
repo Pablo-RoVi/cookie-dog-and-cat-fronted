@@ -14,12 +14,19 @@ const EditUserPage = () => {
     const [rut, setRut] = useState<string>("");
     const [nickName, setNickName] = useState<string>("");
     const [role, setRole] = useState<string>("");
+
     const [newPassword, setNewPassword] = useState<string>("");
     const [confirmNewPassword, setConfirmNewPassword] = useState<string>("");
+
     const [isConfirmationUserModalOpen, setIsConfirmationUserModalOpen] = useState<boolean>(false);
     const[isChangedUserModal, setIsChangedUserModal] = useState<boolean>(false);
     const [isConfirmationPasswordModalOpen, setIsConfirmationPasswordModalOpen] = useState<boolean>(false);
     const[isChangedPasswordModal, setIsChangedPasswordModal] = useState<boolean>(false);
+
+    const [originalData, setOriginalData] = useState<any>(null);
+    const [isUserModified, setIsUserModified] = useState<boolean>(false);
+    const [isPasswordModified, setIsPasswordModified] = useState<boolean>(false);
+
     const location = useLocation();
     const navigate = useNavigate();
     const user = location.state;
@@ -29,6 +36,15 @@ const EditUserPage = () => {
 
     useEffect(() => {
         if (user) {
+            const userData = {
+                id: user.id,
+                name: user.name,
+                lastName: user.last_name,
+                rut: user.rut,
+                nickName: user.nick_name,
+                role: user.role.role_name,
+            };
+            setOriginalData(userData);
             setId(user.id);
             setName(user.name);
             setLastName(user.last_name);
@@ -37,6 +53,23 @@ const EditUserPage = () => {
             setRole(user.role.role_name);
         }
     }, [user]);
+
+    useEffect(() => {
+        if (originalData) {
+            setIsUserModified(
+                name !== originalData.name ||
+                // eslint-disable-next-line no-mixed-operators
+                lastName !== originalData.lastName ||
+                // eslint-disable-next-line no-mixed-operators
+                role !== originalData.role &&
+                role !== ""
+            );
+        }
+    }, [name, lastName, role, originalData]);
+
+    useEffect(() => {
+        setIsPasswordModified(newPassword === confirmNewPassword && newPassword !== "" && confirmNewPassword !== "");
+    }, [newPassword, confirmNewPassword]);
 
     const handleNavigate = () => {
         navigate('/users');
@@ -129,7 +162,12 @@ const EditUserPage = () => {
                     options: Options.roleOptions,
                 })}
                 <div className="flex items-center space-x-4">
-                    <Buttons.TurquoiseButton text="Editar" onClick={toggleConfirmationUserModal} />
+                    {
+                        isUserModified ?
+                            <Buttons.TurquoiseButton text="Editar" onClick={toggleConfirmationUserModal}/>
+                            : 
+                            <Buttons.GrayButton text="Editar" onClick={null} />
+                    }
                     <Buttons.FuchsiaButton text="Cancelar" onClick={handleNavigate} />
                 </div>
             </div>
@@ -171,7 +209,12 @@ const EditUserPage = () => {
                     placeholder: "Confirmar Contraseña",
                 })}
                 <div className="flex items-center space-x-4">
-                    <Buttons.TurquoiseButton text="Editar" onClick={toggleConfirmationPasswordModal} />
+                    {
+                        isPasswordModified ? 
+                            <Buttons.TurquoiseButton text="Editar" onClick={toggleConfirmationPasswordModal}/>
+                            :
+                            <Buttons.GrayButton text="Editar" onClick={null} />
+                    }
                     <Buttons.FuchsiaButton text="Cancelar" onClick={handleNavigate} />
                 </div>
             </div>

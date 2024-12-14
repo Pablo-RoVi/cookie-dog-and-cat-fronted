@@ -80,13 +80,27 @@ const FuchsiaButton = ({ onClick, text }) => {
     );
 }
 
+const GrayButton = ({ onClick, text }) => {
+    return (
+        <div className="flex justify-end mt-4">
+            <button
+                className="text-white font-bold py-2 px-4 rounded"
+                style={{backgroundColor: colors.gray}}
+                onClick={onClick}
+            >
+                {text}
+            </button>
+        </div>
+    );};
+
 const Buttons = {
     EditButton,
     DeleteButton,
     DetailButton,
     SetStatusButton,
     TurquoiseButton,
-    FuchsiaButton
+    FuchsiaButton,
+    GrayButton,
 };
 
 export default Buttons;
