@@ -2,26 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Buttons from '../../app/components/buttons';
 import Options from '../../app/components/options';
-import colors from '../../app/static/colors';
 import cookie from '../../app/static/images/cookie.png';
 import TableModule from '../../app/components/tablemodule';
 import { User } from '../../app/models/user';
-
-const defaultUser: User = {
-    id: 0,
-    name: "",
-    last_name: "",
-    rut: "",
-    nick_name: "",
-    is_active: false,
-    role: {
-        id: 0,
-        role_name: "",
-    },
-};
+import Agent from "../../app/api/agent";
 
 const EditUserPage = () => {
-    const [roleFilter, setRoleFilter] = useState<string>("");
     const [id, setId] = useState<number>(0);
     const [name, setName] = useState<string>("");
     const [lastName, setLastName] = useState<string>("");
@@ -53,8 +39,38 @@ const EditUserPage = () => {
         navigate('/users');
     };
 
+    const handleEditUser = () => {
+        console.log("Editando usuario:",id,name,lastName,role);
+        Agent.Users.updateUser({
+            id: id,
+            name: name,
+            last_name: lastName,
+            role_name: role,
+        })
+        .then(() => {
+            console.log("Usuario actualizado");
+            handleNavigate();
+        })
+        .catch((error) => {});
+    };
+
+    const handleEditPassword = () => {
+        console.log("Editando contraseña:",id,newPassword);
+        Agent.Users.changePasswordEmployee({
+            nick_name: nickName,
+            newPassword: newPassword,
+            confirmPassword: confirmNewPassword,
+        })
+        .then(() => {
+            console.log("Contraseña actualizada");
+            handleNavigate();
+        })
+        .catch((error) => {});
+    };
+
     return (
         <div className="max-h-screen bg-white flex-auto flex h-1/2">
+            {/* Edit User */}
             <div className="container mx-auto mt-6 ml-52">
                 {TableModule.title({title: "Editar empleado"})}
                 {TableModule.inputFilter({
@@ -91,13 +107,14 @@ const EditUserPage = () => {
                     options: Options.roleOptions,
                 })}
                 <div className="flex items-center space-x-4">
-                    <Buttons.TurquoiseButton text="Editar" onClick={handleNavigate} />
+                    <Buttons.TurquoiseButton text="Editar" onClick={handleEditUser} />
                     <Buttons.FuchsiaButton text="Cancelar" onClick={handleNavigate} />
                 </div>
             </div>
             <div className="container mx-auto mt-20">
                 <img src={cookie} alt="cookie" className="h-auto w-auto opacity-10" />
             </div>
+            {/* Edit Password */}
             <div className="container mx-auto mt-6 mr-52">
                 {TableModule.title({title: "Editar contraseña"})}
                 {TableModule.inputFilter({
