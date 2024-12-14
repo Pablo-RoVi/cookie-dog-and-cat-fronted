@@ -68,7 +68,7 @@ const EditUserPage = () => {
         .then(() => {
             toggleConfirmationUserModal();
             toggleChangedUserModal();
-            setNickName(`${name.charAt(0).toUpperCase()}${lastName.charAt(0).toUpperCase()}${lastName.slice(1).toLowerCase()}`);
+            setNickName(`${name.charAt(0).toUpperCase()}${lastName.split(" ")[0].charAt(0).toUpperCase()}${lastName.split(" ")[0].slice(1).toLowerCase()}`);
         })
         .catch((error) => {});
     };

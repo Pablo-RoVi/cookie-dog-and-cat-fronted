@@ -1,38 +1,57 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User } from '../../app/models/user';
 import cookie from '../../app/static/images/cookie.png';
 import TableModule from '../../app/components/tablemodule';
 import Buttons from '../../app/components/buttons';
 import Options from '../../app/components/options';
-
-const defaultUser: User = {
-    id: 0,
-    name: "",
-    last_name: "",
-    rut: "",
-    nick_name: "",
-    is_active: false,
-    role: {
-        id: 0,
-        role_name: "",
-    },
-};
+import Modal from '../../app/components/modal';
+import Agent from '../../app/api/agent';
 
 const AddUserPage = () => {
-
-    const [id, setId] = useState<number>(0);
+    
     const [name, setName] = useState<string>("");
     const [lastName, setLastName] = useState<string>("");
     const [rut, setRut] = useState<string>("");
-    const [nickName, setNickName] = useState<string>("");
     const [role, setRole] = useState<string>("");
     const [newPassword, setNewPassword] = useState<string>("");
     const [confirmNewPassword, setConfirmNewPassword] = useState<string>("");
+    const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState<boolean>(false);
+    const [isChangedRegisterModal, setIsChangedRegisterModal] = useState<boolean>(false);
     const navigate = useNavigate();
 
     const handleNavigate = () => {
         navigate('/users');
+    };
+
+    const toggleConfimartionModal = () => {
+        setIsConfirmationModalOpen(!isConfirmationModalOpen);
+    };
+
+    const toggleChangedRegisterUser = () => {
+        setIsChangedRegisterModal(!isChangedRegisterModal);
+    };
+
+    const registerUser = () => {
+        Agent.Users.registerUser({
+            rut: rut,
+            name: name,
+            last_name: lastName,
+            password: newPassword,
+            confirmPassword: confirmNewPassword,
+            roleId: role,
+        }).then((response) => {
+            toggleConfimartionModal();
+            toggleChangedRegisterUser();
+        })
+        .catch((error) => {});
+    };
+
+    const translateRole = (role: string) => {
+        const roleTranslation = {
+          Admin: "Administrador",
+          Employee: "Empleado"
+        };
+        return roleTranslation[role] || role;
     };
 
     return (
@@ -56,7 +75,7 @@ const AddUserPage = () => {
                 })}
                 {TableModule.inputFilter({
                     label: "Nombre de usuario",
-                    valueFilter: nickName,
+                    valueFilter: `${name.charAt(0).toUpperCase()}${lastName.split(" ")[0].charAt(0).toUpperCase()}${lastName.split(" ")[0].slice(1).toLowerCase()}`,
                     isDisabled: true,
                 })}
                 {TableModule.selectFilter({
@@ -76,10 +95,18 @@ const AddUserPage = () => {
                     setOnChangeFilter: setConfirmNewPassword,
                 })}
                 <div className="flex items-center space-x-4">
-                    <Buttons.TurquoiseButton text="Editar" onClick={handleNavigate} />
+                    <Buttons.TurquoiseButton text="Editar" onClick={toggleConfimartionModal} />
                     <Buttons.FuchsiaButton text="Cancelar" onClick={handleNavigate} />
                 </div>
             </div>
+            {isConfirmationModalOpen && (
+                <Modal title={`¿Estás seguro de que deseas registrar a ${name} ${lastName} de RUT ${rut} y rol ${translateRole(role)}?`}
+                confirmAction={() => registerUser()} 
+                confirmation="Editar"
+                confirmCancel={toggleConfimartionModal}
+                activateCancel={true}
+                activateConfirm={true}/>
+            )}
             <div className="container mx-auto mr-52 ml-40">
                 <img src={cookie} alt="cookie" className="h-auto w-auto opacity-10" />
             </div>
