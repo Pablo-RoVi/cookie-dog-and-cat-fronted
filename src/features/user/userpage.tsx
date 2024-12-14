@@ -29,9 +29,12 @@ const UserPage = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   useEffect(() => {
-    Agent.Users.list().then((response) => {
+    Agent.Users.list()
+    .then((response) => {
       setUsers(response);
-    });
+    })
+    .catch((error) => {
+      console.log("error", error);});
   }, []);
 
   useEffect(() => {
@@ -80,10 +83,8 @@ const UserPage = () => {
   };
 
   const changeStateUser = (id: string) => { if (selectedUser) { 
-    console.log(id);
     Agent.Users.changeState(id)
       .then((response) => {
-        console.log("response", response);
         toggleConfirmationModal();
         toggleChangedStateModal();
       })

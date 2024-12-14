@@ -103,14 +103,11 @@ const EditUserPage = () => {
             toggleChangedUserModal();
             setNickName(`${name.charAt(0).toUpperCase()}${lastName.split(" ")[0].charAt(0).toUpperCase()}${lastName.split(" ")[0].slice(1).toLowerCase()}`);
         })
-        .catch((error) => {});
+        .catch((error) => {
+          console.log("error", error);});
     };
 
     const editPassword = () => {
-        if (newPassword !== confirmNewPassword) {
-            console.log("Las contraseñas no coinciden");
-            return;
-        }
         Agent.Users.changePasswordAdmin({
             nick_name: nickName,
             newPassword: newPassword,
@@ -120,7 +117,8 @@ const EditUserPage = () => {
             toggleConfirmationPasswordModal();
             toggleChangedPasswordModal();
         })
-        .catch((error) => {});
+        .catch((error) => {
+          console.log("error", error);});
     };
 
     return (

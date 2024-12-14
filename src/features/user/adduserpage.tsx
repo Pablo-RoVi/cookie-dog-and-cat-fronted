@@ -47,7 +47,6 @@ const AddUserPage = () => {
     };
 
     const registerUser = () => {
-        console.log("Registrando usuario", rut, name, lastName, role, newPassword, confirmNewPassword);
         Agent.Users.registerUser({
             rut: rut,
             name: name,
@@ -59,7 +58,8 @@ const AddUserPage = () => {
             toggleConfimartionModal();
             toggleChangedRegisterUser();
         })
-        .catch((error) => {});
+        .catch((error) => {
+          console.log("error", error);});
     };
 
     const translateRole = (role: string) => {
