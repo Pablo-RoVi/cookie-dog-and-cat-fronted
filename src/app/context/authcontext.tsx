@@ -5,6 +5,7 @@ import Agent from "../api/agent";
 interface AuthContextProps {
   authenticated: boolean;
   userRole: string | null;
+  userNickName: string | null;
   login: (nick_name: string, password: string) => Promise<void>;
   logout: () => void;
   checkAuthStatus: () => void;
@@ -19,6 +20,7 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [authenticated, setAuthenticated] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(null);
+  const [userNickName, setUserNickName] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,10 +30,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = async (nick_name: string, password: string) => {
     try {
       const response = await Agent.Auth.login({ Nick_name: nick_name, Password: password });
-      localStorage.setItem("nick_name", response.data.nick_name);
+      localStorage.setItem("nick_name", nick_name);
       localStorage.setItem("role", response.data.roleId);
       setAuthenticated(true);
       setUserRole(response.data.roleId);
+      setUserNickName(nick_name);
       navigate("/users");
     } catch (err) {
       console.error("Login error:", err);
@@ -46,6 +49,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       localStorage.removeItem("role");
       setAuthenticated(false);
       setUserRole(null);
+      setUserNickName(null);
       navigate("/");
     } catch (err) {
       console.error("Logout error:", err);
@@ -58,14 +62,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     if (token && role) {
       setAuthenticated(true);
       setUserRole(role);
+      setUserNickName(token);
     } else {
       setAuthenticated(false);
       setUserRole(null);
+      setUserNickName(null);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ authenticated, userRole, login, logout, checkAuthStatus }}>
+    <AuthContext.Provider value={{ authenticated, userNickName, userRole, login, logout, checkAuthStatus }}>
       {children}
     </AuthContext.Provider>
   );

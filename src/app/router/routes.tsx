@@ -27,8 +27,8 @@ const RoleBasedRoute = ({
   roles: number[];
   children: React.ReactNode;
 }) => {
-  const role = parseInt(localStorage.getItem("role") || "0", 10);
-  console.log(localStorage.getItem("role"));
+  const { userRole } = useAuth();
+  const role = parseInt(userRole || "0", 10);
   if (!roles.includes(role)) {
     return <Navigate to="/" replace />;
   }
@@ -44,7 +44,6 @@ const Routes = (props: Props) => {
   const { authenticated } = useAuth();
   const location = useLocation();
   const views = [
-    "/Login",
     "/users",
     "/edit-user",
     "/add-user",

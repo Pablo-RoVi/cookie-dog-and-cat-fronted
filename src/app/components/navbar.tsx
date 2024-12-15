@@ -4,6 +4,7 @@ import "../static/styles/navbar.css";
 import colors from "../static/colors";
 import cookie from "../static/images/cookie.png";
 import { useAuth } from "../../app/context/authcontext";
+
 const adminMenu = [
   {
     value: "/users",
@@ -39,29 +40,19 @@ const employeeSettings = [
     lable: "Cambiar Contraseña",
   },
   {
-    value: "/Login",
+    value: "/",
     label: "Cerrar Sesión",
   },
 ];
 
 const Navbar = () => {
-  const { logout } = useAuth();
-
+  const { logout, userRole, userNickName } = useAuth();
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
-  const [loggedName, setLoggedName] = useState<string>("");
-  const [isAdmin, setIsAdmin] = useState<boolean>(true);
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const name = localStorage.getItem("nick_name");
-    const role = localStorage.getItem("role");
-    if (name) {
-      setLoggedName(name);
-      setIsAdmin(role === "1");
-    }
-  }, []);
+  console.log(userRole);
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -71,8 +62,8 @@ const Navbar = () => {
     setSettingsOpen(!settingsOpen);
   };
 
-  const menu = isAdmin ? adminMenu : employeeMenu;
-  const settings = isAdmin ? adminSettings : employeeSettings;
+  const menu = userRole === "1" ? adminMenu : employeeMenu;
+  const settings = userRole === "1" ? adminSettings : employeeSettings;
 
   return (
     <nav className="flex">
@@ -153,7 +144,7 @@ const Navbar = () => {
                 textDecorationColor: colors.fuchsia,
               }}
             >
-              {loggedName}
+              {userNickName}
             </h1>
             {settings.map((item) => (
               <li
@@ -166,7 +157,6 @@ const Navbar = () => {
                 onClick={() => {
                   logout();
                   navigate(item.value);
-                  window.location.reload();
                 }}
               >
                 {item.label}

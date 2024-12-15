@@ -1,23 +1,16 @@
-import React, {useState, useEffect } from "react";
+import React, {useState } from "react";
 import Buttons from "./buttons";
 import TableModule from "./tablemodule";
 import Color from "../static/colors";
 import Agent from "../api/agent";
+import { useAuth } from "../../app/context/authcontext";
 
 const ConfirmAdminLogged = (props) => {
-  const [nickNameLogged, setNickNameLogged] = useState<string>("");
+  const { userNickName } = useAuth();
+
   const [verifyNickName, setVerifyNickName] = useState<string>("");
   const [verifyPassword, setVerifyPassword] = useState<string>("");
   const [isInvalid, setIsInvalid] = useState<boolean>(false);
-
-  useEffect(() => {
-    const initializeData = async () => {
-      const nickName = localStorage.getItem("nick_name");
-      setNickNameLogged(nickName);
-    };
-
-    initializeData();
-  }, []);
   
   const verifyAdminLogged = () => {
     Agent.Auth.login({
@@ -25,7 +18,7 @@ const ConfirmAdminLogged = (props) => {
       password: verifyPassword,
     })
       .then((response) => {
-        if (response.data && response.data.nick_name === nickNameLogged) {
+        if (response.data && response.data.nick_name === userNickName) {
           props.confirmAction();
           props.confirmCancel();
         } else {
