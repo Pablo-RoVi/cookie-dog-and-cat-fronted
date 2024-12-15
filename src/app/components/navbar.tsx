@@ -55,8 +55,6 @@ const Navbar = () => {
 
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] =
       useState<boolean>(false);
-    const [isChangedPasswordModal, setIsChangedPasswordModal] =
-      useState<boolean>(false);
 
   const navigate = useNavigate();
 
@@ -80,10 +78,6 @@ const Navbar = () => {
 
   const toggleConfirmationModal = () => {
     setIsConfirmationModalOpen(!isConfirmationModalOpen);
-  };
-
-  const toggleChangedStateModal = () => {
-    setIsChangedPasswordModal(!isChangedPasswordModal);
   };
 
   return (
