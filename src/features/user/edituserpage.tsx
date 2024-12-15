@@ -10,11 +10,6 @@ import ConfirmAdminLogged from "../../app/components/confirmadmin";
 import Agent from "../../app/api/agent";
 
 const EditUserPage = () => {
-  const [nickNameLogged, setNickNameLogged] = useState<string>("");
-  const [verifyNickName, setVerifyNickName] = useState<string>("");
-  const [verifyPassword, setVerifyPassword] = useState<string>("");
-  const [isInvalid, setIsInvalid] = useState<boolean>(false);
-
   const [id, setId] = useState<number>(0);
   const [name, setName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
@@ -49,15 +44,6 @@ const EditUserPage = () => {
   const changedText = isChangedUserModal
     ? "Usuario editado con éxito"
     : "Contraseña editada con éxito";
-
-  useEffect(() => {
-    const initializeData = async () => {
-      const nickName = localStorage.getItem("nick_name");
-      setNickNameLogged(nickName);
-    };
-
-    initializeData();
-  }, []);
 
   useEffect(() => {
     if (user) {
@@ -248,12 +234,14 @@ const EditUserPage = () => {
           valueFilter: newPassword,
           setOnChangeFilter: setNewPassword,
           isPassword: true,
+          placeholder: "Alfanumérica y contener al menos 8 caracteres",
         })}
         {TableModule.inputFilter({
           label: "Confirmar Contraseña",
           valueFilter: confirmNewPassword,
           setOnChangeFilter: setConfirmNewPassword,
           isPassword: true,
+          placeholder: "Alfanumérica y contener al menos 8 caracteres",
           errorInput: !Functions.verifyPasswords(
             newPassword,
             confirmNewPassword
@@ -299,13 +287,6 @@ const EditUserPage = () => {
       {/* Confirm Admin Logged */}
       {isConfirmationAdminLogged && (
         <ConfirmAdminLogged
-          nickNameLogged={nickNameLogged}
-          nickName={verifyNickName}
-          password={verifyPassword}
-          isInvalid={isInvalid}
-          setNickName={setVerifyNickName}
-          setPassword={setVerifyPassword}
-          setIsInvalid={setIsInvalid}
           confirmation="Confirmar"
           confirmAction={() => {
             isConfirmationUserModalOpen ? editUser() : editPassword();

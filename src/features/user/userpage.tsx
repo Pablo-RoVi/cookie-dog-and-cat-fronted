@@ -21,11 +21,6 @@ const headers = [
 ];
 
 const UserPage = () => {
-  const [nickNameLogged, setNickNameLogged] = useState<string>("");
-  const [verifyNickName, setVerifyNickName] = useState<string>("");
-  const [verifyPassword, setVerifyPassword] = useState<string>("");
-  const [isInvalid, setIsInvalid] = useState<boolean>(false);
-
   const [searchName, setSearchName] = useState<string>("");
   const [roleFilter, setRoleFilter] = useState<string>("");
   const [accountStatusFilter, setAccountStatusFilter] = useState<string>("");
@@ -50,9 +45,6 @@ const UserPage = () => {
 
   useEffect(() => {
     const initializeData = async () => {
-      const nickName = localStorage.getItem("nick_name");
-      setNickNameLogged(nickName);
-
       try {
         const response = await Agent.Users.list();
         setUsers(response.data);
@@ -190,13 +182,6 @@ const UserPage = () => {
 
         {isConfirmationAdminLogged && (
           <ConfirmAdminLogged
-            nickNameLogged={nickNameLogged}
-            nickName={verifyNickName}
-            password={verifyPassword}
-            isInvalid={isInvalid}
-            setNickName={setVerifyNickName}
-            setPassword={setVerifyPassword}
-            setIsInvalid={setIsInvalid}
             confirmation="Confirmar"
             confirmAction={() => {
               changeStateUser(selectedUser.id.toString());

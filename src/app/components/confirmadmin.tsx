@@ -1,30 +1,45 @@
-import React from "react";
+import React, {useState, useEffect } from "react";
 import Buttons from "./buttons";
 import TableModule from "./tablemodule";
 import Color from "../static/colors";
 import Agent from "../api/agent";
 
-const confirmAdminLogged = (props) => {
+const ConfirmAdminLogged = (props) => {
+  const [nickNameLogged, setNickNameLogged] = useState<string>("");
+  const [verifyNickName, setVerifyNickName] = useState<string>("");
+  const [verifyPassword, setVerifyPassword] = useState<string>("");
+  const [isInvalid, setIsInvalid] = useState<boolean>(false);
+
+  useEffect(() => {
+    const initializeData = async () => {
+      const nickName = localStorage.getItem("nick_name");
+      setNickNameLogged(nickName);
+    };
+
+    initializeData();
+  }, []);
+  
   const verifyAdminLogged = () => {
     Agent.Auth.login({
-      nick_name: props.nickName,
-      password: props.password,
+      nick_name: verifyNickName,
+      password: verifyPassword,
     })
       .then((response) => {
-        if (response.data && response.data.nick_name === props.nickNameLogged) {
+        if (response.data && response.data.nick_name === nickNameLogged) {
           props.confirmAction();
           props.confirmCancel();
         } else {
-          props.setIsInvalid(true);
+          setIsInvalid(true);
+          console.error("Credenciales inválidas");
         }
       })
       .catch((error) => {
-        props.setIsInvalid(true);
+        setIsInvalid(true);
         console.error("Error al verificar administrador:", error);
       })
       .finally(() => {
-        props.setNickName("");
-        props.setPassword("");
+        setVerifyNickName("");
+        setVerifyPassword("");
       });
   };
 
@@ -43,23 +58,22 @@ const confirmAdminLogged = (props) => {
         <div className="relative h-52">
           <div className="container mx-auto mt-6">
             {TableModule.inputFilter({
-              valueFilter: props.nickName,
-              setOnChangeFilter: props.setNickName,
+              valueFilter: verifyNickName,
+              setOnChangeFilter: setVerifyNickName,
               placeholder: "Nombre de Usuario",
             })}
             {TableModule.inputFilter({
-              valueFilter: props.password,
-              setOnChangeFilter: props.setPassword,
+              valueFilter: verifyPassword,
+              setOnChangeFilter: setVerifyPassword,
               placeholder: "Contraseña",
               isPassword: true,
-              errorInput:
-                props.isInvalid && !isEmpty(props.nickName, props.password),
+              errorInput:isInvalid,
               errorMessage: "Credenciales inválidas",
             })}
           </div>
           <div className="absolute inset-x-0 bottom-0 flex justify-center gap-4">
             {props.activateConfirm &&
-            !isEmpty(props.nickName, props.password) ? (
+            !isEmpty(verifyNickName, verifyPassword) ? (
               Buttons.TurquoiseButton({
                 text: props.confirmation,
                 onClick: verifyAdminLogged,
@@ -72,8 +86,8 @@ const confirmAdminLogged = (props) => {
                 text: "Cancelar",
                 onClick: () => {
                   props.confirmCancel();
-                  props.setNickName("");
-                  props.setPassword("");
+                  setVerifyNickName("");
+                  setVerifyPassword("");
                 },
               })}
           </div>
@@ -83,4 +97,4 @@ const confirmAdminLogged = (props) => {
   );
 };
 
-export default confirmAdminLogged;
+export default ConfirmAdminLogged;

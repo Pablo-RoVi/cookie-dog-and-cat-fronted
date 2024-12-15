@@ -10,11 +10,6 @@ import ConfirmAdminLogged from "../../app/components/confirmadmin";
 import Agent from "../../app/api/agent";
 
 const AddUserPage = () => {
-  const [nickNameLogged, setNickNameLogged] = useState<string>("");
-  const [verifyNickName, setVerifyNickName] = useState<string>("");
-  const [verifyPassword, setVerifyPassword] = useState<string>("");
-  const [isInvalid, setIsInvalid] = useState<boolean>(false);
-
   const [name, setName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
   const [rut, setRut] = useState<string>("");
@@ -32,15 +27,6 @@ const AddUserPage = () => {
   const [isFormCompleted, setIsFormCompleted] = useState<boolean>(false);
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const initializeData = async () => {
-      const nickName = localStorage.getItem("nick_name");
-      setNickNameLogged(nickName);
-    };
-
-    initializeData();
-  }, []);
 
   useEffect(() => {
     setIsFormCompleted(false);
@@ -138,12 +124,14 @@ const AddUserPage = () => {
           valueFilter: newPassword,
           setOnChangeFilter: setNewPassword,
           isPassword: true,
+          placeholder: "Alfanumérica y contener al menos 8 caracteres",
         })}
         {TableModule.inputFilter({
           label: "Confirmar Contraseña",
           valueFilter: confirmNewPassword,
           setOnChangeFilter: setConfirmNewPassword,
           isPassword: true,
+          placeholder: "Alfanumérica y contener al menos 8 caracteres",
           errorInput: !Functions.verifyPasswords(
             newPassword,
             confirmNewPassword
@@ -177,13 +165,6 @@ const AddUserPage = () => {
 
       {isConfirmationAdminLogged && (
         <ConfirmAdminLogged
-          nickNameLogged={nickNameLogged}
-          nickName={verifyNickName}
-          password={verifyPassword}
-          isInvalid={isInvalid}
-          setNickName={setVerifyNickName}
-          setPassword={setVerifyPassword}
-          setIsInvalid={setIsInvalid}
           confirmation="Confirmar"
           confirmAction={() => {
             registerUser();
