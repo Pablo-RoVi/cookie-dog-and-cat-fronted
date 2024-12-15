@@ -49,7 +49,7 @@ const EditUserPage = () => {
   const changedText = isChangedUserModal
     ? "Usuario editado con éxito"
     : "Contraseña editada con éxito";
-    
+
   useEffect(() => {
     const initializeData = async () => {
       const nickName = localStorage.getItem("nick_name");
@@ -274,7 +274,7 @@ const EditUserPage = () => {
       </div>
 
       {/* Confirmation Password Modal */}
-      {isConfirmationPasswordModalOpen && !isConfirmationAdminLogged &&  (
+      {isConfirmationPasswordModalOpen && !isConfirmationAdminLogged && (
         <Modal
           title={confirmText}
           confirmAction={setIsConfirmationAdminLogged}
