@@ -20,10 +20,11 @@ const ProductPage = () => {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [selectedProduct, setSelectedProduct] = useState<Product>();
     const productsPerPage = 8;
+
     const navigate = useNavigate();
 
     const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState<boolean>(false);
-    const [isDeletedModal, setIsDeletedModal] = useState<boolean>(false);
+    const [isDeletedModalOpen, setIsDeletedModalOpen] = useState<boolean>(false);
 
     const indexOfLastProduct = currentPage * productsPerPage;
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
@@ -45,7 +46,7 @@ const ProductPage = () => {
                     (response : AxiosResponse) => { 
                     if(response.status === 200) 
                     {                    
-                        toggleDeletedModal();
+                        toggleDeleteModal();
                     } else if(response.status === 400)
                     {
                         console.error(response.statusText);
@@ -54,9 +55,6 @@ const ProductPage = () => {
                     { 
                         console.error("Error al eliminar el producto:", error); 
                 }); 
-            }
-            else{
-                console.log("No tengo id");
             }
         } 
     };
@@ -75,8 +73,12 @@ const ProductPage = () => {
         setIsConfirmationModalOpen(!isConfirmationModalOpen);
     };
 
-    const toggleDeletedModal = () => {
-        setIsDeletedModal(!isDeletedModal);
+    const toggleDeleteModal = () => {
+        setIsDeletedModalOpen(!isDeletedModalOpen);
+    };
+
+    const handleNavigate = (path: string, state?: any) => {
+        navigate(path, state ? { state } : undefined);
     };
 
     return (
@@ -105,7 +107,7 @@ const ProductPage = () => {
                 product.specieName,
                 <>
                     <div className="flex justify-between items-center ml-4 mr-4">
-                    {buttons.EditButton({onClick: () => { setSelectedProduct(product); navigate(`/products/edit-product/${product.unique_id}`) }})}
+                    {buttons.EditButton({onClick: () => { setSelectedProduct(product); handleNavigate(`/products/edit-product/${product.unique_id}`,product); }})}
                     {buttons.DeleteButton({onClick: () => { setSelectedProduct(product); toggleConfirmationModal();}})}
                     </div>
                 </>
@@ -120,10 +122,10 @@ const ProductPage = () => {
                     activateConfirm={true}/>
                 )}
 
-                {isDeletedModal && (
+                {isDeletedModalOpen && (
                     <Modal title={'Producto eliminado con éxito'} 
                     confirmation="Aceptar" 
-                    confirmAction={() => {toggleDeletedModal(); Functions.refreshPage();}}
+                    confirmAction={() => {toggleDeleteModal(); Functions.refreshPage();}}
                     activateCancel={false}
                     activateConfirm={true}/>
                 )}
@@ -137,7 +139,7 @@ const ProductPage = () => {
                 })}
 
                 {/* Botón Agregar */}
-                {buttons.TurquoiseButton({ text: "Añadir", onClick: () => navigate("/products/add-product") })}
+                {buttons.TurquoiseButton({ text: "Añadir", onClick: () => handleNavigate("/products/add-product") })}
             </div>
         </div>
     );
