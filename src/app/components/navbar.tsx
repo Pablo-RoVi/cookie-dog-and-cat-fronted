@@ -4,6 +4,7 @@ import "../static/styles/navbar.css";
 import colors from "../static/colors";
 import cookie from "../static/images/cookie.png";
 import { useAuth } from "../../app/context/authcontext";
+import ChangeEmployeePassword from "./changeemployeepassword";
 
 const adminMenu = [
   {
@@ -36,8 +37,8 @@ const employeeMenu = [
 const adminSettings = [{ value: "/", label: "Cerrar Sesión" }];
 const employeeSettings = [
   {
-    value: "/profile",
-    lable: "Cambiar Contraseña",
+    value: "/",
+    label: "Cambiar Contraseña",
   },
   {
     value: "/",
@@ -51,6 +52,11 @@ const Navbar = () => {
   const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
   const [menu, setMenu] = useState([]);
   const [settings, setSettings] = useState([]);
+
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] =
+      useState<boolean>(false);
+    const [isChangedPasswordModal, setIsChangedPasswordModal] =
+      useState<boolean>(false);
 
   const navigate = useNavigate();
 
@@ -70,6 +76,14 @@ const Navbar = () => {
 
   const toggleSettings = () => {
     setSettingsOpen(!settingsOpen);
+  };
+
+  const toggleConfirmationModal = () => {
+    setIsConfirmationModalOpen(!isConfirmationModalOpen);
+  };
+
+  const toggleChangedStateModal = () => {
+    setIsChangedPasswordModal(!isChangedPasswordModal);
   };
 
   return (
@@ -100,7 +114,7 @@ const Navbar = () => {
         {menuOpen && (
           <ul
             className="absolute top-full shadow-md rounded p-4"
-            style={{ background: colors.turquoiseLight }}
+            style={{ background: colors.turquoiseLight, textAlign: "center" }}
           >
             {menu.map((item) => (
               <li
@@ -109,6 +123,7 @@ const Navbar = () => {
                 style={{
                   color: colors.turquoise,
                   textDecorationColor: colors.turquoise,
+                  textAlign: "center",
                 }}
                 onClick={() => navigate(item.value)}
               >
@@ -142,30 +157,33 @@ const Navbar = () => {
         {settingsOpen && (
           <ul
             className="absolute top-full shadow-md rounded p-4"
-            style={{ background: colors.fuchsiaLight }}
+            style={{
+              background: colors.fuchsiaLight,
+              textAlign: "center",
+            }}
           >
             <h1
               className="mb-2"
               style={{
                 color: colors.fuchsia,
                 textDecorationColor: colors.fuchsiaLight,
+                textAlign: "center",
               }}
             >
-              {userNickName}
+              {userNickName.toUpperCase()}
             </h1>
             {settings.map((item) => (
-              console.log(item),
               <li
                 key={item.label}
                 className="cursor-pointer mb-2"
                 style={{
                   color: colors.fuchsia,
                   textDecorationColor: colors.fuchsia,
+                  textAlign: "center",
                 }}
-                onClick={() => {
-                  logout();
-                  navigate(item.value);
-                }}
+                onClick={() =>
+                  item.label === "Cerrar Sesión" ? [logout(), navigate(item.value)] : toggleConfirmationModal()
+                }
               >
                 {item.label}
               </li>
@@ -173,6 +191,12 @@ const Navbar = () => {
           </ul>
         )}
       </div>
+      {isConfirmationModalOpen && (
+        <ChangeEmployeePassword
+          confirmCancel={toggleConfirmationModal}
+          confirmAction={logout}
+        />
+      )}
     </nav>
   );
 };

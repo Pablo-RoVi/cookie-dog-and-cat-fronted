@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Buttons from "./buttons";
 import TableModule from "./tablemodule";
 import Functions from "../../app/components/functions";
@@ -6,12 +7,9 @@ import Color from "../static/colors";
 import Agent from "../api/agent";
 import { useAuth } from "../../app/context/authcontext";
 
-const ChangePassword = (props) => {
+const ChangeEmployeePassword = (props) => {
   const { userNickName } = useAuth();
-
-  const [verifyNickName, setVerifyNickName] = useState<string>("");
-  const [verifyPassword, setVerifyPassword] = useState<string>("");
-  const [isInvalid, setIsInvalid] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const [currentPassword, setCurrentPassword] = useState<string>("");
   const [newPassword, setNewPassword] = useState<string>("");
@@ -19,26 +17,19 @@ const ChangePassword = (props) => {
   const [isPasswordModified, setIsPasswordModified] = useState<boolean>(false);
 
   const verifyEmployeeLogged = () => {
-    Agent.Auth.login({
-      nick_name: verifyNickName,
-      password: verifyPassword,
+    Agent.Users.changePasswordEmployee({
+      nick_name: userNickName,
+      currentPassword: currentPassword,
+      newPassword: newPassword,
+      confirmPassword: confirmNewPassword,
     })
-      .then((response) => {
-        if (response.data && response.data.nick_name === userNickName) {
-          props.confirmAction();
-          props.confirmCancel();
-        } else {
-          setIsInvalid(true);
-          console.error("Credenciales inválidas");
-        }
+      .then(() => {
+        props.confirmAction();
+        props.confirmCancel();
+        navigate("/");
       })
       .catch((error) => {
-        setIsInvalid(true);
         console.error("Error al verificar administrador:", error);
-      })
-      .finally(() => {
-        setVerifyNickName("");
-        setVerifyPassword("");
       });
   };
 
@@ -54,69 +45,64 @@ const ChangePassword = (props) => {
     confirmNewPassword: string
   ) => {
     return (
-      currentPassword === "" || newPassword === "" || confirmNewPassword === ""
+      currentPassword === "" && newPassword === "" && confirmNewPassword === ""
     );
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="relative bg-white w-1/6 p-4 rounded-lg">
-        <div className="text-center">
-          <h2 className="text-xl font-bold" style={{ color: Color.turquoise }}>
-            Cambiar Contraseña
-          </h2>
+      <div className="relative bg-white w-1/3 rounded-lg shadow-lg">
+        <h2
+          className="text-center text-4xl font-bold mb-4 mt-4"
+          style={{ color: Color.turquoise }}
+        >
+          Cambiar Contraseña
+        </h2>
+        <div className="w-3/4 mx-auto">
+          {TableModule.inputFilter({
+            label: "Contraseña Actual",
+            valueFilter: currentPassword,
+            setOnChangeFilter: setCurrentPassword,
+            placeholder: "Contraseña Actual",
+            isPassword: true,
+          })}
+          {TableModule.inputFilter({
+            label: "Nueva Contraseña",
+            valueFilter: newPassword,
+            setOnChangeFilter: setNewPassword,
+            placeholder: "Alfanumérica y contener al menos 8 caracteres",
+            isPassword: true,
+          })}
+          {TableModule.inputFilter({
+            label: "Confirmar Nueva Contraseña",
+            valueFilter: confirmNewPassword,
+            setOnChangeFilter: setConfirmNewPassword,
+            placeholder: "Debe coincidir con tu nueva contraseña",
+            isPassword: true,
+            errorInput: !Functions.verifyPasswords(newPassword, confirmNewPassword),
+            errorMessage: newPassword ? "Credenciales inválidas" : "",
+          })}
         </div>
-        <div className="relative h-52">
-          <div className="container mx-auto mt-6">
-            {TableModule.inputFilter({
-              valueFilter: currentPassword,
-              setOnChangeFilter: setCurrentPassword,
-              placeholder: "Contraseña Actual",
-              isPassword: true,
-              errorInput: isInvalid,
-              errorMessage: "Credenciales inválidas",
-            })}
-            {TableModule.inputFilter({
-              valueFilter: verifyPassword,
-              setOnChangeFilter: setVerifyPassword,
-              placeholder: "Nueva Contraseña",
-              isPassword: true,
-              errorInput: isInvalid,
-              errorMessage: "Credenciales inválidas",
-            })}
-            {TableModule.inputFilter({
-              valueFilter: confirmNewPassword,
-              setOnChangeFilter: setConfirmNewPassword,
-              placeholder: "Confirmar Nueva Contraseña",
-              isPassword: true,
-              errorInput: isInvalid,
-              errorMessage: "Credenciales inválidas",
-            })}
-          </div>
-          <div className="absolute inset-x-0 bottom-0 flex justify-center gap-4">
-            {props.activateConfirm &&
-            !isEmpty(currentPassword, verifyNickName, verifyPassword) ? (
-              Buttons.TurquoiseButton({
-                text: props.confirmation,
-                onClick: verifyEmployeeLogged,
-              })
-            ) : (
-              <Buttons.GrayButton text="Confirmar" onClick={null} />
-            )}
-            {props.activateCancel &&
-              Buttons.FuchsiaButton({
-                text: "Cancelar",
-                onClick: () => {
-                  props.confirmCancel();
-                  setVerifyNickName("");
-                  setVerifyPassword("");
-                },
-              })}
-          </div>
+        <div className="flex justify-center gap-4 mb-4">
+          {isPasswordModified &&
+          !isEmpty(currentPassword, newPassword, confirmNewPassword) ? (
+            Buttons.TurquoiseButton({
+              text: "Confirmar",
+              onClick: verifyEmployeeLogged,
+            })
+          ) : (
+            <Buttons.GrayButton text="Confirmar" onClick={null} />
+          )}
+          {Buttons.FuchsiaButton({
+            text: "Cancelar",
+            onClick: () => {
+              props.confirmCancel();
+            },
+          })}
         </div>
       </div>
     </div>
   );
 };
 
-export default ChangePassword;
+export default ChangeEmployeePassword;
