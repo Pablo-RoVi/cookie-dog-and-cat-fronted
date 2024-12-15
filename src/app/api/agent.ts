@@ -12,8 +12,8 @@ const responseBody = (response: AxiosResponse) => response.data;
 
 const requests = {
   get: (url: string, params?: URLSearchParams) => axios.get(url, { params }).then(responseBody),
-  post: (url: string, body: {}) => axios.post(url, body).then(responseBody),
-  put: (url: string, body: {}) => axios.put(url, body).then(responseBody),
+  post: (url: string, body: {}) => axios.post(url, body),
+  put: (url: string, body: {}) => axios.put(url, body),
   delete: (url: string, body: {}) => axios.delete(url,body),
   patch: (url: string, body: {}) => axios.patch(url, body).then(responseBody),
 };
@@ -36,10 +36,10 @@ const Users = {
 
 const Products = {
   list: () => requests.get("product/allProducts"),
-  available: () => requests.get("product/availableProducts"),
-  //create: (form: any) => requests.post("product/", form),
-  update: (form: any) => requests.put("product/editProduct/{id}", form),
-  deleteProduct: (unique_id:string ) => requests.delete(`product/deleteProduct/${unique_id}`,unique_id),
+  availableProducts: () => requests.get("product/availableProducts"),
+  addProduct: (form: any) => requests.post("product/addProduct", form),
+  updateProduct: (form: any, id: string) => requests.put(`product/editProduct/${id}`, form),
+  deleteProduct: (unique_id:string ) => requests.delete(`product/deleteProduct/${unique_id}`, unique_id),
 };
 
 const agent = { Auth, requests, Users, Products};
