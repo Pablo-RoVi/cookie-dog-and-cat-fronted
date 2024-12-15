@@ -5,6 +5,9 @@ import TableModule from "../../app/components/tablemodule";
 import Buttons from "../../app/components/buttons";
 import Options from '../../app/components/options';
 import cookie from '../../app/static/images/cookie.png';
+import Agent from '../../app/api/agent';
+import Modal from '../../app/components/modal';
+import { AxiosResponse } from "axios";
 
 
 const defaultProduct: Product = {
@@ -20,35 +23,61 @@ const defaultProduct: Product = {
 //TODO: Agregar modal de confirmación, luego redireccionar a la lista de productos
 
 const AddProductPage = () => {
-    const [unique_id, setId] = useState<number>(0);
+    const [unique_id, setId] = useState<string>("");
     const [productName, setName] = useState<string>("");
     const [price, setPrice] = useState<string>("");
     const [stock, setStock] = useState<string>("");
     const [categoryName, setCategoryName] = useState<string>("");
     const [brandName, setBrandName] = useState<string>("");
     const [specieName, setEspecieName] = useState<string>("");
-    const location = useLocation();
-    const navigate = useNavigate();
-    const product = location.state;
 
+    const [isFormCompleted, setIsFormCompleted] = useState<boolean>(false);
+
+    const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState<boolean>(false);
+    const [isAddedProductModalOpen, setIsAddedProductModalOpen] = useState<boolean>(false);
+
+    const toggleConfirmationModal = () => {
+        setIsConfirmationModalOpen(!isConfirmationModalOpen);
+    };
+
+    const toggleAddedProductModal = () => {
+        setIsAddedProductModalOpen(!isAddedProductModalOpen);
+    };
     
-    useEffect(() => {
-        if (product) {
-            setId(product.unique_id);
-            setName(product.product_name);
-            setPrice(product.price);
-            setStock(product.stock);
-            setCategoryName(product.categoryName);
-            setBrandName(product.brandName);
-            setEspecieName(product.specieName);
-        }
-    }, [product]);
+    const navigate = useNavigate();
 
-    /*
-    if (!user) {
-        return <div>Usuario no encontrado</div>;
-    }
-    */
+    useEffect(() => {
+        if (productName && price && stock && categoryName && brandName && specieName) {
+            setIsFormCompleted(true);
+        } else {
+            setIsFormCompleted(false);
+        }
+    }, [productName, price, stock, categoryName, brandName, specieName]);
+    
+
+    const addProduct = () => {
+        Agent.Products.addProduct({
+            unique_id: unique_id,
+            product_name: productName,
+            price: price,
+            stock: stock,
+            categoryName: categoryName,
+            brandName: brandName,
+            specieName: specieName
+        }).then((response : AxiosResponse) => {
+            console.log("response", response);
+            if(response.status === 200){
+                toggleConfirmationModal();
+                toggleAddedProductModal();
+                console.log("Producto agregado con éxito");
+            }else if(response.status === 400){
+                console.log("Error al agregar el producto");
+                console.error(response.statusText);
+            }
+        })
+        .catch((error) => {
+          console.log("error", error);});
+    };
 
     const handleNavigate = () => {
         navigate('/products');
@@ -62,6 +91,8 @@ const AddProductPage = () => {
                 {TableModule.inputFilter({
                     label: "Código",
                     valueFilter: unique_id,
+                    setOnChangeFilter: setId,
+                    placeholder: "Código del producto",
                 })}
                 {TableModule.inputFilter({
                     label: "Nombre",
@@ -100,10 +131,34 @@ const AddProductPage = () => {
                     options: Options.specieOptions,
                 })}
                 <div className="flex items-center space-x-4">
-                    <Buttons.TurquoiseButton text="Añadir" onClick={handleNavigate} />
+                    {
+                        isFormCompleted ? 
+                            <Buttons.TurquoiseButton text="Añadir" onClick={toggleConfirmationModal} />
+                            :
+                            <Buttons.GrayButton text="Añadir" onClick={null} />
+                    }
                     <Buttons.FuchsiaButton text="Cancelar" onClick={handleNavigate} />
                 </div>
             </div>
+            {isConfirmationModalOpen && (
+                <Modal
+                    title={`¿Estás seguro de que deseas agregar el producto '${productName}' de '${brandName}'?`}
+                    confirmAction={() => addProduct()} 
+                    confirmation="Añadir"
+                    confirmCancel={toggleConfirmationModal}
+                    activateCancel={true}
+                    activateConfirm={true}
+                />
+            )}
+            {isAddedProductModalOpen && (
+                <Modal
+                    title={`Producto '${productName}' agregado con éxito`}
+                    confirmation="Aceptar"
+                    confirmAction={() => {toggleAddedProductModal(); handleNavigate();}}
+                    activateCancel={false}
+                    activateConfirm={true}
+                />
+            )}
             <div className="container mx-auto mt-20">
                 <img src={cookie} alt="cookie" className="h-auto w-auto opacity-10" />
             </div>
