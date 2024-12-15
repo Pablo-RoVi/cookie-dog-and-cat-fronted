@@ -54,7 +54,7 @@ const Navbar = () => {
   const [settings, setSettings] = useState([]);
 
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] =
-      useState<boolean>(false);
+    useState<boolean>(false);
 
   const navigate = useNavigate();
 
@@ -127,7 +127,23 @@ const Navbar = () => {
           </ul>
         )}
       </div>
-      <div className="flex-1 bg-white flex items-center justify-center"></div>
+      <div
+        className="w-[8%]"
+        style={{
+          background: colors.turquoise,
+          clipPath: "polygon(0 0, 100% 0, 50% 100%, 0 100%)",
+        }}
+      />
+      <div
+        className="bg-white w-[2%]"
+      />
+      <div
+        className="w-[8%]"
+        style={{
+          background: colors.fuchsia,
+          clipPath: "polygon(50% 0, 100% 0, 100% 100%, 0 100%)",
+        }}
+      />
       <div
         className="flex-1 flex items-center justify-end relative"
         style={{ background: colors.fuchsia }}
@@ -176,7 +192,9 @@ const Navbar = () => {
                   textAlign: "center",
                 }}
                 onClick={() =>
-                  item.label === "Cerrar Sesión" ? [logout(), navigate(item.value)] : toggleConfirmationModal()
+                  item.label === "Cerrar Sesión"
+                    ? [logout(), navigate(item.value)]
+                    : toggleConfirmationModal()
                 }
               >
                 {item.label}
