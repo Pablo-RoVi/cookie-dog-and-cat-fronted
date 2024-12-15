@@ -20,8 +20,11 @@ const verifyPasswords = (
   password: string,
   confirmPassword: string
 ): boolean => {
+  const passwordRegex = /^[a-zA-Z0-9]{8,}$/;
   return (
-    password === confirmPassword && password !== "" && confirmPassword !== ""
+    password === confirmPassword && 
+    password !== "" && confirmPassword !== "" &&
+    passwordRegex.test(password)
   );
 };
 

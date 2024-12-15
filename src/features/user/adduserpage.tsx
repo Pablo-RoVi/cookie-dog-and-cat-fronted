@@ -43,6 +43,7 @@ const AddUserPage = () => {
   }, []);
 
   useEffect(() => {
+    setIsFormCompleted(false);
     if (
       role &&
       Functions.verifyName(name + " " + lastName) &&
@@ -147,7 +148,7 @@ const AddUserPage = () => {
             newPassword,
             confirmNewPassword
           ),
-          errorMessage: newPassword ? "Contraseñas no coinciden" : "",
+          errorMessage: newPassword ? "Contraseñas no coinciden o inválidas" : "",
         })}
         <div className="flex items-center space-x-4">
           {isFormCompleted ? (

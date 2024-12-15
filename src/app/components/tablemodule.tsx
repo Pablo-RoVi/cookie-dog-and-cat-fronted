@@ -21,7 +21,11 @@ const inputFilter = (props) => {
         type={props.isPassword ? "password" : "text"}
         value={props.valueFilter}
         onChange={(e) => props.setOnChangeFilter(e.target.value)}
-        placeholder={props.placeholder}
+        placeholder={
+          props.isPassword
+            ? "Alfanumérica y contener al menos 8 caracteres"
+            : props.placeholder
+        }
         className="p-2 border border-gray-300 rounded-lg shadow-sm"
         disabled={props.isDisabled}
       />

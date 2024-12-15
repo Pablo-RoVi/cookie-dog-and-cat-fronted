@@ -258,7 +258,7 @@ const EditUserPage = () => {
             newPassword,
             confirmNewPassword
           ),
-          errorMessage: newPassword ? "Contraseñas no coinciden" : "",
+          errorMessage: newPassword ? "Contraseñas no coinciden o inválidas" : "",
         })}
         <div className="flex items-center space-x-4">
           {isPasswordModified ? (
