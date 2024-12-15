@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import "../../app/static/styles/index.css";
 import Agent from "../../app/api/agent";
 import Buttons from "../../app/components/buttons";
@@ -9,9 +9,18 @@ import { User } from "../../app/models/user";
 import options from "../../app/components/options";
 import Modal from "../../app/components/modal";
 
-const headers = ["Código", "RUT", "Nombre", "Apellido", "Rol", "Nombre de Usuario", "Acciones"];
+const headers = [
+  "Código",
+  "RUT",
+  "Nombre",
+  "Apellido",
+  "Rol",
+  "Nombre de Usuario",
+  "Acciones",
+];
 
 const UserPage = () => {
+  const [nickNameLogged, setNickNameLogged] = useState<string>("");
 
   const [searchName, setSearchName] = useState<string>("");
   const [roleFilter, setRoleFilter] = useState<string>("");
@@ -19,9 +28,11 @@ const UserPage = () => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
-  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState<boolean>(false);
-  const [isChangedStateModal, setIsChangedStateModal] = useState<boolean>(false);
-  
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] =
+    useState<boolean>(false);
+  const [isChangedStateModal, setIsChangedStateModal] =
+    useState<boolean>(false);
+
   const [currentPage, setCurrentPage] = useState<number>(1);
   const navigate = useNavigate();
   const usersPerPage = 8;
@@ -32,13 +43,19 @@ const UserPage = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   useEffect(() => {
-    Agent.Users.list()
-    .then((response) => {
-      console.log("response", response);
-      setUsers(response);
-    })
-    .catch((error) => {
-      console.log("error", error);});
+    const initializeData = async () => {
+      const nickName = localStorage.getItem("nick_name");
+      setNickNameLogged(nickName);
+  
+      try {
+        const response = await Agent.Users.list();
+        setUsers(response.data);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+  
+    initializeData();
   }, []);
 
   useEffect(() => {
@@ -55,12 +72,11 @@ const UserPage = () => {
     return (
       user.name.toLowerCase().includes(searchName.toLowerCase()) &&
       (roleFilter === "" || user.role.role_name === roleFilter) &&
-      (accountStatusFilter === "" || 
+      (accountStatusFilter === "" ||
         // eslint-disable-next-line no-mixed-operators
-        (accountStatusFilter === "Activo" && user.is_active ||
+        (accountStatusFilter === "Activo" && user.is_active) ||
         // eslint-disable-next-line no-mixed-operators
-        accountStatusFilter === "Inactivo" && !user.is_active
-        ))
+        (accountStatusFilter === "Inactivo" && !user.is_active))
     );
   });
 
@@ -71,30 +87,30 @@ const UserPage = () => {
   };
 
   const toggleConfirmationModal = () => {
-      setIsConfirmationModalOpen(!isConfirmationModalOpen);
+    setIsConfirmationModalOpen(!isConfirmationModalOpen);
   };
 
   const toggleChangedStateModal = () => {
-      setIsChangedStateModal(!isChangedStateModal);
+    setIsChangedStateModal(!isChangedStateModal);
   };
 
-  const changeStateUser = (id: string) => { if (selectedUser) { 
-    Agent.Users.changeState(id)
-      .then((response) => {
-        console.log("response", response);
-        toggleConfirmationModal();
-        toggleChangedStateModal();
-      })
-      .catch((error) => {
-        console.log("error", error);
-      });
-    } 
+  const changeStateUser = (id: string) => {
+    if (selectedUser) {
+      Agent.Users.changeState(id)
+        .then(() => {
+          toggleConfirmationModal();
+          toggleChangedStateModal();
+        })
+        .catch((error) => {
+          console.log("error", error);
+        });
+    }
   };
 
   return (
     <div className="max-h-screen bg-white">
       <div className="container mx-auto px-4 py-6">
-        {TableModule.title({title: "Empleados"})}
+        {TableModule.title({ title: "Empleados" })}
         {/* Filtros */}
         <div className="flex space-x-4">
           <div className="container max-w-[20%]">
@@ -109,7 +125,7 @@ const UserPage = () => {
               label: "Rol",
               valueFilter: roleFilter,
               setOnChangeFilter: setRoleFilter,
-              options: options.roleOptions
+              options: options.roleOptions,
             })}
           </div>
           <div className="container max-w-[20%]">
@@ -117,66 +133,90 @@ const UserPage = () => {
               label: "Estado de la Cuenta",
               valueFilter: accountStatusFilter,
               setOnChangeFilter: setAccountStatusFilter,
-              options: options.accountStatusOptions
+              options: options.accountStatusOptions,
             })}
           </div>
         </div>
 
         {/* Tabla */}
-        {TableModule.table({headers: headers, data: currentUsers.map((user: User) => [
-          user.id,
-          user.rut,
-          user.name,
-          user.last_name,
-          Functions.translateRole(user.role.role_name),
-          user.nick_name,
-          <>
+        {TableModule.table({
+          headers: headers,
+          data: currentUsers.map((user: User) => [
+            user.id,
+            user.rut,
+            user.name,
+            user.last_name,
+            Functions.translateRole(user.role.role_name),
+            user.nick_name,
+            <>
               <div className="flex justify-between items-center ml-4 mr-4">
-                  <Buttons.EditButton onClick={() => handleNavigate("/edit-user", user)} />
-                  {
-                    Buttons.SetStatusButton({
-                      isActive: user.is_active,
-                      onClick: () => {
-                        setSelectedUser(user);
-                        toggleConfirmationModal();
-                      }
-                    })
-                  }
+                <Buttons.EditButton
+                  onClick={() => handleNavigate("/edit-user", user)}
+                />
+                {Buttons.SetStatusButton({
+                  isActive: user.is_active,
+                  onClick: () => {
+                    setSelectedUser(user);
+                    toggleConfirmationModal();
+                  },
+                })}
               </div>
-          </>
-        ])})}
+            </>,
+          ]),
+        })}
 
-        {isConfirmationModalOpen && (
-          <Modal title={deleteText(selectedUser)} 
-          confirmAction={() => changeStateUser(selectedUser.id.toString())} 
-          confirmation={selectedUser.is_active ? "Eliminar" : "Restaurar"} 
-          confirmCancel={toggleConfirmationModal}
-          activateCancel={true}
-          activateConfirm={true}/>
+        {isConfirmationModalOpen && selectedUser.role.role_name !== "Admin" && (
+          <Modal
+            title={deleteText(selectedUser)}
+            confirmAction={() => changeStateUser(selectedUser.id.toString())}
+            confirmation={selectedUser.is_active ? "Eliminar" : "Restaurar"}
+            confirmCancel={toggleConfirmationModal}
+            activateCancel={true}
+            activateConfirm={true}
+          />
+        )}
+
+        {isConfirmationModalOpen && selectedUser.role.role_name === "Admin" && (
+          <Modal
+            title={`No puedes eliminar a ${selectedUser.name} ${selectedUser.last_name} porque es administrador`}
+            confirmation="Aceptar"
+            confirmAction={toggleConfirmationModal}
+            activateCancel={false}
+            activateConfirm={true}
+          />
         )}
 
         {isChangedStateModal && (
-          <Modal title={`Usuario ${selectedUser.is_active ? "eliminado" : "restaurado"} con éxito`} 
-          confirmation="Aceptar" 
-          confirmAction={() => {toggleChangedStateModal(); Functions.refreshPage();}}
-          activateCancel={false}
-          activateConfirm={true}/>
+          <Modal
+            title={`Usuario ${
+              selectedUser.is_active ? "eliminado" : "restaurado"
+            } con éxito`}
+            confirmation="Aceptar"
+            confirmAction={() => {
+              toggleChangedStateModal();
+              Functions.refreshPage();
+            }}
+            activateCancel={false}
+            activateConfirm={true}
+          />
         )}
 
         {/* Paginación */}
         {TableModule.pagination({
-          length: filteredUsers.length, 
-          perPage: usersPerPage, 
-          currentPage: currentPage, 
-          paginate: paginate
+          length: filteredUsers.length,
+          perPage: usersPerPage,
+          currentPage: currentPage,
+          paginate: paginate,
         })}
-        
+
         {/* Botón Agregar */}
-        <Buttons.TurquoiseButton text="Añadir" onClick={() => handleNavigate("/add-user")} />
+        <Buttons.TurquoiseButton
+          text="Añadir"
+          onClick={() => handleNavigate("/add-user")}
+        />
       </div>
     </div>
   );
-
 };
 
 export default UserPage;
