@@ -119,7 +119,7 @@ const Navbar = () => {
                   textDecorationColor: colors.turquoise,
                   textAlign: "center",
                 }}
-                onClick={() => navigate(item.value)}
+                onClick={() => [navigate(item.value), toggleMenu()]}
               >
                 {item.label}
               </li>
@@ -193,8 +193,8 @@ const Navbar = () => {
                 }}
                 onClick={() =>
                   item.label === "Cerrar Sesión"
-                    ? [logout(), navigate(item.value)]
-                    : toggleConfirmationModal()
+                    ? [logout(), navigate(item.value), toggleSettings()]
+                    : [toggleConfirmationModal(), toggleSettings()]
                 }
               >
                 {item.label}
