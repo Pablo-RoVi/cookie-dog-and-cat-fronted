@@ -8,6 +8,7 @@ import Functions from "../../app/components/functions";
 import { User } from "../../app/models/user";
 import options from "../../app/components/options";
 import Modal from "../../app/components/modal";
+import ConfirmAdminLogged from "../../app/components/confirmadmin";
 
 const headers = [
   "Código",
@@ -21,6 +22,9 @@ const headers = [
 
 const UserPage = () => {
   const [nickNameLogged, setNickNameLogged] = useState<string>("");
+  const [nickName, setNickName] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [isInvalid, setIsInvalid] = useState<boolean>(false);
 
   const [searchName, setSearchName] = useState<string>("");
   const [roleFilter, setRoleFilter] = useState<string>("");
@@ -31,6 +35,8 @@ const UserPage = () => {
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] =
     useState<boolean>(false);
   const [isChangedStateModal, setIsChangedStateModal] =
+    useState<boolean>(false);
+  const [isConfirmationAdminLogged, setIsConfirmationAdminLogged] =
     useState<boolean>(false);
 
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -46,7 +52,7 @@ const UserPage = () => {
     const initializeData = async () => {
       const nickName = localStorage.getItem("nick_name");
       setNickNameLogged(nickName);
-  
+
       try {
         const response = await Agent.Users.list();
         setUsers(response.data);
@@ -54,7 +60,7 @@ const UserPage = () => {
         console.error("Error fetching users:", error);
       }
     };
-  
+
     initializeData();
   }, []);
 
@@ -92,6 +98,10 @@ const UserPage = () => {
 
   const toggleChangedStateModal = () => {
     setIsChangedStateModal(!isChangedStateModal);
+  };
+
+  const toggleConfirmAdminLogged = () => {
+    setIsConfirmationAdminLogged(!isConfirmationAdminLogged);
   };
 
   const changeStateUser = (id: string) => {
@@ -165,28 +175,54 @@ const UserPage = () => {
           ]),
         })}
 
-        {isConfirmationModalOpen && selectedUser.role.role_name !== "Admin" && (
-          <Modal
-            title={deleteText(selectedUser)}
-            confirmAction={() => changeStateUser(selectedUser.id.toString())}
-            confirmation={selectedUser.is_active ? "Eliminar" : "Restaurar"}
-            confirmCancel={toggleConfirmationModal}
+        {isConfirmationModalOpen &&
+          !isConfirmationAdminLogged &&
+          selectedUser.role.role_name !== "Admin" && (
+            <Modal
+              title={deleteText(selectedUser)}
+              confirmAction={setIsConfirmationAdminLogged}
+              confirmation={selectedUser.is_active ? "Eliminar" : "Restaurar"}
+              confirmCancel={toggleConfirmationModal}
+              activateCancel={true}
+              activateConfirm={true}
+            />
+          )}
+
+        {isConfirmationAdminLogged && (
+          <ConfirmAdminLogged
+            nickNameLogged={nickNameLogged}
+            nickName={nickName}
+            password={password}
+            isInvalid={isInvalid}
+            setNickName={setNickName}
+            setPassword={setPassword}
+            setIsInvalid={setIsInvalid}
+            confirmation="Confirmar"
+            confirmAction={() => {
+              changeStateUser(selectedUser.id.toString());
+            }}
+            confirmCancel={() => {
+              toggleConfirmAdminLogged();
+              toggleConfirmationModal();
+            }}
             activateCancel={true}
             activateConfirm={true}
           />
         )}
 
-        {isConfirmationModalOpen && selectedUser.role.role_name === "Admin" && (
-          <Modal
-            title={`No puedes eliminar a ${selectedUser.name} ${selectedUser.last_name} porque es administrador`}
-            confirmation="Aceptar"
-            confirmAction={toggleConfirmationModal}
-            activateCancel={false}
-            activateConfirm={true}
-          />
-        )}
+        {isConfirmationModalOpen &&
+          !isConfirmationAdminLogged &&
+          selectedUser.role.role_name === "Admin" && (
+            <Modal
+              title={`No puedes eliminar a ${selectedUser.name} ${selectedUser.last_name} porque es administrador`}
+              confirmation="Aceptar"
+              confirmAction={toggleConfirmationModal}
+              activateCancel={false}
+              activateConfirm={true}
+            />
+          )}
 
-        {isChangedStateModal && (
+        {isChangedStateModal && !isConfirmationAdminLogged && (
           <Modal
             title={`Usuario ${
               selectedUser.is_active ? "eliminado" : "restaurado"
