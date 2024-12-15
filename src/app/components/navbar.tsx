@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../static/styles/navbar.css";
 import colors from "../static/colors";
@@ -32,7 +32,7 @@ const employeeMenu = [
     label: "Ventas",
   },
 ];
-const adminSettings = [{ value: "/login", label: "Cerrar Sesión" }];
+const adminSettings = [{ value: "/", label: "Cerrar Sesión" }];
 const employeeSettings = [
   {
     value: "/profile",
@@ -53,6 +53,15 @@ const Navbar = () => {
   const [isAdmin, setIsAdmin] = useState<boolean>(true);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const name = localStorage.getItem("nick_name");
+    const role = localStorage.getItem("role");
+    if (name) {
+      setLoggedName(name);
+      setIsAdmin(role === "1");
+    }
+  }, []);
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -137,15 +146,15 @@ const Navbar = () => {
             className="absolute top-full shadow-md rounded p-4"
             style={{ background: colors.fuchsiaLight }}
           >
-            <li
-              className="cursor-pointer"
+            <h1
+              className="mb-2"
               style={{
                 color: colors.fuchsia,
                 textDecorationColor: colors.fuchsia,
               }}
             >
               {loggedName}
-            </li>
+            </h1>
             {settings.map((item) => (
               <li
                 key={item.label}
@@ -157,6 +166,7 @@ const Navbar = () => {
                 onClick={() => {
                   logout();
                   navigate(item.value);
+                  window.location.reload();
                 }}
               >
                 {item.label}
