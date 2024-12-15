@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../../app/static/styles/index.css";
 import Agent from "../../app/api/agent";
-import colors from "../../app/static/colors";
 import buttons from "../../app/components/buttons";
 import TableModule from "../../app/components/tablemodule";
 import Functions from "../../app/components/functions";
@@ -82,11 +81,11 @@ const ProductPage = () => {
     };
 
     return (
-        <div className="max-h-screen bg-white flex-auto flex h-1/2">
+        <div className="max-h-screen bg-white">
             <div className="container mx-auto px-4 py-6">
-                <h1 className="text-2xl font-bold mb-4" style={{color: colors.turquoise}}>Productos</h1>
+                {TableModule.title({ title: "Productos" })}
                 {/* Filtros */}
-                <div className="flex space-x-4 mb-6">
+                <div className="flex space-x-4">
                     <div className="container max-w-[20%]">
                         {TableModule.inputFilter({
                         label: "Nombre",
