@@ -39,6 +39,10 @@ const categoryOptions = [
   {
     value: "Higiene",
     label: "Higiene"
+  },
+  {
+    value: "Juguetes",
+    label: "Juguetes"
   }
 ];
 
