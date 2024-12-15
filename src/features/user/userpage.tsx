@@ -22,8 +22,8 @@ const headers = [
 
 const UserPage = () => {
   const [nickNameLogged, setNickNameLogged] = useState<string>("");
-  const [nickName, setNickName] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [verifyNickName, setVerifyNickName] = useState<string>("");
+  const [verifyPassword, setVerifyPassword] = useState<string>("");
   const [isInvalid, setIsInvalid] = useState<boolean>(false);
 
   const [searchName, setSearchName] = useState<string>("");
@@ -191,11 +191,11 @@ const UserPage = () => {
         {isConfirmationAdminLogged && (
           <ConfirmAdminLogged
             nickNameLogged={nickNameLogged}
-            nickName={nickName}
-            password={password}
+            nickName={verifyNickName}
+            password={verifyPassword}
             isInvalid={isInvalid}
-            setNickName={setNickName}
-            setPassword={setPassword}
+            setNickName={setVerifyNickName}
+            setPassword={setVerifyPassword}
             setIsInvalid={setIsInvalid}
             confirmation="Confirmar"
             confirmAction={() => {

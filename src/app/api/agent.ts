@@ -31,10 +31,8 @@ const Users = {
   registerUser: (form: any) => requests.post("user/RegisterUser", form),
   updateUser: (form: any) => requests.put("user/UpdateUser", form),
   changeState: (id: string) => requests.put(`user/ChangeState/${id}`, id),
-  changePasswordEmployee: (form: any) =>
-    requests.post("user/ChangePasswordEmployee", form),
-  changePasswordAdmin: (form: any) =>
-    requests.post("user/ChangePasswordAdmin", form),
+  changePasswordEmployee: (form: any) => requests.put("user/ChangePasswordEmployee", form),
+  changePasswordAdmin: (form: any) => requests.put("user/ChangePasswordAdmin", form),
 };
 
 const Products = {

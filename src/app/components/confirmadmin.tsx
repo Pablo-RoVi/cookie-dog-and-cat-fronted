@@ -21,6 +21,10 @@ const confirmAdminLogged = (props) => {
       .catch((error) => {
         props.setIsInvalid(true);
         console.error("Error al verificar administrador:", error);
+      })
+      .finally(() => {
+        props.setNickName("");
+        props.setPassword("");
       });
   };
 

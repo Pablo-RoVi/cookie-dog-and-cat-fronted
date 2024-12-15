@@ -6,9 +6,15 @@ import cookie from "../../app/static/images/cookie.png";
 import TableModule from "../../app/components/tablemodule";
 import Functions from "../../app/components/functions";
 import Modal from "../../app/components/modal";
+import ConfirmAdminLogged from "../../app/components/confirmadmin";
 import Agent from "../../app/api/agent";
 
 const EditUserPage = () => {
+  const [nickNameLogged, setNickNameLogged] = useState<string>("");
+  const [verifyNickName, setVerifyNickName] = useState<string>("");
+  const [verifyPassword, setVerifyPassword] = useState<string>("");
+  const [isInvalid, setIsInvalid] = useState<boolean>(false);
+
   const [id, setId] = useState<number>(0);
   const [name, setName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
@@ -26,6 +32,8 @@ const EditUserPage = () => {
     useState<boolean>(false);
   const [isChangedPasswordModal, setIsChangedPasswordModal] =
     useState<boolean>(false);
+  const [isConfirmationAdminLogged, setIsConfirmationAdminLogged] =
+    useState<boolean>(false);
 
   const [originalData, setOriginalData] = useState<any>(null);
   const [isUserModified, setIsUserModified] = useState<boolean>(false);
@@ -41,6 +49,15 @@ const EditUserPage = () => {
   const changedText = isChangedUserModal
     ? "Usuario editado con éxito"
     : "Contraseña editada con éxito";
+    
+  useEffect(() => {
+    const initializeData = async () => {
+      const nickName = localStorage.getItem("nick_name");
+      setNickNameLogged(nickName);
+    };
+
+    initializeData();
+  }, []);
 
   useEffect(() => {
     if (user) {
@@ -98,6 +115,10 @@ const EditUserPage = () => {
 
   const toggleChangedPasswordModal = () => {
     setIsChangedPasswordModal(!isChangedPasswordModal);
+  };
+
+  const toggleConfirmAdminLogged = () => {
+    setIsConfirmationAdminLogged(!isConfirmationAdminLogged);
   };
 
   const editUser = () => {
@@ -193,10 +214,10 @@ const EditUserPage = () => {
       </div>
 
       {/* Confirmation User Modal */}
-      {isConfirmationUserModalOpen && (
+      {isConfirmationUserModalOpen && !isConfirmationAdminLogged && (
         <Modal
           title={confirmText}
-          confirmAction={() => editUser()}
+          confirmAction={setIsConfirmationAdminLogged}
           confirmation="Editar"
           confirmCancel={toggleConfirmationUserModal}
           activateCancel={true}
@@ -253,10 +274,10 @@ const EditUserPage = () => {
       </div>
 
       {/* Confirmation Password Modal */}
-      {isConfirmationPasswordModalOpen && (
+      {isConfirmationPasswordModalOpen && !isConfirmationAdminLogged &&  (
         <Modal
           title={confirmText}
-          confirmAction={() => editPassword()}
+          confirmAction={setIsConfirmationAdminLogged}
           confirmation="Editar"
           confirmCancel={toggleConfirmationPasswordModal}
           activateCancel={true}
@@ -271,6 +292,31 @@ const EditUserPage = () => {
             toggleChangedPasswordModal();
           }}
           activateCancel={false}
+          activateConfirm={true}
+        />
+      )}
+
+      {/* Confirm Admin Logged */}
+      {isConfirmationAdminLogged && (
+        <ConfirmAdminLogged
+          nickNameLogged={nickNameLogged}
+          nickName={verifyNickName}
+          password={verifyPassword}
+          isInvalid={isInvalid}
+          setNickName={setVerifyNickName}
+          setPassword={setVerifyPassword}
+          setIsInvalid={setIsInvalid}
+          confirmation="Confirmar"
+          confirmAction={() => {
+            isConfirmationUserModalOpen ? editUser() : editPassword();
+          }}
+          confirmCancel={() => {
+            toggleConfirmAdminLogged();
+            isConfirmationUserModalOpen
+              ? toggleConfirmationUserModal()
+              : toggleConfirmationPasswordModal();
+          }}
+          activateCancel={true}
           activateConfirm={true}
         />
       )}
