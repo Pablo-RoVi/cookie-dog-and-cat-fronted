@@ -6,9 +6,15 @@ import Functions from "../../app/components/functions";
 import Buttons from "../../app/components/buttons";
 import Options from "../../app/components/options";
 import Modal from "../../app/components/modal";
+import ConfirmAdminLogged from "../../app/components/confirmadmin";
 import Agent from "../../app/api/agent";
 
 const AddUserPage = () => {
+  const [nickNameLogged, setNickNameLogged] = useState<string>("");
+  const [nickName, setNickName] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [isInvalid, setIsInvalid] = useState<boolean>(false);
+
   const [name, setName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
   const [rut, setRut] = useState<string>("");
@@ -20,10 +26,21 @@ const AddUserPage = () => {
     useState<boolean>(false);
   const [isChangedRegisterModal, setIsChangedRegisterModal] =
     useState<boolean>(false);
+  const [isConfirmationAdminLogged, setIsConfirmationAdminLogged] =
+    useState<boolean>(false);
 
   const [isFormCompleted, setIsFormCompleted] = useState<boolean>(false);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const initializeData = async () => {
+      const nickName = localStorage.getItem("nick_name");
+      setNickNameLogged(nickName);
+    };
+
+    initializeData();
+  }, []);
 
   useEffect(() => {
     if (
@@ -42,12 +59,16 @@ const AddUserPage = () => {
     navigate("/users");
   };
 
-  const toggleConfimartionModal = () => {
+  const toggleConfirmationModal = () => {
     setIsConfirmationModalOpen(!isConfirmationModalOpen);
   };
 
   const toggleChangedRegisterUser = () => {
     setIsChangedRegisterModal(!isChangedRegisterModal);
+  };
+
+  const toggleConfirmAdminLogged = () => {
+    setIsConfirmationAdminLogged(!isConfirmationAdminLogged);
   };
 
   const registerUser = () => {
@@ -60,7 +81,7 @@ const AddUserPage = () => {
       roleName: role,
     })
       .then(() => {
-        toggleConfimartionModal();
+        toggleConfirmationModal();
         toggleChangedRegisterUser();
         handleNavigate();
       })
@@ -132,7 +153,7 @@ const AddUserPage = () => {
           {isFormCompleted ? (
             <Buttons.TurquoiseButton
               text="Añadir"
-              onClick={toggleConfimartionModal}
+              onClick={toggleConfirmationModal}
             />
           ) : (
             <Buttons.GrayButton text="Añadir" onClick={null} />
@@ -145,13 +166,36 @@ const AddUserPage = () => {
           title={`¿Estás seguro de que deseas registrar a ${name} ${lastName} de RUT ${rut} y rol ${Functions.translateRole(
             role
           )}?`}
-          confirmAction={() => registerUser()}
+          confirmAction={setIsConfirmationAdminLogged}
           confirmation="Editar"
-          confirmCancel={toggleConfimartionModal}
+          confirmCancel={toggleConfirmationModal}
           activateCancel={true}
           activateConfirm={true}
         />
       )}
+
+      {isConfirmationAdminLogged && (
+        <ConfirmAdminLogged
+          nickNameLogged={nickNameLogged}
+          nickName={nickName}
+          password={password}
+          isInvalid={isInvalid}
+          setNickName={setNickName}
+          setPassword={setPassword}
+          setIsInvalid={setIsInvalid}
+          confirmation="Confirmar"
+          confirmAction={() => {
+            registerUser();
+          }}
+          confirmCancel={() => {
+            toggleConfirmAdminLogged();
+            toggleConfirmationModal();
+          }}
+          activateCancel={true}
+          activateConfirm={true}
+        />
+      )}
+      
       <div className="container mx-auto mr-52 ml-40">
         <img src={cookie} alt="cookie" className="h-auto w-auto opacity-10" />
       </div>

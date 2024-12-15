@@ -15,7 +15,7 @@ const confirmAdminLogged = (props) => {
           props.confirmAction();
           props.confirmCancel();
         } else {
-          alert("Usuario o contraseña incorrectos");
+          props.setIsInvalid(true);
         }
       })
       .catch((error) => {
