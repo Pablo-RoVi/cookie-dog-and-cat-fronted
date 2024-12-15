@@ -46,13 +46,23 @@ const employeeSettings = [
 ];
 
 const Navbar = () => {
-  const { logout, userRole, userNickName } = useAuth();
+  const { logout, userRoleId, userNickName } = useAuth();
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
+  const [menu, setMenu] = useState([]);
+  const [settings, setSettings] = useState([]);
 
   const navigate = useNavigate();
 
-  console.log(userRole);
+  useEffect(() => {
+    if (userRoleId === 1) {
+      setMenu(adminMenu);
+      setSettings(adminSettings);
+    } else {
+      setMenu(employeeMenu);
+      setSettings(employeeSettings);
+    }
+  }, [userRoleId, menu, settings]);
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -61,9 +71,6 @@ const Navbar = () => {
   const toggleSettings = () => {
     setSettingsOpen(!settingsOpen);
   };
-
-  const menu = userRole === "1" ? adminMenu : employeeMenu;
-  const settings = userRole === "1" ? adminSettings : employeeSettings;
 
   return (
     <nav className="flex">
@@ -141,12 +148,13 @@ const Navbar = () => {
               className="mb-2"
               style={{
                 color: colors.fuchsia,
-                textDecorationColor: colors.fuchsia,
+                textDecorationColor: colors.fuchsiaLight,
               }}
             >
               {userNickName}
             </h1>
             {settings.map((item) => (
+              console.log(item),
               <li
                 key={item.label}
                 className="cursor-pointer mb-2"

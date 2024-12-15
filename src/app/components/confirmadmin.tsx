@@ -1,4 +1,4 @@
-import React, {useState } from "react";
+import React, { useState } from "react";
 import Buttons from "./buttons";
 import TableModule from "./tablemodule";
 import Color from "../static/colors";
