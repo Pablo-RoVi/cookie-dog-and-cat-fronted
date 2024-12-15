@@ -68,6 +68,8 @@ const ProductPage = () => {
         );
     });
 
+    const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+
     const toggleConfirmationModal = () => {
         setIsConfirmationModalOpen(!isConfirmationModalOpen);
     };
@@ -96,7 +98,7 @@ const ProductPage = () => {
                 </div>
 
                 {/* Tabla */}
-                {TableModule.table({headers: headers, data: products.map((product: Product) => [
+                {TableModule.table({headers: headers, data: currentProducts.map((product: Product) => [
                 product.unique_id,
                 product.product_name,
                 product.price,
