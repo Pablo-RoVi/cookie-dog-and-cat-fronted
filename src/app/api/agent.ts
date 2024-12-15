@@ -21,7 +21,6 @@ const requests = {
 
 const Auth = {
   login: (form: any) => requests.post("Auth/login", form),
-  logout: (form: any) => requests.post("Auth/logout", form),
 };
 
 const Users = {

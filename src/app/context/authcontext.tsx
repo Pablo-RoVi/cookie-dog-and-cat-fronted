@@ -44,7 +44,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logout = async () => {
     try {
-      await Agent.Auth.logout({Nick_name: userNickName});
       localStorage.removeItem("nick_name");
       localStorage.removeItem("roleId");
       setAuthenticated(false);
