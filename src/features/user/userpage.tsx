@@ -1,32 +1,15 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 import "../../app/static/styles/index.css";
 import Agent from "../../app/api/agent";
 import colors from "../../app/static/colors";
-import buttons from "../../app/components/buttons";
+import Buttons from "../../app/components/buttons";
+import Options from "../../app/components/options";
 import TableModule from "../../app/components/tablemodule";
 import { User } from "../../app/models/user";
+import options from "../../app/components/options";
 
 const headers = ["Código", "RUT", "Nombre", "Apellido", "Rol", "Nombre de Usuario", "Acciones"];
-const roleOptions = [
-  {
-    value: "Admin",
-    label: "Administrador"
-  },
-  {
-    value: "Employee",
-    label: "Empleado"
-  }
-];
-const accountStatusOptions = [
-  {
-    value: "Activo",
-    label: "Activo"
-  },
-  {
-    value: "Inactivo",
-    label: "Inactivo"
-  }
-];
 
 const UserPage = () => {
 
@@ -34,7 +17,10 @@ const UserPage = () => {
   const [roleFilter, setRoleFilter] = useState<string>("");
   const [accountStatusFilter, setAccountStatusFilter] = useState<string>("");
   const [users, setUsers] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const navigate = useNavigate();
   const usersPerPage = 8;
 
   const indexOfLastUser = currentPage * usersPerPage;
@@ -71,32 +57,39 @@ const UserPage = () => {
     return roleTranslation[role] || role;
   }
 
-  return (
-    <div className="min-h-screen bg-white">
-      <div className="container mx-auto px-4 py-6">
-        <h1 className="text-2xl font-bold mb-4" style={{color: colors.turquoise}}>Empleados</h1>
+  const handleNavigate = (path: string, state?: any) => {
+    navigate(path, state ? { state } : undefined);
+  };
 
+  return (
+    <div className="max-h-screen bg-white">
+      <div className="container mx-auto px-4 py-6">
+        {TableModule.title({title: "Empleados"})}
         {/* Filtros */}
-        <div className="flex space-x-4 mb-6">
-          <input
-            type="text"
-            placeholder="Nombre"
-            value={searchName}
-            onChange={(e) => setSearchName(e.target.value)}
-            className="p-2 border border-gray-300 rounded-lg shadow-sm w-1/3"
-          />
-          {TableModule.selectFilter({
-            valueFilter: roleFilter,
-            setOnChangeFilter: setRoleFilter,
-            placeholder: "Rol",
-            options: roleOptions
-          })}
-          {TableModule.selectFilter({
-            valueFilter: accountStatusFilter,
-            setOnChangeFilter: setAccountStatusFilter,
-            placeholder: "Estado de la Cuenta",
-            options: accountStatusOptions
-          })}
+        <div className="flex space-x-4">
+          <div className="container max-w-[20%]">
+            {TableModule.inputFilter({
+              label: "Nombre",
+              valueFilter: searchName,
+              setOnChangeFilter: setSearchName,
+            })}
+          </div>
+          <div className="container max-w-[20%]">
+            {TableModule.selectFilter({
+              label: "Rol",
+              valueFilter: roleFilter,
+              setOnChangeFilter: setRoleFilter,
+              options: options.roleOptions
+            })}
+          </div>
+          <div className="container max-w-[20%]">
+            {TableModule.selectFilter({
+              label: "Estado de la Cuenta",
+              valueFilter: accountStatusFilter,
+              setOnChangeFilter: setAccountStatusFilter,
+              options: options.accountStatusOptions
+            })}
+          </div>
         </div>
 
         {/* Tabla */}
@@ -108,10 +101,10 @@ const UserPage = () => {
           translateRole(user.role.role_name),
           user.nick_name,
           <>
-            <div className="flex justify-between items-center ml-4 mr-4">
-              {buttons.editButton({user})}
-              {buttons.setStatusButton({id: user.id, is_active: user.is_active})}
-            </div>
+              <div className="flex justify-between items-center ml-4 mr-4">
+                  <Buttons.EditButton onClick={() => handleNavigate("/edit-user", user)} />
+                  {Buttons.SetStatusButton(user)}
+              </div>
           </>
         ])})}
 
@@ -124,7 +117,7 @@ const UserPage = () => {
         })}
         
         {/* Botón Agregar */}
-        {buttons.turquoiseButton({ text: "Añadir" })}
+        <Buttons.TurquoiseButton text="Añadir" onClick={() => handleNavigate("/add-user")} />
       </div>
     </div>
   );

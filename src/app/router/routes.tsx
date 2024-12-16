@@ -42,7 +42,7 @@ const Routes = (props: Props) => {
             <Route path="/users" element={<UserPage />} />
             <Route path="/edit-user" element={<EditUserPage />} />
             <Route path="/add-user" element={<AddUserPage />} />
-            <Route path="/sales" element={<SalePage />} />
+            <Route path="/sales" element={<AddSalePage />} />
             <Route path="/edit-sale" element={<EditSalePage />} />
             <Route path="/detail-sale" element={<DetailSalePage />} />
             <Route path="/add-sale" element={<AddSalePage />} />
