@@ -1,5 +1,5 @@
 import React from "react";
-import buttons from "./buttons";
+import Buttons from "./buttons";
 
 const modal = (props) => {
   return (
@@ -10,12 +10,12 @@ const modal = (props) => {
         </div>
         <div className="flex justify-center gap-8">
           {props.activateConfirm &&
-            buttons.TurquoiseButton({
+            Buttons.TurquoiseButton({
               text: props.confirmation,
               onClick: props.confirmAction,
             })}
           {props.activateCancel &&
-            buttons.FuchsiaButton({
+            Buttons.FuchsiaButton({
               text: "Cancelar",
               onClick: props.confirmCancel,
             })}

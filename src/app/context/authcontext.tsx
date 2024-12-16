@@ -4,7 +4,8 @@ import Agent from "../api/agent";
 
 interface AuthContextProps {
   authenticated: boolean;
-  userRole: string | null;
+  userRoleId: number | null;
+  userNickName: string | null;
   login: (nick_name: string, password: string) => Promise<void>;
   logout: () => void;
   checkAuthStatus: () => void;
@@ -18,7 +19,8 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [authenticated, setAuthenticated] = useState(false);
-  const [userRole, setUserRole] = useState<string | null>(null);
+  const [userRoleId, setUserRoleId] = useState<number | null>(null);
+  const [userNickName, setUserNickName] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,9 +31,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       const response = await Agent.Auth.login({ Nick_name: nick_name, Password: password });
       localStorage.setItem("nick_name", response.data.nick_name);
-      localStorage.setItem("role", response.data.roleId);
+      localStorage.setItem("roleId", response.data.roleId);
       setAuthenticated(true);
-      setUserRole(response.data.roleId);
+      setUserRoleId(response.data.roleId);
+      setUserNickName(response.data.nick_name);
       navigate("/users");
     } catch (err) {
       console.error("Login error:", err);
@@ -41,11 +44,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logout = async () => {
     try {
-      await Agent.Auth.logout({Nick_name: localStorage.getItem("nick_name")});
       localStorage.removeItem("nick_name");
-      localStorage.removeItem("role");
+      localStorage.removeItem("roleId");
       setAuthenticated(false);
-      setUserRole(null);
+      setUserRoleId(null);
+      setUserNickName(null);
       navigate("/");
     } catch (err) {
       console.error("Logout error:", err);
@@ -53,19 +56,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const checkAuthStatus = () => {
-    const token = localStorage.getItem("nick_name");
-    const role = localStorage.getItem("role");
-    if (token && role) {
+    const nickName = localStorage.getItem("nick_name");
+    const roleId = parseInt(localStorage.getItem("roleId"));
+    if (nickName && roleId) {
       setAuthenticated(true);
-      setUserRole(role);
+      setUserRoleId(roleId);
+      setUserNickName(nickName);
     } else {
       setAuthenticated(false);
-      setUserRole(null);
+      setUserRoleId(null);
+      setUserNickName(null);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ authenticated, userRole, login, logout, checkAuthStatus }}>
+    <AuthContext.Provider value={{ authenticated, userNickName, userRoleId, login, logout, checkAuthStatus }}>
       {children}
     </AuthContext.Provider>
   );

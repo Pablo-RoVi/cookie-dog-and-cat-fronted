@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../static/styles/navbar.css";
 import colors from "../static/colors";
 import cookie from "../static/images/cookie.png";
 import { useAuth } from "../../app/context/authcontext";
+import ChangeEmployeePassword from "./changeemployeepassword";
+
 const adminMenu = [
   {
     value: "/users",
@@ -32,27 +34,39 @@ const employeeMenu = [
     label: "Ventas",
   },
 ];
-const adminSettings = [{ value: "/login", label: "Cerrar Sesión" }];
+const adminSettings = [{ value: "/", label: "Cerrar Sesión" }];
 const employeeSettings = [
   {
-    value: "/profile",
-    lable: "Cambiar Contraseña",
+    value: "/",
+    label: "Cambiar Contraseña",
   },
   {
-    value: "/Login",
+    value: "/",
     label: "Cerrar Sesión",
   },
 ];
 
 const Navbar = () => {
-  const { logout } = useAuth();
-
+  const { logout, userRoleId, userNickName } = useAuth();
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
-  const [loggedName, setLoggedName] = useState<string>("");
-  const [isAdmin, setIsAdmin] = useState<boolean>(true);
+  const [menu, setMenu] = useState([]);
+  const [settings, setSettings] = useState([]);
+
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] =
+    useState<boolean>(false);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (userRoleId === 1) {
+      setMenu(adminMenu);
+      setSettings(adminSettings);
+    } else {
+      setMenu(employeeMenu);
+      setSettings(employeeSettings);
+    }
+  }, [userRoleId, menu, settings]);
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -62,8 +76,9 @@ const Navbar = () => {
     setSettingsOpen(!settingsOpen);
   };
 
-  const menu = isAdmin ? adminMenu : employeeMenu;
-  const settings = isAdmin ? adminSettings : employeeSettings;
+  const toggleConfirmationModal = () => {
+    setIsConfirmationModalOpen(!isConfirmationModalOpen);
+  };
 
   return (
     <nav className="flex">
@@ -93,7 +108,7 @@ const Navbar = () => {
         {menuOpen && (
           <ul
             className="absolute top-full shadow-md rounded p-4"
-            style={{ background: colors.turquoiseLight }}
+            style={{ background: colors.turquoiseLight, textAlign: "center" }}
           >
             {menu.map((item) => (
               <li
@@ -102,8 +117,9 @@ const Navbar = () => {
                 style={{
                   color: colors.turquoise,
                   textDecorationColor: colors.turquoise,
+                  textAlign: "center",
                 }}
-                onClick={() => navigate(item.value)}
+                onClick={() => [navigate(item.value), toggleMenu()]}
               >
                 {item.label}
               </li>
@@ -111,7 +127,23 @@ const Navbar = () => {
           </ul>
         )}
       </div>
-      <div className="flex-1 bg-white flex items-center justify-center"></div>
+      <div
+        className="w-[8%]"
+        style={{
+          background: colors.turquoise,
+          clipPath: "polygon(0 0, 100% 0, 50% 100%, 0 100%)",
+        }}
+      />
+      <div
+        className="bg-white w-[2%]"
+      />
+      <div
+        className="w-[8%]"
+        style={{
+          background: colors.fuchsia,
+          clipPath: "polygon(50% 0, 100% 0, 100% 100%, 0 100%)",
+        }}
+      />
       <div
         className="flex-1 flex items-center justify-end relative"
         style={{ background: colors.fuchsia }}
@@ -135,17 +167,21 @@ const Navbar = () => {
         {settingsOpen && (
           <ul
             className="absolute top-full shadow-md rounded p-4"
-            style={{ background: colors.fuchsiaLight }}
+            style={{
+              background: colors.fuchsiaLight,
+              textAlign: "center",
+            }}
           >
-            <li
-              className="cursor-pointer"
+            <h1
+              className="mb-2"
               style={{
                 color: colors.fuchsia,
-                textDecorationColor: colors.fuchsia,
+                textDecorationColor: colors.fuchsiaLight,
+                textAlign: "center",
               }}
             >
-              {loggedName}
-            </li>
+              {userNickName.toUpperCase()}
+            </h1>
             {settings.map((item) => (
               <li
                 key={item.label}
@@ -153,11 +189,13 @@ const Navbar = () => {
                 style={{
                   color: colors.fuchsia,
                   textDecorationColor: colors.fuchsia,
+                  textAlign: "center",
                 }}
-                onClick={() => {
-                  logout();
-                  navigate(item.value);
-                }}
+                onClick={() =>
+                  item.label === "Cerrar Sesión"
+                    ? [logout(), navigate(item.value), toggleSettings()]
+                    : [toggleConfirmationModal(), toggleSettings()]
+                }
               >
                 {item.label}
               </li>
@@ -165,6 +203,12 @@ const Navbar = () => {
           </ul>
         )}
       </div>
+      {isConfirmationModalOpen && (
+        <ChangeEmployeePassword
+          confirmCancel={toggleConfirmationModal}
+          confirmAction={logout}
+        />
+      )}
     </nav>
   );
 };

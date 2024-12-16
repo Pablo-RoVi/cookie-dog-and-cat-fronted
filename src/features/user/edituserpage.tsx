@@ -6,6 +6,7 @@ import cookie from "../../app/static/images/cookie.png";
 import TableModule from "../../app/components/tablemodule";
 import Functions from "../../app/components/functions";
 import Modal from "../../app/components/modal";
+import ConfirmAdminLogged from "../../app/components/confirmadmin";
 import Agent from "../../app/api/agent";
 
 const EditUserPage = () => {
@@ -25,6 +26,8 @@ const EditUserPage = () => {
   const [isConfirmationPasswordModalOpen, setIsConfirmationPasswordModalOpen] =
     useState<boolean>(false);
   const [isChangedPasswordModal, setIsChangedPasswordModal] =
+    useState<boolean>(false);
+  const [isConfirmationAdminLogged, setIsConfirmationAdminLogged] =
     useState<boolean>(false);
 
   const [originalData, setOriginalData] = useState<any>(null);
@@ -98,6 +101,10 @@ const EditUserPage = () => {
 
   const toggleChangedPasswordModal = () => {
     setIsChangedPasswordModal(!isChangedPasswordModal);
+  };
+
+  const toggleConfirmAdminLogged = () => {
+    setIsConfirmationAdminLogged(!isConfirmationAdminLogged);
   };
 
   const editUser = () => {
@@ -193,10 +200,10 @@ const EditUserPage = () => {
       </div>
 
       {/* Confirmation User Modal */}
-      {isConfirmationUserModalOpen && (
+      {isConfirmationUserModalOpen && !isConfirmationAdminLogged && (
         <Modal
           title={confirmText}
-          confirmAction={() => editUser()}
+          confirmAction={setIsConfirmationAdminLogged}
           confirmation="Editar"
           confirmCancel={toggleConfirmationUserModal}
           activateCancel={true}
@@ -227,17 +234,19 @@ const EditUserPage = () => {
           valueFilter: newPassword,
           setOnChangeFilter: setNewPassword,
           isPassword: true,
+          placeholder: "Alfanumérica y contener al menos 8 caracteres",
         })}
         {TableModule.inputFilter({
           label: "Confirmar Contraseña",
           valueFilter: confirmNewPassword,
           setOnChangeFilter: setConfirmNewPassword,
           isPassword: true,
+          placeholder: "Alfanumérica y contener al menos 8 caracteres",
           errorInput: !Functions.verifyPasswords(
             newPassword,
             confirmNewPassword
           ),
-          errorMessage: newPassword ? "Contraseñas no coinciden" : "",
+          errorMessage: newPassword ? "Contraseñas no coinciden o inválidas" : "",
         })}
         <div className="flex items-center space-x-4">
           {isPasswordModified ? (
@@ -253,10 +262,10 @@ const EditUserPage = () => {
       </div>
 
       {/* Confirmation Password Modal */}
-      {isConfirmationPasswordModalOpen && (
+      {isConfirmationPasswordModalOpen && !isConfirmationAdminLogged && (
         <Modal
           title={confirmText}
-          confirmAction={() => editPassword()}
+          confirmAction={setIsConfirmationAdminLogged}
           confirmation="Editar"
           confirmCancel={toggleConfirmationPasswordModal}
           activateCancel={true}
@@ -271,6 +280,24 @@ const EditUserPage = () => {
             toggleChangedPasswordModal();
           }}
           activateCancel={false}
+          activateConfirm={true}
+        />
+      )}
+
+      {/* Confirm Admin Logged */}
+      {isConfirmationAdminLogged && (
+        <ConfirmAdminLogged
+          confirmation="Confirmar"
+          confirmAction={() => {
+            isConfirmationUserModalOpen ? editUser() : editPassword();
+          }}
+          confirmCancel={() => {
+            toggleConfirmAdminLogged();
+            isConfirmationUserModalOpen
+              ? toggleConfirmationUserModal()
+              : toggleConfirmationPasswordModal();
+          }}
+          activateCancel={true}
           activateConfirm={true}
         />
       )}
