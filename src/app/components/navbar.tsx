@@ -84,10 +84,7 @@ const Navbar = () => {
     <nav className="flex">
       <div
         className="flex-1 text-white flex items-center justify-start relative"
-        style={{ 
-          background: colors.turquoise,
-          clipPath: "polygon(0 0, 99% 0, 92% 100%, 0 100%)",
-        }}
+        style={{ background: colors.turquoise }}
       >
         <svg
           onClick={toggleMenu}
@@ -131,11 +128,25 @@ const Navbar = () => {
         )}
       </div>
       <div
-        className="flex-1 flex items-center justify-end relative"
-        style={{ 
-          background: colors.fuchsia,
-          clipPath: "polygon(8% 0, 100% 0, 100% 100%, 1% 100%)",
+        className="w-[8%]"
+        style={{
+          background: colors.turquoise,
+          clipPath: "polygon(0 0, 100% 0, 50% 100%, 0 100%)",
         }}
+      />
+      <div
+        className="bg-white w-[2%]"
+      />
+      <div
+        className="w-[8%]"
+        style={{
+          background: colors.fuchsia,
+          clipPath: "polygon(50% 0, 100% 0, 100% 100%, 0 100%)",
+        }}
+      />
+      <div
+        className="flex-1 flex items-center justify-end relative"
+        style={{ background: colors.fuchsia }}
       >
         <svg
           onClick={toggleSettings}
