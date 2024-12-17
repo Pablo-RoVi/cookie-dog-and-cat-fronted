@@ -1,15 +1,16 @@
-import React, { useState, useEffect, FormEvent, useContext } from "react";
+import React, { useState, FormEvent} from "react";
 import "../../app/static/styles/index.css";
 import colors from "../../app/static/colors";
 import cookie from "../../app/static/images/cookie.png";
 import { useAuth } from "../../app/context/authcontext";
-import { useNavigate } from "react-router-dom";
+
+
 
 
 const Login = () => {
   const [nick_name, setNick_Name] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState<string>("");
 
   const { login } = useAuth();
 
@@ -19,10 +20,11 @@ const Login = () => {
     try {
       await login(nick_name, password);
     } catch (err) {
-      setError("Usuario o contraseña incorrectos.");
+      setError("El usuario o contraseña son incorrectos.");
       console.error(err);
     }
   };
+  
 
   return (
 <div className="flex items-center justify-center h-screen w-full bg-center bg-cover text-white "   
@@ -42,8 +44,8 @@ const Login = () => {
                 onChange={(e) => setNick_Name(e.target.value)}
               />
             </div>
-            <div className="mb-4">
-                <h3 className="text-sm  text-left mb-3 ">Contraseña</h3>
+            <div className="mb-1">
+                <h3 className="text-sm text-left mb-3 ">Contraseña</h3>
                 <input
                     type="password"
                     placeholder="Contraseña"
@@ -52,6 +54,11 @@ const Login = () => {
                     onChange={(e) => setPassword(e.target.value)}
                 />
             </div>
+            {error && (
+              <p className="text-sm text-left text-red-900 p-2 rounded-lg" >
+                {error}
+              </p>
+              )}
             <button
               type="submit"
               className="w-full p-2 mb-10 mt-10 text-white rounded-lg "

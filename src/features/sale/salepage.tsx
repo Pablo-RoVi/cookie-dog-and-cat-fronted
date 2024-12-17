@@ -69,7 +69,7 @@ const SalePage = () => {
         Total_quantity: 5,
         Total: 2000,
         Date: "12/12/2022",
-        Payment_method: "MasterCard",
+        Payment_method: "Debito",
         UserId: 1,
         products : products
       },
