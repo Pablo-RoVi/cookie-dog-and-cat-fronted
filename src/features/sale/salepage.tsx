@@ -3,12 +3,36 @@ import "../../app/static/styles/index.css";
 import TableModule from "../../app/components/tablemodule";
 import Buttons from "../../app/components/buttons";
 import { useNavigate } from "react-router-dom";
+import Modal from "../../app/components/modal";
+import ConfirmAdminLogged from "../../app/components/confirmadmin";
+import Functions from "../../app/components/functions";
 
 
 const headers = ["Código", "Producto(s)", "Precio Total", "Medio de pago", "Trabajador(a)","Acciones"];
 
 const SalePage = () => {
+
+    const toggleConfirmationModal = () => {
+        setIsConfirmationModalOpen(!isConfirmationModalOpen);
+      };
+
+    const toggleConfirmAdminLogged = () => {
+        setIsConfirmationAdminLogged(!isConfirmationAdminLogged);
+      };
+
+      const toggleChangedStateModal = () => {
+        setIsChangedStateModal(!isChangedStateModal);
+      };
+
     const navigate = useNavigate();
+
+    const [isConfirmationModalOpen, setIsConfirmationModalOpen] =
+        useState<boolean>(false);
+    const [isChangedStateModal, setIsChangedStateModal] =
+        useState<boolean>(false);
+    const [isConfirmationAdminLogged, setIsConfirmationAdminLogged] =
+        useState<boolean>(false);
+
     
     const [products, setProducts] = useState([
         {
@@ -50,21 +74,12 @@ const SalePage = () => {
         products : products
       },
     ]);
+
     const [employees] = useState([
-        { id: 1, name: "Camila Tessini" },
-        { id: 2, name: "Carlos Martínez" },
-        { id: 3, name: "Ana López" },
+        { id: 1, name: "Camila Tessini", is_active: false },
+        { id: 2, name: "Carlos Martínez", is_active: true },
+        { id: 3, name: "Ana López", is_active: true },
       ]);
-
-  
-
-  
-    const [selectedEmployee, setSelectedEmployee] = useState("");
-    const [paymentMethod, setPaymentMethod] = useState("");
-  
-    const [modalOpen, setModalOpen] = useState(false);
-    const [selectedProducts, setSelectedProducts] = useState([]);
-    const [searchTerm, setSearchTerm] = useState("");
   
   const handleNavigate = (path: string, state?: any) => {
     navigate(path, state ? { state } : undefined);
@@ -88,50 +103,64 @@ const SalePage = () => {
                 sale.Total,
                 sale.Payment_method,
                 sale.products.map((product) => product.name).join(", "),
-                <div className="flex justify-between items-center ml-4 mr-4">
+                <div className="flex justify-center items-center ml-4 mr-4 space-x-4">
+                 {employees[1].is_active && (
                   <Buttons.EditButton
-                    onClick={() => handleNavigate("/edit-sale")}/>
+                    onClick={() => handleNavigate("/edit-sale")}/> )}
                   <Buttons.DetailButton
-                    onClick={() => }/>
+                    onClick={() => handleNavigate("/detail-sale")} data={sale}/>
+                 {employees[1].is_active && (
                   <Buttons.DeleteButton
-                    onClick={() => }/>
+                    onClick={() =>{
+                        toggleConfirmationModal();
+                    }
+                    
+                    }/>
+                 )}
+                 
               </div>,
               ]),
             })}
-          </div>
-  
-          {/* Modal */}
-          {modalOpen && (
-            <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
-              <div className="bg-white rounded-lg shadow-lg p-6 w-[60%]">
-                <table className="w-full border-collapse border border-gray-300 text-left">
-                  <thead className="bg-[#FC67C4] text-white">
-                    <tr>
-                      <th className="p-3 border border-gray-300">Nombre</th>
-                      <th className="p-3 border border-gray-300">Marca</th>
-                      <th className="p-3 border border-gray-300">Categoría</th>
-                      <th className="p-3 border border-gray-300">Especie</th>
-                      <th className="p-3 border border-gray-300">Elegir</th>
-                    </tr>
-                  </thead>
-                </table>
-  
-                <div className="flex justify-end space-x-4 mt-4">
-                  <button
-                    className="bg-[#6FC9D1] text-white px-6 py-2 rounded-md hover:bg-[#5ab5c2] transition"
-                  >
-                    Añadir
-                  </button>
-                  <button
-                    onClick={() => setModalOpen(false)}
-                    className="bg-pink-500 text-white px-6 py-2 rounded-md hover:bg-pink-600 transition"
-                  >
-                    Cancelar
-                  </button>
-                </div>
-              </div>
-            </div>
+        {isConfirmationModalOpen &&
+          !isConfirmationAdminLogged && (
+            <Modal
+              title="¿Desea eliminar la venta?"
+              confirmAction={setIsConfirmationAdminLogged}
+              confirmation="Eliminar"
+              confirmCancel={toggleConfirmationModal}
+              activateCancel={true}
+              activateConfirm={true}
+            />
           )}
+        {isConfirmationAdminLogged && (
+          <ConfirmAdminLogged
+            confirmation="Confirmar"
+            confirmAction={() => {
+                toggleConfirmationModal();
+                toggleChangedStateModal();
+            }}
+            confirmCancel={() => {
+              toggleConfirmAdminLogged();
+              toggleConfirmationModal();
+            }}
+            activateCancel={true}
+            activateConfirm={true}
+          />
+        )}          
+        {isChangedStateModal && !isConfirmationAdminLogged && (
+          <Modal
+            title={"Venta eliminada con éxito"}
+            confirmation="Aceptar"
+            confirmAction={() => {
+              toggleChangedStateModal();
+              Functions.refreshPage();
+            }}
+            activateCancel={false}
+            activateConfirm={true}
+          />
+        )}        
+          </div>
+        
         </div>
       </div>
     );
