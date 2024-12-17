@@ -73,7 +73,6 @@ const Routes = (props: Props) => {
             </>
           }
         >
-          <Route path="/sales" element={<SalePage />} />
           <Route element={<PrivateRoutes />}>
             <Route path="/users" element={<UserPage />} />
             <Route path="/edit-user" element={<EditUserPage />} />

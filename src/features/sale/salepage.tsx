@@ -160,7 +160,10 @@ const SalePage = () => {
           />
         )}        
           </div>
-        
+        <Buttons.TurquoiseButton
+          text="Añadir"
+          onClick={() => handleNavigate("/add-sale")}
+        />
         </div>
       </div>
     );
