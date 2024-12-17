@@ -80,6 +80,7 @@ const SalePage = () => {
         { id: 2, name: "Carlos Martínez", is_active: true },
         { id: 3, name: "Ana López", is_active: true },
       ]);
+    const [selectedEmployee, setSelectedEmployee] = useState("");
   
   const handleNavigate = (path: string, state?: any) => {
     navigate(path, state ? { state } : undefined);
@@ -90,6 +91,22 @@ const SalePage = () => {
         <div className="container mx-auto px-4 py-6">
           {/* Título */}
           <h1 className="text-4xl font-bold text-[#6FC9D1] mb-6">Ventas</h1>
+
+          <div className="container max-w-[20%] mb-8">
+            <label className="block font-semibold text-[#6FC9D1] mb-2">Nombre de empleado</label>
+            <select
+              value={selectedEmployee}
+              onChange={(e) => setSelectedEmployee(e.target.value)}
+              className="w-full p-3 border border-gray-300 rounded-md text-gray-700"
+            >
+              <option value="">Seleccione un empleado</option>
+              {employees.map((employee) => (
+                <option key={employee.id} value={employee.name}>
+                  {employee.name}
+                </option>
+              ))}
+            </select>
+          </div>
   
          
   
