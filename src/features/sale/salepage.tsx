@@ -1,10 +1,15 @@
 import React, { useState } from "react";
 import "../../app/static/styles/index.css";
 import TableModule from "../../app/components/tablemodule";
+import Buttons from "../../app/components/buttons";
+import { useNavigate } from "react-router-dom";
+
 
 const headers = ["Código", "Producto(s)", "Precio Total", "Medio de pago", "Trabajador(a)","Acciones"];
 
 const SalePage = () => {
+    const navigate = useNavigate();
+    
     const [products, setProducts] = useState([
         {
           id: 1,
@@ -45,7 +50,11 @@ const SalePage = () => {
         products : products
       },
     ]);
-   
+    const [employees] = useState([
+        { id: 1, name: "Camila Tessini" },
+        { id: 2, name: "Carlos Martínez" },
+        { id: 3, name: "Ana López" },
+      ]);
 
   
 
@@ -57,6 +66,10 @@ const SalePage = () => {
     const [selectedProducts, setSelectedProducts] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
   
+  const handleNavigate = (path: string, state?: any) => {
+    navigate(path, state ? { state } : undefined);
+  };
+
     return (
       <div className="max-h-screen bg-white">
         <div className="container mx-auto px-4 py-6">
@@ -71,10 +84,18 @@ const SalePage = () => {
               headers: headers,
               data: sales.map((sale) => [
                 sale.id,
-                sale.Total_quantity,
+                sale.products.map((product) => product.name).join(", "),
                 sale.Total,
                 sale.Payment_method,
-                sale.products,
+                sale.products.map((product) => product.name).join(", "),
+                <div className="flex justify-between items-center ml-4 mr-4">
+                  <Buttons.EditButton
+                    onClick={() => handleNavigate("/edit-sale")}/>
+                  <Buttons.DetailButton
+                    onClick={() => }/>
+                  <Buttons.DeleteButton
+                    onClick={() => }/>
+              </div>,
               ]),
             })}
           </div>
