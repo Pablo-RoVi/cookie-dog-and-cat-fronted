@@ -42,6 +42,13 @@ const Products = {
   deleteProduct: (unique_id:string ) => requests.delete(`product/deleteProduct/${unique_id}`, unique_id),
 };
 
-const agent = { Auth, requests, Users, Products };
+const Brands = {
+  listBrands: () => requests.get("brand/getBrands"),
+  addBrand: (form: any) => requests.post("brand/addBrand", form),
+  updateBrand: (form: any, id: string) => requests.put(`brand/editBrand/${id}`, form),
+  deleteBrand: (id: string) => requests.delete(`brand/deleteBrand/${id}`, id)
+};
+
+const agent = { Auth, requests, Users, Products, Brands };
 
 export default agent;
