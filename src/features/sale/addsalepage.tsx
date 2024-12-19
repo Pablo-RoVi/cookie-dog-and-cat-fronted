@@ -3,9 +3,11 @@ import "../../app/static/styles/index.css";
 import TableModule from "../../app/components/tablemodule";
 import { useAuth } from "../../app/context/authcontext";
 import Options from "../../app/components/options";
+import Buttons from "../../app/components/buttons";
 import Agent from "../../app/api/agent";
+import colors from "../../app/static/colors";
 
-const headers = [
+const headersShopping = [
   "Producto",
   "Marca",
   "Categoría",
@@ -14,6 +16,15 @@ const headers = [
   "Cantidad",
   "Acciones",
 ];
+
+const headersProducts = [
+  "Nombre",
+  "Marca",
+  "Categoría",
+  "Especie",
+  "Precio",
+  "Elegir",
+]
 
 const AddSalesPage = () => {
   const [products, setProducts] = useState([
@@ -164,13 +175,21 @@ const AddSalesPage = () => {
         {/* Tabla y botón del carrito */}
         <div className="relative">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-[#6FC9D1]">
+            <h2
+              className="text-xl font-semibold"
+              style={{
+                color: colors.turquoise,
+              }}
+            >
               Producto(s)
             </h2>{" "}
             {/* Color ajustado */}
             <button
               onClick={() => setModalOpen(true)}
-              className="bg-[#6FC9D1] p-3 rounded-full shadow-md hover:bg-[#5ab5c2] transition"
+              className="p-3 rounded-full shadow-md transition"
+              style={{
+                backgroundColor: colors.turquoise,
+              }}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -190,7 +209,7 @@ const AddSalesPage = () => {
           </div>
 
           {TableModule.table({
-            headers: headers,
+            headers: headersShopping,
             data: products.map((product) => [
               product.name,
               product.brand,
@@ -321,24 +340,25 @@ const AddSalesPage = () => {
         {/* Total y botones */}
         <div className="mt-8">
           <div className="text-right mb-4">
-            <span className="text-xl font-semibold text-[#6FC9D1]">
+            <span
+              className="text-xl font-semibold"
+              style={{
+                color: colors.turquoise,
+              }}
+            >
               Total producto(s):{" "}
               <span className="text-black">${total.toLocaleString()}</span>
             </span>
           </div>
           <div className="flex justify-end space-x-4">
-            <button
-              onClick={() => console.log("Venta añadida")}
-              className="bg-[#6FC9D1] text-white px-6 py-2 rounded-lg shadow-md hover:bg-[#5ab5c2]"
-            >
-              Añadir
-            </button>
-            <button
-              onClick={() => console.log("Venta cancelada")}
-              className="bg-pink-500 text-white px-6 py-2 rounded-lg shadow-md hover:bg-pink-600"
-            >
-              Cancelar
-            </button>
+            <Buttons.TurquoiseButton
+              text="Añadir"
+              onClick={() => null}
+            />
+            <Buttons.FuchsiaButton
+              text="Cancelar"
+              onClick={() => null}
+            />
           </div>
         </div>
       </div>
