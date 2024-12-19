@@ -43,6 +43,13 @@ const Products = {
   deleteProduct: (unique_id:string ) => requests.delete(`product/deleteProduct/${unique_id}`, unique_id),
 };
 
+const Sales = {
+  getDetail: (id: string) => requests.get(`sale/getSaleDetails/${id}`),
+  addSale: (form: any) => requests.post("sale/addSale", form),
+  deleteSale: (id: string) => requests.delete(`sale/deleteSale/${id}`, id),
+  getPaymentMethods: () => requests.get("sale/GetPaymentMethods"),
+}
+
 const SendEmail = (
   userEmail: string,
   adminName: string,
@@ -70,6 +77,6 @@ const SendEmail = (
     );
 };
 
-const agent = { Auth, requests, Users, Products, SendEmail };
+const agent = { Auth, requests, Users, Products, SendEmail, Sales };
 
 export default agent;

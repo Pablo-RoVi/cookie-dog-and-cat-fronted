@@ -74,6 +74,7 @@ const AddSalesPage = () => {
   const [total, setTotal] = useState(
     products.reduce((acc, product) => acc + product.price * product.quantity, 0)
   );
+  const [paymentMethodOptions, setPaymentMethodOptions] = useState([]);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -88,6 +89,23 @@ const AddSalesPage = () => {
           label: user.nick_name,
         }));
         setEmployees(filteredEmployees);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    initializeData();
+  }, []);
+
+  useEffect(() => {
+    const initializeData = async () => {
+      try {
+        const response = await Agent.Sales.getPaymentMethods();
+        const filteredSales = response.data.map((sale) => ({
+          value: sale,
+          label: sale,
+        }));
+        setPaymentMethodOptions(filteredSales);
       } catch (error) {
         console.error("Error fetching users:", error);
       }
@@ -143,14 +161,6 @@ const AddSalesPage = () => {
         {/* Formulario */}
         <div className="flex space-x-4">
           <div className="container max-w-[20%]">
-            {TableModule.inputFilter({
-              label: "Código",
-              valueFilter: selectedEmployee,
-              isDisabled: true,
-            })}
-          </div>
-
-          <div className="container max-w-[20%]">
             {TableModule.selectFilter({
               label: "Empleado",
               valueFilter: selectedEmployee,
@@ -166,7 +176,7 @@ const AddSalesPage = () => {
               label: "Método de pago",
               valueFilter: paymentMethod,
               setOnChangeFilter: setPaymentMethod,
-              options: Options.paymentMethodOptions,
+              options: paymentMethodOptions,
               firstValue: "SIN ELECCIÓN",
             })}
           </div>
