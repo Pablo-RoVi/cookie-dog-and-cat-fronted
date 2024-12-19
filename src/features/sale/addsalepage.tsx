@@ -1,8 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../app/static/styles/index.css";
 import TableModule from "../../app/components/tablemodule";
+import { useAuth } from "../../app/context/authcontext";
+import Options from "../../app/components/options";
+import Agent from "../../app/api/agent";
 
-const headers = ["Producto", "Marca", "Categoría", "Especie", "Precio", "Cantidad", "Acciones"];
+const headers = [
+  "Producto",
+  "Marca",
+  "Categoría",
+  "Especie",
+  "Precio",
+  "Cantidad",
+  "Acciones",
+];
 
 const AddSalesPage = () => {
   const [products, setProducts] = useState([
@@ -18,19 +29,37 @@ const AddSalesPage = () => {
   ]);
 
   const [availableProducts] = useState([
-    { id: 2, name: "Cepillo de pelo", brand: "KONG", category: "Higiene", species: "Perro", price: 7000 },
-    { id: 3, name: "Collar", brand: "Royal Canin", category: "Paseo", species: "Perro", price: 8000 },
-    { id: 4, name: "Bozal XL", brand: "PetSafe", category: "Paseo", species: "Perro", price: 12000 },
+    {
+      id: 2,
+      name: "Cepillo de pelo",
+      brand: "KONG",
+      category: "Higiene",
+      species: "Perro",
+      price: 7000,
+    },
+    {
+      id: 3,
+      name: "Collar",
+      brand: "Royal Canin",
+      category: "Paseo",
+      species: "Perro",
+      price: 8000,
+    },
+    {
+      id: 4,
+      name: "Bozal XL",
+      brand: "PetSafe",
+      category: "Paseo",
+      species: "Perro",
+      price: 12000,
+    },
   ]);
 
-  const [employees] = useState([
-    { id: 1, name: "Camila Tessini" },
-    { id: 2, name: "Carlos Martínez" },
-    { id: 3, name: "Ana López" },
-  ]);
-
-  const [selectedEmployee, setSelectedEmployee] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("");
+  const { userNickName, userRoleId } = useAuth();
+  const [employees, setEmployees] = useState([]);
+  const [selectedEmployee, setSelectedEmployee] =
+    useState<string>(userNickName);
+  const [paymentMethod, setPaymentMethod] = useState<string>("");
   const [total, setTotal] = useState(
     products.reduce((acc, product) => acc + product.price * product.quantity, 0)
   );
@@ -38,6 +67,23 @@ const AddSalesPage = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    const initializeData = async () => {
+      try {
+        const response = await Agent.Users.list();
+        const filteredEmployees = response.data.map((user) => ({
+          value: user.id,
+          label: user.nick_name,
+        }));
+        setEmployees(filteredEmployees);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    initializeData();
+  }, []);
 
   const handleQuantityChange = (id, change) => {
     const updatedProducts = products.map((product) => {
@@ -81,55 +127,47 @@ const AddSalesPage = () => {
     <div className="max-h-screen bg-white">
       <div className="container mx-auto px-4 py-6">
         {/* Título */}
-        <h1 className="text-4xl font-bold text-[#6FC9D1] mb-6">Registrar nueva venta</h1>
+        {TableModule.title({ title: "Registrar nueva venta" })}
 
         {/* Formulario */}
-        <div className="flex space-x-4 mb-6">
+        <div className="flex space-x-4">
           <div className="container max-w-[20%]">
-            <label className="block font-semibold text-[#6FC9D1] mb-2">Código</label>
-            <input
-              type="text"
-              className="w-full p-3 border border-gray-300 rounded-md text-gray-700"
-              disabled
-              value="9"
-            />
+            {TableModule.inputFilter({
+              label: "Código",
+              valueFilter: selectedEmployee,
+              isDisabled: true,
+            })}
           </div>
 
           <div className="container max-w-[20%]">
-            <label className="block font-semibold text-[#6FC9D1] mb-2">Empleado</label>
-            <select
-              value={selectedEmployee}
-              onChange={(e) => setSelectedEmployee(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-md text-gray-700"
-            >
-              <option value="">Seleccione un empleado</option>
-              {employees.map((employee) => (
-                <option key={employee.id} value={employee.name}>
-                  {employee.name}
-                </option>
-              ))}
-            </select>
+            {TableModule.selectFilter({
+              label: "Empleado",
+              valueFilter: selectedEmployee,
+              setOnChangeFilter: setSelectedEmployee,
+              options: employees,
+              isDisabled: userRoleId !== 1,
+              firstValue: userNickName,
+            })}
           </div>
 
           <div className="container max-w-[20%]">
-            <label className="block font-semibold text-[#6FC9D1] mb-2">Método de pago</label>
-            <select
-              value={paymentMethod}
-              onChange={(e) => setPaymentMethod(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-md text-gray-700"
-            >
-              <option value="" disabled hidden></option>
-              <option value="efectivo">Efectivo</option>
-              <option value="tarjeta">Débito</option>
-              <option value="transferencia">Transferencia</option>
-            </select>
+            {TableModule.selectFilter({
+              label: "Método de pago",
+              valueFilter: paymentMethod,
+              setOnChangeFilter: setPaymentMethod,
+              options: Options.paymentMethodOptions,
+              firstValue: "SIN ELECCIÓN",
+            })}
           </div>
         </div>
 
         {/* Tabla y botón del carrito */}
         <div className="relative">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-[#6FC9D1]">Productos</h2> {/* Color ajustado */}
+            <h2 className="text-xl font-semibold text-[#6FC9D1]">
+              Producto(s)
+            </h2>{" "}
+            {/* Color ajustado */}
             <button
               onClick={() => setModalOpen(true)}
               className="bg-[#6FC9D1] p-3 rounded-full shadow-md hover:bg-[#5ab5c2] transition"
@@ -188,7 +226,9 @@ const AddSalesPage = () => {
         {modalOpen && (
           <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
             <div className="bg-white rounded-lg shadow-lg p-6 w-[60%]">
-              <h2 className="text-2xl font-bold text-[#6FC9D1] mb-4">Añadir producto</h2>
+              <h2 className="text-2xl font-bold text-[#6FC9D1] mb-4">
+                Añadir producto
+              </h2>
 
               <div className="mb-4">
                 <input
@@ -214,14 +254,24 @@ const AddSalesPage = () => {
                 <tbody>
                   {availableProducts
                     .filter((product) =>
-                      product.name.toLowerCase().includes(searchTerm.toLowerCase())
+                      product.name
+                        .toLowerCase()
+                        .includes(searchTerm.toLowerCase())
                     )
                     .map((product) => (
                       <tr key={product.id} className="hover:bg-gray-100">
-                        <td className="p-3 border border-gray-300">{product.name}</td>
-                        <td className="p-3 border border-gray-300">{product.brand}</td>
-                        <td className="p-3 border border-gray-300">{product.category}</td>
-                        <td className="p-3 border border-gray-300">{product.species}</td>
+                        <td className="p-3 border border-gray-300">
+                          {product.name}
+                        </td>
+                        <td className="p-3 border border-gray-300">
+                          {product.brand}
+                        </td>
+                        <td className="p-3 border border-gray-300">
+                          {product.category}
+                        </td>
+                        <td className="p-3 border border-gray-300">
+                          {product.species}
+                        </td>
                         <td className="p-3 border border-gray-300">
                           ${product.price.toLocaleString()}
                         </td>
@@ -230,10 +280,15 @@ const AddSalesPage = () => {
                             type="checkbox"
                             onChange={(e) => {
                               if (e.target.checked) {
-                                setSelectedProducts([...selectedProducts, product]);
+                                setSelectedProducts([
+                                  ...selectedProducts,
+                                  product,
+                                ]);
                               } else {
                                 setSelectedProducts(
-                                  selectedProducts.filter((p) => p.id !== product.id)
+                                  selectedProducts.filter(
+                                    (p) => p.id !== product.id
+                                  )
                                 );
                               }
                             }}
@@ -267,7 +322,8 @@ const AddSalesPage = () => {
         <div className="mt-8">
           <div className="text-right mb-4">
             <span className="text-xl font-semibold text-[#6FC9D1]">
-              Total producto(s): <span className="text-black">${total.toLocaleString()}</span>
+              Total producto(s):{" "}
+              <span className="text-black">${total.toLocaleString()}</span>
             </span>
           </div>
           <div className="flex justify-end space-x-4">

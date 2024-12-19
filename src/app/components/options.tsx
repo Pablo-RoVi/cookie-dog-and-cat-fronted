@@ -38,12 +38,12 @@ const categoryOptions = [
   },
   {
     value: "Higiene",
-    label: "Higiene"
+    label: "Higiene",
   },
   {
     value: "Juguetes",
-    label: "Juguetes"
-  }
+    label: "Juguetes",
+  },
 ];
 
 const specieOptions = [
@@ -61,12 +61,28 @@ const specieOptions = [
   },
 ];
 
+const paymentMethodOptions = [
+  {
+    value: 1,
+    label: "Efectivo",
+  },
+  {
+    value: 2,
+    label: "Tarjeta",
+  },
+  {
+    value: 3,
+    label: "Transferencia",
+  },
+];
+
 const options = {
   roleOptions,
   accountStatusOptions,
   brandOptions,
   categoryOptions,
   specieOptions,
+  paymentMethodOptions,
 };
 
 export default options;

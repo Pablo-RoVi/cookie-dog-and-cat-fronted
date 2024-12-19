@@ -45,8 +45,9 @@ const selectFilter = (props) => {
         value={props.valueFilter}
         onChange={(e) => props.setOnChangeFilter(e.target.value)}
         className="p-2 border border-gray-300 rounded-lg shadow-sm"
+        disabled={props.isDisabled}
       >
-        <option value="">SIN ELECCIÓN</option>
+        <option value={props.firstValue}>{props.firstValue}</option>
         {props.options.map((option, index) => (
           <option key={index} value={option.value}>
             {option.label}
