@@ -260,7 +260,7 @@ const AddProductPage = () => {
             )}
             {isErrorModalOpen && (
                 <Modal
-                    title={`Corrija los siguientes errores: ${errorMessage}`}
+                    title={`Corrija los siguientes errores:\n ${errorMessage}`}
                     confirmation="Aceptar"
                     confirmAction={() => {
                         toggleErrorModal()

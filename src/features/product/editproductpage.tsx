@@ -11,9 +11,6 @@ import Functions from "../../app/components/functions";
 import ConfirmAdminLogged from "../../app/components/confirmadmin";
 import { Brand } from "../../app/models/brand";
 
-//TODO: Mejorar lectura de errores del backend (verificacion de arreglo de errores y for each de propiedades con errores)
-//TODO: Verificar errores de categoría, especie y marca.
-
 const EditProductPage = () => {
 
     const [unique_id, setId] = useState<string>("");
@@ -42,6 +39,8 @@ const EditProductPage = () => {
     const product = location.state;
 
     const navigate = useNavigate();
+
+    const formattedErrorTitle = "Corrija los siguientes errores:\n";
 
     useEffect(() => {
            if (product) {
@@ -108,9 +107,25 @@ const EditProductPage = () => {
                 console.log("Error al actualizar el producto");
             }
         }).catch((error) => {
-            console.log("Error al actualizar el producto", error);
-            setErrorMessage(error.response.data.errors.BrandName[0]);
-            toggleConfirmationModal();
+            console.log("error", error.response.data);
+            let errorMessages = [];
+            if(error.response && error.response.data && error.response.data.errors){
+                const errors = error.response.data.errors;
+
+                for(const key in errors){
+                    if (errors.hasOwnProperty(key)) { 
+                        if (Array.isArray(errors[key])) 
+                        {  
+                            errors[key].forEach((msg) => { errorMessages.push(`${msg}`);}); 
+                        } else { 
+                            errorMessages.push(`${key}: ${errors[key]}`); 
+                        } 
+                    }
+                }
+            }else{
+                errorMessages.push(error.response.data)
+            }
+            setErrorMessage(errorMessages.join("\n"));
             toggleErrorModal();
         });
     };
@@ -231,7 +246,7 @@ const EditProductPage = () => {
             )}
             {isErrorModalOpen && (
                 <Modal
-                    title={`Error: ${errorMessage}`}
+                    title={`${formattedErrorTitle}${errorMessage}`}
                     confirmation="Aceptar"
                     confirmAction={() => toggleErrorModal()}
                     activateCancel={false}
