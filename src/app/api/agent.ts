@@ -50,15 +50,15 @@ const SendEmail = (
 ) => {
   emailjs
     .send(
-      process.env.REACT_APP_SERVICE_ID,
-      process.env.REACT_APP_TEMPLATE_ID,
+      process.env.REACT_APP_EMAIL_JS_SERVICE_ID,
+      process.env.REACT_APP_EMAIL_JS_TEMPLATE_ID,
       {
         userEmail: userEmail,
         adminName: adminName,
         todayDate: new Date().toLocaleDateString(),
         message: messsage,
       },
-      process.env.REACT_APP_PUBLIC_ID
+      process.env.REACT_APP_EMAIL_JS_PUBLIC_ID
     )
     .then(
       () => {
