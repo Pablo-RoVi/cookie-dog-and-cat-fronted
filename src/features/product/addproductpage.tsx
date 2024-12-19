@@ -168,7 +168,7 @@ const AddProductPage = () => {
                     setOnChangeFilter: setPrice,
                     placeholder: "Precio",
                     errorInput: !Functions.verifyProductPrice(price) && price !== "",
-                    errorMessage: "El precio debe ser numérico, de máximo de 9 dígitos con o sin puntos",
+                    errorMessage: "El precio debe ser un número mayor a 0, de máximo de 9 dígitos con o sin puntos",
                 })}
                 {TableModule.inputFilter({
                     label: "Stock",
@@ -176,7 +176,7 @@ const AddProductPage = () => {
                     setOnChangeFilter: setStock,
                     placeholder: "Stock",
                     errorInput: !Functions.verifyProductStock(stock) && stock !== "",
-                    errorMessage: "El stock debe ser numérico y tener un máximo de 9 dígitos",
+                    errorMessage: "El stock debe ser un número mayor a 0, de máximo de 9 dígitos",
                 })}
                 {TableModule.selectFilter({
                     label: "Categoría",
@@ -241,7 +241,7 @@ const AddProductPage = () => {
             )}
             {isErrorModalOpen && (
                 <Modal
-                    title={`Error al agregar el producto`}
+                    title={`Error: ${errorMessage}`}
                     confirmation="Aceptar"
                     confirmAction={() => toggleErrorModal()}
                     activateCancel={false}
