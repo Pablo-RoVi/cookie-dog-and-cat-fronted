@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from "axios";
+import emailjs from "@emailjs/browser";
 
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 axios.defaults.withCredentials = true;
@@ -42,6 +43,33 @@ const Products = {
   deleteProduct: (unique_id:string ) => requests.delete(`product/deleteProduct/${unique_id}`, unique_id),
 };
 
-const agent = { Auth, requests, Users, Products };
+const SendEmail = (
+  userEmail: string,
+  adminName: string,
+  messsage: string
+) => {
+  emailjs
+    .send(
+      process.env.REACT_APP_SERVICE_ID,
+      process.env.REACT_APP_TEMPLATE_ID,
+      {
+        userEmail: userEmail,
+        adminName: adminName,
+        todayDate: new Date().toLocaleDateString(),
+        message: messsage,
+      },
+      process.env.REACT_APP_PUBLIC_ID
+    )
+    .then(
+      () => {
+        console.log("SUCCESS!");
+      },
+      (error) => {
+        console.log("FAILED...", error.text);
+      }
+    );
+};
+
+const agent = { Auth, requests, Users, Products, SendEmail };
 
 export default agent;
