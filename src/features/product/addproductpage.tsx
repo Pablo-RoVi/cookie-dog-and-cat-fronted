@@ -7,7 +7,7 @@ import cookie from '../../app/static/images/cookie.png';
 import Agent from '../../app/api/agent';
 import Modal from '../../app/components/modal';
 import { AxiosResponse } from "axios";
-import { Brand } from "../../app/models/brand";
+import { Brand } from '../../app/models/brand';
 import Functions from "../../app/components/functions";
 import ConfirmAdminLogged from "../../app/components/confirmadmin";
 
@@ -28,6 +28,9 @@ const AddProductPage = () => {
     const [isErrorModalOpen, setIsErrorModalOpen] = useState<boolean>(false);
 
     const [isConfirmationAdminLogged, setIsConfirmationAdminLogged] = useState<boolean>(false);
+
+    const [toAddProduct,setToAddProduct] = useState<boolean>(false);
+    const [toAddBrand,setToAddBrand] = useState<boolean>(false);
 
     const [brands,setBrands] = useState([]);
 
@@ -102,18 +105,34 @@ const AddProductPage = () => {
         }).then((response : AxiosResponse) => {
             console.log("response", response);
             if(response.status === 200){
-                toggleConfirmationProductModal();
                 toggleAddedProductModal();
                 console.log("Producto agregado con éxito");
             }else if(response.status === 400){
                 console.log("Error al agregar el producto");
-                setErrorMessage(response.data);
-                toggleConfirmationProductModal();
-                toggleErrorModal();
             }
         })
         .catch((error) => {
-          console.log("error", error);});
+            console.log("error", error.response.data);
+            let errorMessages = [];
+            if(error.response && error.response.data && error.response.data.errors){
+                const errors = error.response.data.errors;
+
+                for(const key in errors){
+                    if (errors.hasOwnProperty(key)) { 
+                        if (Array.isArray(errors[key])) 
+                        {  
+                            errors[key].forEach((msg) => { errorMessages.push(`${key}: ${msg}`);}); 
+                        } else { 
+                            errorMessages.push(`${key}: ${errors[key]}`); 
+                        } 
+                    }
+                }
+            }else{
+                errorMessages.push(error.response.data)
+            }
+            setErrorMessage(errorMessages.join("\n"));
+            toggleErrorModal();
+        });
     };
 
     const addBrand = () => {
@@ -122,7 +141,6 @@ const AddProductPage = () => {
         }).then((response : AxiosResponse) => {
             console.log("response", response);
             if(response.status === 204){
-                toggleConfirmationBrandModal();
                 toggleAddedBrandModal();
                 console.log("Marca agregada con éxito");
             }else if(response.status === 400){
@@ -130,10 +148,25 @@ const AddProductPage = () => {
             }
         })
         .catch((error) => {
-            console.log("Hola soy un error");
-            console.log("error", error);
-            setErrorMessage(error.response.data);
-            toggleConfirmationBrandModal();
+            console.log("error", error.response.data);
+            let errorMessages = [];
+            if(error.response && error.response.data && error.response.data.errors){
+                const errors = error.response.data.errors;
+
+                for(const key in errors){
+                    if (errors.hasOwnProperty(key)) { 
+                        if (Array.isArray(errors[key])) 
+                        {  
+                            errors[key].forEach((msg) => { errorMessages.push(`${key}: ${msg}`);}); 
+                        } else { 
+                            errorMessages.push(`${key}: ${errors[key]}`); 
+                        } 
+                    }
+                }
+            }else{
+                errorMessages.push(error.response.data)
+            }
+            setErrorMessage(errorMessages.join("\n"));
             toggleErrorModal();
         });
     };
@@ -199,7 +232,7 @@ const AddProductPage = () => {
                 <div className="flex items-center space-x-4">
                     {
                         isFormCompleted ? 
-                            <Buttons.TurquoiseButton text="Añadir" onClick={() => toggleConfirmationProductModal} />
+                            <Buttons.TurquoiseButton text="Añadir" onClick={() => toggleConfirmationProductModal()} />
                             :
                             <Buttons.GrayButton text="Añadir" onClick={null} />
                     }
@@ -209,23 +242,9 @@ const AddProductPage = () => {
             {isConfirmationProductModalOpen && (
                 <Modal
                     title={`¿Estás seguro de que deseas agregar el producto '${productName}' de '${brandName}'?`}
-                    confirmAction={() => toggleConfirmAdminLogged} 
+                    confirmAction={() => {setToAddProduct(true);toggleConfirmAdminLogged(); toggleConfirmationProductModal();}} 
                     confirmation="Añadir"
-                    confirmCancel={() => toggleConfirmationProductModal}
-                    activateCancel={true}
-                    activateConfirm={true}
-                />
-            )}
-            {isConfirmationAdminLogged && (
-                <ConfirmAdminLogged
-                    confirmation="Confirmar"
-                    confirmAction={() => {
-                        addProduct();
-                    }}
-                    confirmCancel={() => {
-                        toggleConfirmAdminLogged();
-                        toggleConfirmationProductModal();
-                    }}
+                    confirmCancel={() => toggleConfirmationProductModal()}
                     activateCancel={true}
                     activateConfirm={true}
                 />
@@ -241,9 +260,16 @@ const AddProductPage = () => {
             )}
             {isErrorModalOpen && (
                 <Modal
-                    title={`Error: ${errorMessage}`}
+                    title={`Corrija los siguientes errores: ${errorMessage}`}
                     confirmation="Aceptar"
-                    confirmAction={() => toggleErrorModal()}
+                    confirmAction={() => {
+                        toggleErrorModal()
+                        if(toAddProduct){
+                            setToAddProduct(false);
+                        }else if(toAddBrand){
+                            setToAddBrand(false);
+                        }
+                    }}
                     activateCancel={false}
                     activateConfirm={true}
                 />
@@ -277,7 +303,7 @@ const AddProductPage = () => {
             {isConfirmationBrandModalOpen && (
                 <Modal
                     title={`¿Estás seguro de que deseas agregar la marca '${newBrandName}'?`}
-                    confirmAction={() => toggleConfirmAdminLogged()} 
+                    confirmAction={() =>{setToAddBrand(true);toggleConfirmAdminLogged();toggleConfirmationBrandModal();}} 
                     confirmation="Añadir"
                     confirmCancel={() => toggleConfirmationBrandModal()}
                     activateCancel={true}
@@ -288,11 +314,16 @@ const AddProductPage = () => {
                 <ConfirmAdminLogged
                     confirmation="Confirmar"
                     confirmAction={() => {
+                        if (toAddProduct) {
+                            addProduct();
+                        }else if(toAddBrand){
                             addBrand();
+                        }
                     }}
                     confirmCancel={() => {
                         toggleConfirmAdminLogged();
-                        toggleConfirmationBrandModal();
+                        setToAddProduct(false);
+                        setToAddBrand(false);
                     }}
                     activateCancel={true}
                     activateConfirm={true}
@@ -306,16 +337,6 @@ const AddProductPage = () => {
                     activateCancel={false}
                     activateConfirm={true}
                 />
-                )
-            }
-            {isErrorModalOpen && (
-                <Modal
-                title={`Error: ${errorMessage}`}
-                confirmation="Aceptar"
-                confirmAction={() => toggleErrorModal()}
-                activateCancel={false}
-                activateConfirm={true}
-                />    
                 )
             }
         </div>
