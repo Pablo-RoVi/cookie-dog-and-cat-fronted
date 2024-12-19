@@ -28,6 +28,33 @@ const verifyPasswords = (
   );
 };
 
+//Product validations
+const verifyProductCode = (code: string): boolean => {
+  const productCodeRegex = /^[0-9]{8,15}$/;
+  return productCodeRegex.test(code) && code !== "";
+}
+
+const verifyProductPrice = (price: string): boolean => {
+  const priceRegex = /^([0-9]{1,3}(.[0-9]{3}){0,2}|[0-9]{1,9})$/;
+  return priceRegex.test(price) && price !== "";
+}
+
+const verifyProductName = (name: string): boolean => {
+  const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s\d,.\-]{3,100}$/;
+  return nameRegex.test(name) && name !== "";
+}
+
+const verifyProductStock = (stock: string): boolean => {
+  const stockRegex = /^[0-9]{1,9}$/;
+  return stockRegex.test(stock) && stock !== "";
+}
+
+//Brand validations
+const verifyBrandName = (name: string): boolean => {
+  const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s\d,.\-]{3,30}$/;
+  return nameRegex.test(name) && name !== "";
+}
+
 const refreshPage = () => {
   window.location.reload();
 };
@@ -37,6 +64,11 @@ const Functions = {
   verifyName,
   verifyRut,
   verifyPasswords,
+  verifyProductCode,
+  verifyProductName,
+  verifyProductPrice,
+  verifyProductStock,
+  verifyBrandName,
   refreshPage,
 };
 
