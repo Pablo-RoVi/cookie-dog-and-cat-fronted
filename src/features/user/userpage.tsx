@@ -128,6 +128,7 @@ const UserPage = () => {
               valueFilter: roleFilter,
               setOnChangeFilter: setRoleFilter,
               options: options.roleOptions,
+              firstValue: "SIN ELECCIÓN",
             })}
           </div>
           <div className="container max-w-[20%]">
@@ -136,6 +137,7 @@ const UserPage = () => {
               valueFilter: accountStatusFilter,
               setOnChangeFilter: setAccountStatusFilter,
               options: options.accountStatusOptions,
+              firstValue: "SIN ELECCIÓN",
             })}
           </div>
         </div>

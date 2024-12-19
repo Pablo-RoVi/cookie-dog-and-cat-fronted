@@ -118,6 +118,7 @@ const AddUserPage = () => {
           valueFilter: role,
           setOnChangeFilter: setRole,
           options: Options.roleOptions,
+          firstValue: "SIN ELECCIÓN",
         })}
         {TableModule.inputFilter({
           label: "Contraseña",

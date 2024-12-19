@@ -188,18 +188,21 @@ const EditProductPage = () => {
                     valueFilter: categoryName,
                     setOnChangeFilter: setCategoryName,
                     options: Options.categoryOptions,
+                    firstValue: "SIN ELECCIÓN",
                 })}
                 {TableModule.selectFilter({
                     label: "Marca",
                     valueFilter: brandName,
                     setOnChangeFilter: setBrandName,
                     options: brands,
+                    firstValue: "SIN ELECCIÓN",
                 })}
                 {TableModule.selectFilter({
                     label: "Especie",
                     valueFilter: specieName,
                     setOnChangeFilter: setEspecieName,
                     options: Options.specieOptions,
+                    firstValue: "SIN ELECCIÓN",
                 })}
                 <div className="flex items-center space-x-4">
                     {

@@ -177,7 +177,7 @@ const AddProductPage = () => {
 
     return (
         <div className="max-h-screen bg-white flex-auto flex h-1/2">
-            <div className="container mx-auto mt-6 ml-52">
+            <div className="container mx-auto mt-6 ml-52 max-w-[30%]">
                 {TableModule.title({title: "Añadir producto"})}
                 {TableModule.inputFilter({
                     label: "Código",
@@ -216,18 +216,21 @@ const AddProductPage = () => {
                     valueFilter: categoryName,
                     setOnChangeFilter: setCategoryName,
                     options: Options.categoryOptions,
+                    firstValue: "SIN ELECCIÓN",
                 })}
                 {TableModule.selectFilter({
                     label: "Marca",
                     valueFilter: brandName,
                     setOnChangeFilter: setBrandName,
                     options: brands,
+                    firstValue: "SIN ELECCIÓN",
                 })}
                 {TableModule.selectFilter({
                     label: "Especie",
                     valueFilter: specieName,
                     setOnChangeFilter: setEspecieName,
                     options: Options.specieOptions,
+                    firstValue: "SIN ELECCIÓN",
                 })}
                 <div className="flex items-center space-x-4">
                     {
@@ -274,7 +277,7 @@ const AddProductPage = () => {
                     activateConfirm={true}
                 />
             )}
-            <div className="container mx-auto mt-20">
+            <div className="container mx-auto mr-52 ml-40">
                 <img src={cookie} alt="cookie" className="h-auto w-auto opacity-10" />
             </div>
             <div className="container mx-auto mt-6 mr-52">

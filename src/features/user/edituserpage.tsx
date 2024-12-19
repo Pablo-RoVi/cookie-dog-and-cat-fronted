@@ -185,6 +185,7 @@ const EditUserPage = () => {
           valueFilter: role,
           setOnChangeFilter: setRole,
           options: Options.roleOptions,
+          firstValue: "SIN ELECCIÓN",
         })}
         <div className="flex items-center space-x-4">
           {isUserModified ? (
