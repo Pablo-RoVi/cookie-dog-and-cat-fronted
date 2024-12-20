@@ -12,7 +12,7 @@ const headersShopping = [
   "Marca",
   "Categoría",
   "Especie",
-  "Precio",
+  "Precio Unitario",
   "Cantidad",
   "Acciones",
 ];

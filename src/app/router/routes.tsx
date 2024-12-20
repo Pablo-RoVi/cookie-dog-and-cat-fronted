@@ -77,6 +77,9 @@ const Routes = (props: Props) => {
             <Route path="/users" element={<UserPage />} />
             <Route path="/edit-user" element={<EditUserPage />} />
             <Route path="/add-user" element={<AddUserPage />} />
+            <Route path="/products" element={<ProductPage />} />
+            <Route path="edit-product/:id" element={<EditProductPage />} />
+            <Route path="/products/add-product" element={<AddProductPage />} />
             <Route path="/sales" element={<AddSalePage />} />
             <Route path="/edit-sale" element={<EditSalePage />} />
             <Route path="/detail-sale" element={<DetailSalePage />} />
@@ -90,11 +93,6 @@ const Routes = (props: Props) => {
                 </RoleBasedRoute>
               }
             />
-            <Route path="/products" element={<Outlet />}>
-              <Route path="" element={<ProductPage />} />
-              <Route path="edit-product/:id" element={<EditProductPage />} />
-              <Route path="add-product" element={<AddProductPage />} />
-            </Route>
           </Route>
           <Route path="*" element={<NotFound />} />
         </Route>
