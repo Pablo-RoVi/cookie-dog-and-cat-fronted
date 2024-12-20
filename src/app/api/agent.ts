@@ -27,25 +27,20 @@ const Auth = {
 const User = {
   list: () => requests.get("user/"),
   active: () => requests.get("user/ActiveUsers"),
-  getByNickName: (nickName: string) =>
-    requests.get(`user/GetUserNameByNickName${nickName}`),
+  getByNickName: (nickName: string) => requests.get(`user/GetUserNameByNickName${nickName}`),
   add: (form: any) => requests.post("user/RegisterUser", form),
   update: (form: any) => requests.put("user/UpdateUser", form),
   changeState: (id: string) => requests.put(`user/ChangeState/${id}`, id),
-  changePasswordEmployee: (form: any) =>
-    requests.put("user/ChangePasswordEmployee", form),
-  changePasswordAdmin: (form: any) =>
-    requests.put("user/ChangePasswordAdmin", form),
+  changePasswordEmployee: (form: any) => requests.put("user/ChangePasswordEmployee", form),
+  changePasswordAdmin: (form: any) => requests.put("user/ChangePasswordAdmin", form),
 };
 
 const Product = {
   list: () => requests.get("product/allProducts"),
   available: () => requests.get("product/availableProducts"),
   add: (form: any) => requests.post("product/addProduct", form),
-  update: (form: any, id: string) =>
-    requests.put(`product/editProduct/${id}`, form),
-  delete: (unique_id: string) =>
-    requests.delete(`product/deleteProduct/${unique_id}`, unique_id),
+  update: (form: any, id: string) => requests.put(`product/editProduct/${id}`, form),
+  delete: (unique_id: string) => requests.delete(`product/deleteProduct/${unique_id}`, unique_id),
 };
 
 const Sale = {
@@ -56,11 +51,11 @@ const Sale = {
   edit: (form: any, id: string) => requests.put(`sale/editSale/${id}`, form),
   getByDate: (form: any) => requests.get("sale/getSalesByDate", form),
 };
+
 const Brand = {
   list: () => requests.get("brand/getBrands"),
   add: (form: any) => requests.post("brand/addBrand", form),
-  update: (form: any, id: string) =>
-    requests.put(`brand/editBrand/${id}`, form),
+  update: (form: any, id: string) => requests.put(`brand/editBrand/${id}`, form),
   delete: (id: string) => requests.delete(`brand/deleteBrand/${id}`, id),
 };
 
@@ -87,6 +82,6 @@ const SendEmail = (userEmail: string, adminName: string, messsage: string) => {
     );
 };
 
-const agent = { Auth, requests, User, Product, Brand, SendEmail, Sale };
+const agent = { Auth, User, Product, Sale, Brand, SendEmail };
 
 export default agent;
