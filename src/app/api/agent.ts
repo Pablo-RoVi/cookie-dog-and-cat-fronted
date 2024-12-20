@@ -48,6 +48,8 @@ const Sales = {
   addSale: (form: any) => requests.post("sale/addSale", form),
   deleteSale: (id: string) => requests.delete(`sale/deleteSale/${id}`, id),
   getPaymentMethods: () => requests.get("sale/GetPaymentMethods"),
+  editSale: (form: any, id: string) => requests.put(`sale/editSale/${id}`, form),
+  getSalesByDate: (form: any) => requests.get("sale/getSalesByDate", form),
 }
 const Brands = {
   listBrands: () => requests.get("brand/getBrands"),
