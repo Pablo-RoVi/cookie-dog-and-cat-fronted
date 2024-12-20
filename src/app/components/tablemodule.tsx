@@ -72,6 +72,7 @@ const dateFilter = (props) => {
         onChange={(e) => props.setOnChangeFilter(e.target.value)}
         className="p-2 border border-gray-300 rounded-lg shadow-sm"
         disabled={props.isDisabled}
+        min={props.minDate}
       />
     </div>
   );

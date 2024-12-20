@@ -87,6 +87,7 @@ const ReportPage = () => {
               label: "Fecha Final",
               valueFilter: finalDate,
               setOnChangeFilter: setFinalDate,
+              minDate: initialDate,
             })}
           </div>
         </div>
