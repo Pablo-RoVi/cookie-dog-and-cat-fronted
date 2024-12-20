@@ -20,17 +20,6 @@ const accountStatusOptions = [
   },
 ];
 
-const brandOptions = [
-  {
-    value: "Hills",
-    label: "Hills",
-  },
-  {
-    value: "ProPlan",
-    label: "ProPlan",
-  },
-];
-
 const categoryOptions = [
   {
     value: "Alimento",
@@ -64,7 +53,6 @@ const specieOptions = [
 const options = {
   roleOptions,
   accountStatusOptions,
-  brandOptions,
   categoryOptions,
   specieOptions
 };

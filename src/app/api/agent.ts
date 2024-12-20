@@ -49,6 +49,12 @@ const Sales = {
   deleteSale: (id: string) => requests.delete(`sale/deleteSale/${id}`, id),
   getPaymentMethods: () => requests.get("sale/GetPaymentMethods"),
 }
+const Brands = {
+  listBrands: () => requests.get("brand/getBrands"),
+  addBrand: (form: any) => requests.post("brand/addBrand", form),
+  updateBrand: (form: any, id: string) => requests.put(`brand/editBrand/${id}`, form),
+  deleteBrand: (id: string) => requests.delete(`brand/deleteBrand/${id}`, id)
+};
 
 const SendEmail = (
   userEmail: string,
@@ -77,6 +83,6 @@ const SendEmail = (
     );
 };
 
-const agent = { Auth, requests, Users, Products, SendEmail, Sales };
+const agent = { Auth, requests, Users, Products, Brands, SendEmail, Sales };
 
 export default agent;

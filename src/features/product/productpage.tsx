@@ -31,11 +31,17 @@ const ProductPage = () => {
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     useEffect(() => {
-        Agent.Products.list().then((response) => {
-          setProducts(response.data);
-        });
+        const initializeData = async () => {
+          try {
+            const response = await Agent.Products.list();
+            setProducts(response.data);
+          } catch (error) {
+            console.error("Error fetching products:", error);
+          }
+        };
+    
+        initializeData();
     }, []);
-
 
     const deleteProduct = (unique_id) => { if (selectedProduct) 
         {   
