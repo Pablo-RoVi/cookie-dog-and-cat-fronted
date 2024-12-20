@@ -5,6 +5,7 @@ import colors from "../static/colors";
 import cookie from "../static/images/cookie.png";
 import { useAuth } from "../../app/context/authcontext";
 import ChangeEmployeePassword from "./changeemployeepassword";
+import Modal from "../../app/components/modal";
 
 const adminMenu = [
   {
@@ -52,6 +53,7 @@ const Navbar = () => {
   const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
   const [menu, setMenu] = useState([]);
   const [settings, setSettings] = useState([]);
+  const [passwordModified, setPasswordModified] = useState<boolean>(false);
 
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] =
     useState<boolean>(false);
@@ -78,6 +80,16 @@ const Navbar = () => {
 
   const toggleConfirmationModal = () => {
     setIsConfirmationModalOpen(!isConfirmationModalOpen);
+  };
+
+  const togglePasswordModified = () => {
+    setPasswordModified(!passwordModified);
+  };
+
+  const confirmPasswordChanged = () => {
+    logout();
+    toggleConfirmationModal();
+    togglePasswordModified();
   };
 
   return (
@@ -134,9 +146,7 @@ const Navbar = () => {
           clipPath: "polygon(0 0, 100% 0, 50% 100%, 0 100%)",
         }}
       />
-      <div
-        className="bg-white w-[2%]"
-      />
+      <div className="bg-white w-[2%]" />
       <div
         className="w-[8%]"
         style={{
@@ -206,7 +216,16 @@ const Navbar = () => {
       {isConfirmationModalOpen && (
         <ChangeEmployeePassword
           confirmCancel={toggleConfirmationModal}
-          confirmAction={logout}
+          confirmAction={togglePasswordModified}
+        />
+      )}
+      {passwordModified && (
+        <Modal
+          title="Su contraseña ha sido modificada con éxito. Será redirigido a la página de inicio de sesión."
+          confirmation="Aceptar"
+          confirmAction={confirmPasswordChanged}
+          activateCancel={false}
+          activateConfirm={true}
         />
       )}
     </nav>

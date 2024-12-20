@@ -21,12 +21,25 @@ Follow these steps to get the project up and running on your local machine:
    ```bash
    cd cookie-dog-and-cat-frontend
    ```
-3. Inside the folder exists a file called *.env.development* change their name to *.env* 
+3. Inside the folder exists a file called *.env.example*. Rename it to *.env*.
 
-    **Note:** Change the value to match the API url, otherwise transactions will not work
+    **Note:** Update the values in the file to match your environment configuration. Failing to set these correctly may cause some features of the application to not work properly.
+
+    Example `.env` file:
     ```bash
     REACT_APP_API_URL=http://localhost:5000/api/
+    REACT_APP_EMAIL_JS_SERVICE_ID=your_email_service_id
+    REACT_APP_EMAIL_JS_TEMPLATE_ID=your_email_template_id
+    REACT_APP_EMAIL_JS_PUBLIC_ID=your_email_js_public_id
     ```
+
+    **Descriptions of the variables:**
+    - `REACT_APP_API_URL`: The base URL for the backend API. Change this to the correct API URL for your environment (e.g., production or development).
+    - `REACT_APP_EMAIL_JS_SERVICE_ID`: The service ID for EmailJS. Replace with your EmailJS service ID.
+    - `REACT_APP_EMAIL_JS_TEMPLATE_ID`: The template ID for EmailJS. Replace with the template ID used for sending emails.
+    - `REACT_APP_EMAIL_JS_PUBLIC_ID`: The public API key for EmailJS. Replace with your public EmailJS key.
+
+    For more information on how to get the required EmailJS values, refer to the [EmailJS Documentation](https://www.emailjs.com/docs/).
 
 4. Install project dependencies using npm.
    ```bash

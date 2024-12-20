@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../../app/static/styles/index.css";
 import Agent from "../../app/api/agent";
-import colors from "../../app/static/colors";
 import buttons from "../../app/components/buttons";
 import TableModule from "../../app/components/tablemodule";
 import Functions from "../../app/components/functions";
@@ -20,10 +19,11 @@ const ProductPage = () => {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [selectedProduct, setSelectedProduct] = useState<Product>();
     const productsPerPage = 8;
+
     const navigate = useNavigate();
 
     const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState<boolean>(false);
-    const [isDeletedModal, setIsDeletedModal] = useState<boolean>(false);
+    const [isDeletedModalOpen, setIsDeletedModalOpen] = useState<boolean>(false);
 
     const indexOfLastProduct = currentPage * productsPerPage;
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
@@ -31,21 +31,27 @@ const ProductPage = () => {
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     useEffect(() => {
-        Agent.Products.list().then((response) => {
-          setProducts(response.data);
-        });
+        const initializeData = async () => {
+          try {
+            const response = await Agent.Product.list();
+            setProducts(response.data);
+          } catch (error) {
+            console.error("Error fetching products:", error);
+          }
+        };
+    
+        initializeData();
     }, []);
-
 
     const deleteProduct = (unique_id) => { if (selectedProduct) 
         {   
             if(unique_id){
                 toggleConfirmationModal();
-                Agent.Products.deleteProduct(unique_id).then(
+                Agent.Product.delete(unique_id).then(
                     (response : AxiosResponse) => { 
                     if(response.status === 200) 
                     {                    
-                        toggleDeletedModal();
+                        toggleDeleteModal();
                     } else if(response.status === 400)
                     {
                         console.error(response.statusText);
@@ -54,9 +60,6 @@ const ProductPage = () => {
                     { 
                         console.error("Error al eliminar el producto:", error); 
                 }); 
-            }
-            else{
-                console.log("No tengo id");
             }
         } 
     };
@@ -71,20 +74,26 @@ const ProductPage = () => {
         );
     });
 
+    const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+
     const toggleConfirmationModal = () => {
         setIsConfirmationModalOpen(!isConfirmationModalOpen);
     };
 
-    const toggleDeletedModal = () => {
-        setIsDeletedModal(!isDeletedModal);
+    const toggleDeleteModal = () => {
+        setIsDeletedModalOpen(!isDeletedModalOpen);
+    };
+
+    const handleNavigate = (path: string, state?: any) => {
+        navigate(path, state ? { state } : undefined);
     };
 
     return (
-        <div className="max-h-screen bg-white flex-auto flex h-1/2">
+        <div className="max-h-screen bg-white">
             <div className="container mx-auto px-4 py-6">
-                <h1 className="text-2xl font-bold mb-4" style={{color: colors.turquoise}}>Productos</h1>
+                {TableModule.title({ title: "Productos" })}
                 {/* Filtros */}
-                <div className="flex space-x-4 mb-6">
+                <div className="flex space-x-4">
                     <div className="container max-w-[20%]">
                         {TableModule.inputFilter({
                         label: "Nombre",
@@ -95,7 +104,7 @@ const ProductPage = () => {
                 </div>
 
                 {/* Tabla */}
-                {TableModule.table({headers: headers, data: products.map((product: Product) => [
+                {TableModule.table({headers: headers, data: currentProducts.map((product: Product) => [
                 product.unique_id,
                 product.product_name,
                 product.price,
@@ -105,7 +114,7 @@ const ProductPage = () => {
                 product.specieName,
                 <>
                     <div className="flex justify-between items-center ml-4 mr-4">
-                    {buttons.EditButton({onClick: () => { setSelectedProduct(product); navigate(`/products/edit-product/${product.unique_id}`) }})}
+                    {buttons.EditButton({onClick: () => { setSelectedProduct(product); handleNavigate(`/products/edit-product/${product.unique_id}`,product); }})}
                     {buttons.DeleteButton({onClick: () => { setSelectedProduct(product); toggleConfirmationModal();}})}
                     </div>
                 </>
@@ -120,10 +129,10 @@ const ProductPage = () => {
                     activateConfirm={true}/>
                 )}
 
-                {isDeletedModal && (
+                {isDeletedModalOpen && (
                     <Modal title={'Producto eliminado con éxito'} 
                     confirmation="Aceptar" 
-                    confirmAction={() => {toggleDeletedModal(); Functions.refreshPage();}}
+                    confirmAction={() => {toggleDeleteModal(); Functions.refreshPage();}}
                     activateCancel={false}
                     activateConfirm={true}/>
                 )}
@@ -137,7 +146,7 @@ const ProductPage = () => {
                 })}
 
                 {/* Botón Agregar */}
-                {buttons.TurquoiseButton({ text: "Añadir", onClick: () => navigate("/products/add-product") })}
+                {buttons.TurquoiseButton({ text: "Añadir", onClick: () => handleNavigate("/products/add-product") })}
             </div>
         </div>
     );

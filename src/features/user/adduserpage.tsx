@@ -59,7 +59,7 @@ const AddUserPage = () => {
   };
 
   const registerUser = () => {
-    Agent.Users.registerUser({
+    Agent.User.add({
       rut: rut,
       name: name,
       last_name: lastName,
@@ -118,6 +118,7 @@ const AddUserPage = () => {
           valueFilter: role,
           setOnChangeFilter: setRole,
           options: Options.roleOptions,
+          firstValue: "SIN ELECCIÓN",
         })}
         {TableModule.inputFilter({
           label: "Contraseña",

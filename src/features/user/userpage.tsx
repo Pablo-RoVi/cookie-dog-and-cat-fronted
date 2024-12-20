@@ -46,7 +46,7 @@ const UserPage = () => {
   useEffect(() => {
     const initializeData = async () => {
       try {
-        const response = await Agent.Users.list();
+        const response = await Agent.User.list();
         setUsers(response.data);
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -98,7 +98,7 @@ const UserPage = () => {
 
   const changeStateUser = (id: string) => {
     if (selectedUser) {
-      Agent.Users.changeState(id)
+      Agent.User.changeState(id)
         .then(() => {
           toggleConfirmationModal();
           toggleChangedStateModal();
@@ -128,6 +128,7 @@ const UserPage = () => {
               valueFilter: roleFilter,
               setOnChangeFilter: setRoleFilter,
               options: options.roleOptions,
+              firstValue: "SIN ELECCIÓN",
             })}
           </div>
           <div className="container max-w-[20%]">
@@ -136,6 +137,7 @@ const UserPage = () => {
               valueFilter: accountStatusFilter,
               setOnChangeFilter: setAccountStatusFilter,
               options: options.accountStatusOptions,
+              firstValue: "SIN ELECCIÓN",
             })}
           </div>
         </div>

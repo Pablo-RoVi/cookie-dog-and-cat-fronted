@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import Buttons from "./buttons";
 import TableModule from "./tablemodule";
 import Functions from "../../app/components/functions";
@@ -9,24 +8,22 @@ import { useAuth } from "../../app/context/authcontext";
 
 const ChangeEmployeePassword = (props) => {
   const { userNickName } = useAuth();
-  const navigate = useNavigate();
 
   const [currentPassword, setCurrentPassword] = useState<string>("");
   const [newPassword, setNewPassword] = useState<string>("");
   const [confirmNewPassword, setConfirmNewPassword] = useState<string>("");
-  const [isPasswordModified, setIsPasswordModified] = useState<boolean>(false);
+  const [isPasswordVerify, setIsPasswordVerify] = useState<boolean>(false);
 
   const verifyEmployeeLogged = () => {
-    Agent.Users.changePasswordEmployee({
+    Agent.User.changePasswordEmployee({
       nick_name: userNickName,
       currentPassword: currentPassword,
       newPassword: newPassword,
       confirmPassword: confirmNewPassword,
     })
       .then(() => {
-        props.confirmAction();
         props.confirmCancel();
-        navigate("/");
+        props.confirmAction();
       })
       .catch((error) => {
         console.error("Error al verificar administrador:", error);
@@ -34,7 +31,7 @@ const ChangeEmployeePassword = (props) => {
   };
 
   useEffect(() => {
-    setIsPasswordModified(
+    setIsPasswordVerify(
       Functions.verifyPasswords(newPassword, confirmNewPassword)
     );
   }, [newPassword, confirmNewPassword]);
@@ -79,12 +76,15 @@ const ChangeEmployeePassword = (props) => {
             setOnChangeFilter: setConfirmNewPassword,
             placeholder: "Debe coincidir con tu nueva contraseña",
             isPassword: true,
-            errorInput: !Functions.verifyPasswords(newPassword, confirmNewPassword),
+            errorInput: !Functions.verifyPasswords(
+              newPassword,
+              confirmNewPassword
+            ),
             errorMessage: newPassword ? "Credenciales inválidas" : "",
           })}
         </div>
         <div className="flex justify-center gap-4 mb-4">
-          {isPasswordModified &&
+          {isPasswordVerify &&
           !isEmpty(currentPassword, newPassword, confirmNewPassword) ? (
             Buttons.TurquoiseButton({
               text: "Confirmar",

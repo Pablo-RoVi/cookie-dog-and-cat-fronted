@@ -121,6 +121,30 @@ const SetStatusButton = ({ isActive, onClick }) => {
   );
 };
 
+const DownloadPDFButton = ({ onClick }) => {
+  return (
+    <button className="text-white font-bold rounded" onClick={onClick}>
+      <svg
+        className="w-10 h-10 text-gray-800 dark:text-dark"
+        aria-hidden="true"
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          d="M4 15v2a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-2m-8 1V4m0 12-4-4m4 4 4-4"
+        />
+      </svg>
+    </button>
+  );
+};
+
 const TurquoiseButton = ({ onClick, text }) => {
   return (
     <div className="flex justify-end mt-4">
@@ -153,7 +177,7 @@ const GrayButton = ({ onClick, text }) => {
   return (
     <div className="flex justify-end mt-4">
       <button
-        className="text-white font-bold py-2 px-4 rounded"
+        className="text-white font-bold py-2 px-4 rounded cursor-not-allowed"
         style={{ backgroundColor: colors.gray }}
         onClick={onClick}
       >
@@ -168,6 +192,7 @@ const Buttons = {
   DeleteButton,
   DetailButton,
   SetStatusButton,
+  DownloadPDFButton,
   TurquoiseButton,
   FuchsiaButton,
   GrayButton,

@@ -20,17 +20,6 @@ const accountStatusOptions = [
   },
 ];
 
-const brandOptions = [
-  {
-    value: "Hills",
-    label: "Hills",
-  },
-  {
-    value: "ProPlan",
-    label: "ProPlan",
-  },
-];
-
 const categoryOptions = [
   {
     value: "Alimento",
@@ -39,6 +28,10 @@ const categoryOptions = [
   {
     value: "Higiene",
     label: "Higiene",
+  },
+  {
+    value: "Juguetes",
+    label: "Juguetes",
   },
 ];
 
@@ -60,9 +53,8 @@ const specieOptions = [
 const options = {
   roleOptions,
   accountStatusOptions,
-  brandOptions,
   categoryOptions,
-  specieOptions,
+  specieOptions
 };
 
 export default options;
