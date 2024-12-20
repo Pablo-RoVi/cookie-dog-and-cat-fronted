@@ -47,14 +47,14 @@ const AddSalesPage = () => {
   useEffect(() => {
     const initializeData = async () => {
       try {
-        const usersResponse = await Agent.Users.list();
+        const usersResponse = await Agent.User.list();
         const filteredEmployees = usersResponse.data.map((user) => ({
           value: user.id,
           label: user.nick_name,
         }));
         setEmployees(filteredEmployees);
 
-        const productsResponse = await Agent.Products.availableProducts();
+        const productsResponse = await Agent.Product.available();
         setAvailableProducts(productsResponse.data);
       } catch (error) {
         console.error("Error cargando datos iniciales:", error);
@@ -67,7 +67,7 @@ const AddSalesPage = () => {
   useEffect(() => {
     const initializeData = async () => {
       try {
-        const response = await Agent.Sales.getPaymentMethods();
+        const response = await Agent.Sale.getPaymentMethods();
         const filteredSales = response.data.map((sale) => ({
           value: sale,
           label: sale,

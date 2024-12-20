@@ -33,7 +33,7 @@ const ProductPage = () => {
     useEffect(() => {
         const initializeData = async () => {
           try {
-            const response = await Agent.Products.list();
+            const response = await Agent.Product.list();
             setProducts(response.data);
           } catch (error) {
             console.error("Error fetching products:", error);
@@ -47,7 +47,7 @@ const ProductPage = () => {
         {   
             if(unique_id){
                 toggleConfirmationModal();
-                Agent.Products.deleteProduct(unique_id).then(
+                Agent.Product.delete(unique_id).then(
                     (response : AxiosResponse) => { 
                     if(response.status === 200) 
                     {                    

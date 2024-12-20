@@ -85,7 +85,7 @@ const AddProductPage = () => {
     }, [productName, price, stock, categoryName, brandName, specieName]);
 
     useEffect(() => {
-        Agent.Brands.listBrands().then((response) => {
+        Agent.Brand.list().then((response) => {
             setBrands(response.data.map((brand : Brand) => ({
                 value: brand.brand_name,
                 label: brand.brand_name
@@ -94,7 +94,7 @@ const AddProductPage = () => {
     },[]);
     
     const addProduct = () => {
-        Agent.Products.addProduct({
+        Agent.Product.add({
             unique_id: unique_id,
             product_name: productName,
             price: price,
@@ -136,7 +136,7 @@ const AddProductPage = () => {
     };
 
     const addBrand = () => {
-        Agent.Brands.addBrand({
+        Agent.Brand.add({
             brandName: newBrandName
         }).then((response : AxiosResponse) => {
             console.log("response", response);

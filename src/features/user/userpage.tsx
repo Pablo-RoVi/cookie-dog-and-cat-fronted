@@ -46,7 +46,7 @@ const UserPage = () => {
   useEffect(() => {
     const initializeData = async () => {
       try {
-        const response = await Agent.Users.list();
+        const response = await Agent.User.list();
         setUsers(response.data);
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -98,7 +98,7 @@ const UserPage = () => {
 
   const changeStateUser = (id: string) => {
     if (selectedUser) {
-      Agent.Users.changeState(id)
+      Agent.User.changeState(id)
         .then(() => {
           toggleConfirmationModal();
           toggleChangedStateModal();

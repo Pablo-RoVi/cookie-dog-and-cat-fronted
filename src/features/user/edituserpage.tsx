@@ -108,7 +108,7 @@ const EditUserPage = () => {
   };
 
   const editUser = () => {
-    Agent.Users.updateUser({
+    Agent.User.update({
       id: id,
       name: name,
       last_name: lastName,
@@ -130,7 +130,7 @@ const EditUserPage = () => {
   };
 
   const editPassword = () => {
-    Agent.Users.changePasswordAdmin({
+    Agent.User.changePasswordAdmin({
       nick_name: nickName,
       newPassword: newPassword,
       confirmPassword: confirmNewPassword,

@@ -80,7 +80,7 @@ const EditProductPage = () => {
     }, [originalData, unique_id, productName, price, stock, categoryName, brandName, specieName]);
 
     useEffect(() => {
-        Agent.Brands.listBrands().then((response) => {
+        Agent.Brand.list().then((response) => {
             setBrands(response.data.map((brand: Brand) => ({
                 value: brand.brand_name,
                 label: brand.brand_name
@@ -89,7 +89,7 @@ const EditProductPage = () => {
     },[]);
     
     const updateProduct = () => {
-        Agent.Products.updateProduct({
+        Agent.Product.update({
             unique_id: unique_id,
             product_name: productName,
             price: price,

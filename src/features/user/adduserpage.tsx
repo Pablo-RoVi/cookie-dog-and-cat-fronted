@@ -59,7 +59,7 @@ const AddUserPage = () => {
   };
 
   const registerUser = () => {
-    Agent.Users.registerUser({
+    Agent.User.add({
       rut: rut,
       name: name,
       last_name: lastName,
