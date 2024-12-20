@@ -3,7 +3,6 @@ import "../../app/static/styles/index.css";
 import TableModule from "../../app/components/tablemodule";
 import TableModal from "../../app/components/tablemodal";
 import { useAuth } from "../../app/context/authcontext";
-import Options from "../../app/components/options";
 import Buttons from "../../app/components/buttons";
 import Agent from "../../app/api/agent";
 import colors from "../../app/static/colors";
