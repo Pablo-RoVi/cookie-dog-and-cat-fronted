@@ -1,25 +1,21 @@
-import React, { useState, useEffect, FormEvent, useContext } from "react";
+import React, { useState, FormEvent } from "react";
 import "../../app/static/styles/index.css";
 import colors from "../../app/static/colors";
 import cookie from "../../app/static/images/cookie.png";
 import { useAuth } from "../../app/context/authcontext";
-import { useNavigate } from "react-router-dom";
 
 
 const Login = () => {
   const [nick_name, setNick_Name] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [error, setError] = useState("");
 
   const { login } = useAuth();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setError("");
     try {
       await login(nick_name, password);
     } catch (err) {
-      setError("Usuario o contraseña incorrectos.");
       console.error(err);
     }
   };
