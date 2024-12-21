@@ -1,6 +1,5 @@
 import axios, { AxiosResponse } from "axios";
 import emailjs from "@emailjs/browser";
-import { list } from "postcss";
 
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 axios.defaults.withCredentials = true;
