@@ -4,7 +4,6 @@ import Agent from "../../app/api/agent";
 import Buttons from "../../app/components/buttons";
 import TableModule from "../../app/components/tablemodule";
 import Modal from "../../app/components/modal";
-import ConfirmAdminLogged from "../../app/components/confirmadmin";
 import Functions from "../../app/components/functions";
 import { Sale } from "../../app/models/sale";
 
