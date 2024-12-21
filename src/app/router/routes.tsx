@@ -23,14 +23,16 @@ type Props = {};
 const RoleBasedRoute = ({
   roles,
   children,
+  redirectTo = "/",
 }: {
   roles: number[];
   children: React.ReactNode;
+  redirectTo?: string;
 }) => {
   const { userRoleId } = useAuth();
 
   if (!roles.includes(userRoleId)) {
-    return <Navigate to="/" replace />;
+    return <Navigate to={redirectTo}  replace />;
   }
   return <>{children}</>;
 };
@@ -80,15 +82,30 @@ const Routes = (props: Props) => {
             <Route path="/products" element={<ProductPage />} />
             <Route path="/products/edit-product" element={<EditProductPage />} />
             <Route path="/products/add-product" element={<AddProductPage />} />
-            <Route path="/sales" element={<SalePage />} />
+            <Route
+              path="/sales"
+              element={
+                <RoleBasedRoute roles={[1]} redirectTo="/add-sale">
+                  {" "}
+                  <SalePage />{" "}
+                </RoleBasedRoute>
+              }
+            />
+            <Route
+              path="/edit-sale"
+              element={
+                <RoleBasedRoute roles={[1]} redirectTo="/sales">
+                  {" "}
+                  <EditSalePage />{" "}
+                </RoleBasedRoute>
+              }
+            />
             <Route path="/add-sale" element={<AddSalePage />} />
-            <Route path="/edit-sale" element={<EditSalePage />} />
             <Route path="/detail-sale" element={<DetailSalePage />} />
-            <Route path="/add-sale" element={<AddSalePage />} />
             <Route
               path="/reports"
               element={
-                <RoleBasedRoute roles={[1]}>
+                <RoleBasedRoute roles={[1]} redirectTo="/">
                   {" "}
                   <ReportPage />{" "}
                 </RoleBasedRoute>
