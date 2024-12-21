@@ -156,7 +156,8 @@ const AddSalesPage = () => {
     console.log(total);
 
     const sale : Sale = {
-      nickname: selectedEmployee,
+      id: null,
+      nickName: selectedEmployee,
       totalQuantity: products.reduce((acc, product) => acc + product.quantity, 0),
       paymentMethod: paymentMethod,
       totalPrice: total,

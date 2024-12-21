@@ -1,7 +1,8 @@
 import { Product } from "./product";
 
 export interface Sale {
-    nickname: string;
+    id: number;
+    nickName: string;
     totalQuantity: number;
     paymentMethod: string;
     totalPrice: number;

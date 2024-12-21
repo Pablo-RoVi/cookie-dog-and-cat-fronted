@@ -130,14 +130,14 @@ const SalePage = () => {
                 {Buttons.EditButton({
                   onClick: () => {
                     setSelectedSale(sale);
-                    handleNavigate(`/products/edit-product`, sale);
+                    handleNavigate(`/edit-sale`, sale);
                   },
                 })}
                 {Buttons.DetailButton({
                   data: sale,
                   onClick: () => {
                     setSelectedSale(sale);
-                    handleNavigate(`/products/edit-product`, sale);
+                    handleNavigate(`/detail-sale`, sale);
                   },
                 })}
                 {Buttons.DeleteButton({
