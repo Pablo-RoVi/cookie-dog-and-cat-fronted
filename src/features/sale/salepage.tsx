@@ -25,6 +25,7 @@ const SalePage = () => {
   const [users, setUsers] = useState<user[]>([]);
   const [nickNameFilter, setNickNameFilter] = useState<string>("");
   const [selectedSale, setSelectedSale] = useState(null);
+  const [products, setProducts] = useState([]);
 
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] =
     useState<boolean>(false);
@@ -43,8 +44,16 @@ const SalePage = () => {
     const initializeData = async () => {
       try {
         const sales = (await Agent.Sale.list()).data;
-        console.log("Sales:", sales);
         setSales(sales);
+
+        const responseProducts = await Agent.Product.list();
+
+        const products = responseProducts.data.map((product) => ({
+          value: product.unique_id,
+          label: product.product_name,
+        }));
+        setProducts(products);
+        
       } catch (error) {
         console.error("Error fetching sales:", error);
       }
@@ -63,6 +72,11 @@ const SalePage = () => {
   });
 
   const currentSales = filteredSales.slice(indexOfFirstSale, indexOfLastSale);
+
+  const getProductLabel = (id: number) => {
+    const foundProduct = products.find((p) => p.value === id.toString());
+    return foundProduct ? foundProduct.label : "Producto no encontrado";
+  };
 
   const handleNavigate = (path: string, state?: any) => {
     navigate(path, state ? { state } : undefined);
@@ -112,8 +126,9 @@ const SalePage = () => {
           headers: headers,
           data: currentSales.map((sale) => [
             sale.saleId,
-            sale.saleProducts.map((product, productIndex) => (
-                <li key={productIndex}>{product.productId}</li> )),
+            sale.saleProducts.map((product) => (
+              getProductLabel(product.productId)
+            )),
             sale.totalPrice,
             sale.paymentMethod,
             sale.userFullName,
