@@ -100,7 +100,7 @@ const SalePage = () => {
   return (
     <div className="max-h-screen bg-white">
       <div className="container mx-auto px-4 py-6">
-        {TableModule.title({ title: "Empleados" })}
+        {TableModule.title({ title: "Ventas" })}
         {/* Filtros */}
         <div className="flex space-x-4">
           <div className="container max-w-[20%]">
