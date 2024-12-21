@@ -1,5 +1,3 @@
-import Agent from "../api/agent";
-
 const translateRole = (role: string) => {
   const roleTranslation = {
     Admin: "Administrador",
@@ -24,9 +22,8 @@ const verifyPasswords = (
 ): boolean => {
   const passwordRegex = /^[a-zA-Z0-9]{8,}$/;
   return (
-    password === confirmPassword &&
-    password !== "" &&
-    confirmPassword !== "" &&
+    password === confirmPassword && 
+    password !== "" && confirmPassword !== "" &&
     passwordRegex.test(password)
   );
 };
@@ -35,55 +32,31 @@ const verifyPasswords = (
 const verifyProductCode = (code: string): boolean => {
   const productCodeRegex = /^[0-9]{8,15}$/;
   return productCodeRegex.test(code) && code !== "";
-};
+}
 
 const verifyProductPrice = (price: string): boolean => {
   const priceRegex = /^([0-9]{1,3}(.[0-9]{3}){0,2}|[0-9]{1,9})$/;
   return priceRegex.test(price) && price !== "";
-};
+}
 
 const verifyProductName = (name: string): boolean => {
   const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s\d,.\-]{3,100}$/;
   return nameRegex.test(name) && name !== "";
-};
+}
 
 const verifyProductStock = (stock: string): boolean => {
   const stockRegex = /^[0-9]{1,9}$/;
   return stockRegex.test(stock) && stock !== "";
-};
+}
 
 //Brand validations
 const verifyBrandName = (name: string): boolean => {
   const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s\d,.\-]{3,30}$/;
   return nameRegex.test(name) && name !== "";
-};
+}
 
 const refreshPage = () => {
   window.location.reload();
-};
-
-const getProductLabel = async (id: number) => {
-
-  try {
-
-    Agent.Product.list().then((res) => {
-  
-      const products = res.data.map((product) => ({
-        value: product.unique_id,
-        label: product.product_name,
-      }));
-    
-      const foundProduct = products.find((p) => p.value === id.toString());
-
-      console.log("Found product:", foundProduct.label); 
-
-      return foundProduct.label;
-      
-    });
-
-  } catch (error) {
-    console.error("Error fetching products:", error);
-  }
 };
 
 const Functions = {
@@ -97,7 +70,6 @@ const Functions = {
   verifyProductStock,
   verifyBrandName,
   refreshPage,
-  getProductLabel,
 };
 
 export default Functions;

@@ -26,6 +26,7 @@ const AddSalesPage = () => {
 
   const [userOptions, setUserOptions] = useState([]);
   const [paymentMethodOptions, setPaymentMethodOptions] = useState([]);
+  const [products, setProducts] = useState([]);
 
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState<boolean>(false);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState<boolean>(false);
@@ -68,6 +69,13 @@ const AddSalesPage = () => {
         }));
         setUserOptions(users);
 
+        const responseProducts = await Agent.Product.list();
+
+        const products = responseProducts.data.map((product) => ({
+          value: product.unique_id,
+          label: product.product_name,
+        }));
+        setProducts(products);
       } catch (error) {
         console.error("Error cargando datos iniciales:", error);
       }
@@ -95,6 +103,11 @@ const AddSalesPage = () => {
       console.log("error", error);
     });
   }, [saleNickName]);*/
+
+  const getProductLabel = (id: number) => {
+    const foundProduct = products.find((p) => p.value === id.toString());
+    return foundProduct ? foundProduct.label : "Producto no encontrado";
+  };
 
   const toggleSuccessModal = () => {
     setIsSuccessModalOpen(!isSuccessModalOpen);
@@ -163,7 +176,7 @@ const AddSalesPage = () => {
           {TableModule.table({
             headers: headersShopping,
             data: saleProducts.map((product) => [
-              Functions.getProductLabel(product.productId),
+              getProductLabel(product.productId),
               product.productBrand,
               product.productCategory,
               product.productSpecie,
