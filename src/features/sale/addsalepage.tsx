@@ -7,6 +7,10 @@ import Buttons from "../../app/components/buttons";
 import Agent from "../../app/api/agent";
 import colors from "../../app/static/colors";
 import { Product, SelectedProduct } from "../../app/models/product";
+import { User } from '../../app/models/user';
+import { Sale } from "../../app/models/sale";
+import Modal from "../../app/components/modal";
+import Functions from "../../app/components/functions";
 
 const headersShopping = [
   "Producto",
@@ -32,9 +36,8 @@ const AddSalesPage = () => {
 
   const [availableProducts, setAvailableProducts] = useState([]);
 
-  const { userNickName, userRoleId } = useAuth();
   const [employees, setEmployees] = useState([]);
-  const [selectedEmployee, setSelectedEmployee] = useState<string>(userNickName);
+  const [selectedEmployee, setSelectedEmployee] = useState<string>("");
   const [paymentMethod, setPaymentMethod] = useState<string>("");
   const [total, setTotal] = useState(
     products.reduce((acc, product) => acc + product.price * product.quantity, 0)
@@ -44,12 +47,20 @@ const AddSalesPage = () => {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState<boolean>(false);
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState<boolean>(false);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
+
+  const [errorMessage, setErrorMessage] = useState<string>("");
+
+  const [isSaleCompleted, setIsSaleCompleted] = useState<boolean>(false);
+
   useEffect(() => {
     const initializeData = async () => {
       try {
         const usersResponse = await Agent.User.list();
         const filteredEmployees = usersResponse.data.map((user) => ({
-          value: user.id,
+          value: user.nick_name,
           label: user.nick_name,
         }));
         setEmployees(filteredEmployees);
@@ -68,27 +79,27 @@ const AddSalesPage = () => {
     const initializeData = async () => {
       try {
         const response = await Agent.Sale.getPaymentMethods();
-        const filteredSales = response.data.map((sale) => ({
-          value: sale,
-          label: sale,
+        const paymentMethods = response.data.map((paymentMethod) => ({
+          value: paymentMethod,
+          label: paymentMethod,
         }));
-        setPaymentMethodOptions(filteredSales);
+        setPaymentMethodOptions(paymentMethods);
       } catch (error) {
-        console.error("Error fetching users:", error);
+        console.error("Error cargando métodos de pago:", error);
       }
     };
-
     initializeData();
   }, []);
 
   useEffect(() => {
-    Agent.Sale.getPaymentMethods().then((response) => {
-        setPaymentMethod(response.data.map((paymentMethod) => ({
-            value: paymentMethod,
-            label: paymentMethod
-        })));
-    })
-  },[]);
+          if ( selectedEmployee !== "SIN ELECCIÓN" && paymentMethod !== "SIN ELECCIÓN" && products.length > 0 &&
+              selectedEmployee !== "" && paymentMethod !== ""
+          ) {
+              setIsSaleCompleted(true);
+          } else {
+              setIsSaleCompleted(false);
+          }
+  }, [selectedEmployee, paymentMethod, products]);
 
   const handleQuantityChange = (id, change) => {
     const updatedProducts = products.map((product : SelectedProduct) => {
@@ -128,6 +139,72 @@ const AddSalesPage = () => {
     updateTotal(updatedProducts);
   };
 
+  const toggleSuccessModal = () => {
+    setIsSuccessModalOpen(!isSuccessModalOpen);
+  };
+
+  const toggleErrorModal = () => {
+    setIsErrorModalOpen(!isErrorModalOpen);
+  };
+  
+  const toggleConfirmModal = () => {
+    setIsConfirmModalOpen(!isConfirmModalOpen);
+  };
+
+  const addSale = () => {
+
+    console.log(total);
+
+    const sale : Sale = {
+      nickname: selectedEmployee,
+      totalQuantity: products.reduce((acc, product) => acc + product.quantity, 0),
+      paymentMethod: paymentMethod,
+      totalPrice: total,
+      saleProducts: [
+        ...products.map((product : SelectedProduct) => ({
+          productId: parseInt(product.unique_id),
+          productBrand: product.brandName,
+          productCategory: product.categoryName,
+          productSpecie: product.specieName,
+          totalPricePerProduct: parseInt(product.price) * product.quantity,
+          quantity: product.quantity,
+        })),
+      ]
+    };
+
+    console.log("Venta a añadir:", sale);
+
+    Agent.Sale.add(sale)
+      .then((response) => {
+        console.log("Venta añadida:", response);
+        if (response.status === 200) {
+          toggleSuccessModal();
+        }
+      })
+      .catch((error) => {
+        console.log("error", error.response);
+        let errorMessages = [];
+        if(error.response && error.response.data && error.response.data.errors){
+            const errors = error.response.data.errors;
+
+            for(const key in errors){
+                if (errors.hasOwnProperty(key)) { 
+                    if (Array.isArray(errors[key])) 
+                    {  
+                        errors[key].forEach((msg) => { errorMessages.push(`${key}: ${msg}`);}); 
+                    } else { 
+                        errorMessages.push(`${key}: ${errors[key]}`); 
+                    } 
+                }
+            }
+        }else{
+            errorMessages.push(error.response.data)
+        }
+        setErrorMessage(errorMessages.join("\n"));
+        toggleErrorModal();
+      });
+  }
+
   return (
     <div className="max-h-screen bg-white">
       <div className="container mx-auto px-4 py-6">
@@ -142,7 +219,6 @@ const AddSalesPage = () => {
               valueFilter: selectedEmployee,
               setOnChangeFilter: setSelectedEmployee,
               options: employees,
-              isDisabled: userRoleId !== 1,
               firstValue: "SIN ELECCIÓN",
             })}
           </div>
@@ -263,6 +339,37 @@ const AddSalesPage = () => {
             />
         )}
 
+        {/* Modales de  confirmación, éxito y error*/}
+
+        {isConfirmModalOpen && (
+          <Modal
+            title="¿Estás seguro de añadir la venta?"
+            activateConfirm={true}
+            confirmation="Confirmar"
+            confirmAction={() => {addSale(); toggleConfirmModal()}}
+            activateCancel={true}
+            confirmCancel={() => toggleConfirmModal()}
+          />
+        )}
+
+        {isSuccessModalOpen && (
+          <Modal
+            title="Venta añadida con éxito"
+            activateConfirm={true}
+            confirmation="Aceptar"
+            confirmAction={() => {toggleSuccessModal(); Functions.refreshPage();}}
+          />
+        )}
+
+        {isErrorModalOpen && (
+          <Modal
+            title={`Corrija los siguientes errores: ${errorMessage}`}
+            activateConfirm={true}
+            confirmation="Aceptar"
+            confirmAction={() => toggleErrorModal()}
+          />
+        )}
+
         {/* Total y botones */}
         <div className="mt-8">
           <div className="text-right mb-4">
@@ -277,10 +384,17 @@ const AddSalesPage = () => {
             </span>
           </div>
           <div className="flex justify-end space-x-4">
-            <Buttons.TurquoiseButton
+            {isSaleCompleted ? 
+              <Buttons.TurquoiseButton
+              text="Añadir"
+              onClick={() => toggleConfirmModal()}
+              />
+              :
+              <Buttons.GrayButton
               text="Añadir"
               onClick={() => null}
-            />
+              />
+            }
             <Buttons.FuchsiaButton
               text="Cancelar"
               onClick={() => null}
