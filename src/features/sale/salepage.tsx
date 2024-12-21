@@ -30,7 +30,7 @@ const SalePage = () => {
 
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] =
     useState<boolean>(false);
-        const [isDeletedModalOpen, setIsDeletedModalOpen] = useState<boolean>(false);
+  const [isDeletedModalOpen, setIsDeletedModalOpen] = useState<boolean>(false);
 
   const [currentPage, setCurrentPage] = useState<number>(1);
   const navigate = useNavigate();
@@ -87,10 +87,12 @@ const SalePage = () => {
 
   const deleteSale = async (id: number) => {
     try {
+      toggleConfirmationModal();
       if (selectedSale) {
         await Agent.Sale.delete(id.toString());
         const newSales = sales.filter((sale: Sale) => sale.id !== id);
         setSales(newSales);
+        toggleDeleteModal();
       }
     } catch (error) {
       console.error("Error deleting sale:", error);
@@ -131,6 +133,13 @@ const SalePage = () => {
                     handleNavigate(`/products/edit-product`, sale);
                   },
                 })}
+                {Buttons.DetailButton({
+                  data: sale,
+                  onClick: () => {
+                    setSelectedSale(sale);
+                    handleNavigate(`/products/edit-product`, sale);
+                  },
+                })}
                 {Buttons.DeleteButton({
                   onClick: () => {
                     setSelectedSale(sale);
@@ -143,20 +152,27 @@ const SalePage = () => {
         })}
 
         {isConfirmationModalOpen && (
-            <Modal title={`¿Borrar el producto ${selectedSale.id}?`} 
-            confirmAction={() => deleteSale(selectedSale.id)} 
-            confirmation="Eliminar" 
+          <Modal
+            title={`¿Borrar la venta ${selectedSale.id}?`}
+            confirmAction={() => deleteSale(selectedSale.id)}
+            confirmation="Eliminar"
             confirmCancel={toggleConfirmationModal}
             activateCancel={true}
-            activateConfirm={true}/>
+            activateConfirm={true}
+          />
         )}
 
         {isDeletedModalOpen && (
-            <Modal title={'Producto eliminado con éxito'} 
-            confirmation="Aceptar" 
-            confirmAction={() => {toggleDeleteModal(); Functions.refreshPage();}}
+          <Modal
+            title={"Venta eliminada con éxito"}
+            confirmation="Aceptar"
+            confirmAction={() => {
+              toggleDeleteModal();
+              Functions.refreshPage();
+            }}
             activateCancel={false}
-            activateConfirm={true}/>
+            activateConfirm={true}
+          />
         )}
 
         {/* Paginación */}
