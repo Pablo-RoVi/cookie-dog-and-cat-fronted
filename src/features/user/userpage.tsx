@@ -9,8 +9,10 @@ import { User } from "../../app/models/user";
 import options from "../../app/components/options";
 import Modal from "../../app/components/modal";
 import ConfirmAdminLogged from "../../app/components/confirmadmin";
+import { useAuth } from "../../app/context/authcontext";
+import { isDisabled } from "@testing-library/user-event/dist/utils";
 
-const headers = [
+const adminHeaders = [
   "Código",
   "RUT",
   "Nombre",
@@ -20,7 +22,17 @@ const headers = [
   "Acciones",
 ];
 
+const employeeHeaders = [
+  "Código",
+  "RUT",
+  "Nombre",
+  "Apellido",
+  "Rol",
+  "Nombre de Usuario",
+];
+
 const UserPage = () => {
+
   const [searchName, setSearchName] = useState<string>("");
   const [roleFilter, setRoleFilter] = useState<string>("");
   const [accountStatusFilter, setAccountStatusFilter] = useState<string>("");
@@ -42,6 +54,8 @@ const UserPage = () => {
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const { userRoleId } = useAuth();
 
   useEffect(() => {
     const initializeData = async () => {
@@ -144,29 +158,36 @@ const UserPage = () => {
 
         {/* Tabla */}
         {TableModule.table({
-          headers: headers,
-          data: currentUsers.map((user: User) => [
+          headers: userRoleId == 1 ? adminHeaders : employeeHeaders,
+          data: currentUsers.map((user: User) => {
+            const rows : (string | JSX.Element)[] = [
             user.id,
             user.rut,
             user.name,
             user.last_name,
             Functions.translateRole(user.role.role_name),
-            user.nick_name,
-            <>
-              <div className="flex justify-between items-center ml-4 mr-4">
-                <Buttons.EditButton
-                  onClick={() => handleNavigate("/edit-user", user)}
-                />
-                {Buttons.SetStatusButton({
-                  isActive: user.is_active,
-                  onClick: () => {
-                    setSelectedUser(user);
-                    toggleConfirmationModal();
-                  },
-                })}
-              </div>
-            </>,
-          ]),
+            user.nick_name
+            ];
+            if(userRoleId == 1) {
+              rows.push(
+              <>
+                <div className="flex justify-between items-center ml-4 mr-4">
+                  <Buttons.EditButton
+                    onClick={() => handleNavigate("/edit-user", user)}
+                  />
+                  {Buttons.SetStatusButton({
+                    isActive: user.is_active,
+                    onClick: () => {
+                      setSelectedUser(user);
+                      toggleConfirmationModal();
+                    },
+                  })}
+                </div>
+              </>
+              );
+            }
+            return rows;
+          }),
         })}
 
         {isConfirmationModalOpen &&
@@ -233,10 +254,17 @@ const UserPage = () => {
         })}
 
         {/* Botón Agregar */}
-        <Buttons.TurquoiseButton
+        {userRoleId == 1 ?
+          <Buttons.TurquoiseButton
           text="Añadir"
           onClick={() => handleNavigate("/add-user")}
-        />
+          />
+          :
+          <Buttons.GrayButton
+          text="Añadir"
+          onClick={() => null}
+          />
+        }
       </div>
     </div>
   );
