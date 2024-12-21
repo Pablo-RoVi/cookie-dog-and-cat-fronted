@@ -1,7 +1,18 @@
+import { Product } from "./product";
+
 export interface Sale {
-    id: number;
-    products: any[];
+    nickname: string;
     totalQuantity: number;
     paymentMethod: string;
-    nickName: string;
+    totalPrice: number;
+    saleProducts: SaleProducts[];
+}
+
+export interface SaleProducts {
+    productId: number;
+    productBrand: string;
+    productCategory: string;
+    productSpecie: string;
+    totalPricePerProduct: number;
+    quantity: number;
 }
