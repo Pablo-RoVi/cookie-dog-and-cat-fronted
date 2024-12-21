@@ -82,13 +82,12 @@ const Routes = (props: Props) => {
             <Route path="/products" element={<ProductPage />} />
             <Route path="edit-product/:id" element={<EditProductPage />} />
             <Route path="/products/add-product" element={<AddProductPage />} />
-            <Route path="/sales" element={<AddSalePage />} />
             <Route
               path="/sales"
               element={
-                <RoleBasedRoute roles={[1]} redirectTo="/sales">
+                <RoleBasedRoute roles={[1]} redirectTo="/add-sale">
                   {" "}
-                  <AddSalePage />{" "}
+                  <SalePage />{" "}
                 </RoleBasedRoute>
               }
             />
