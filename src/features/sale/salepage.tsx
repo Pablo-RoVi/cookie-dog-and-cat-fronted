@@ -60,7 +60,6 @@ const SalePage = () => {
           label: product.product_name,
         }));
         setProducts(products);
-        
       } catch (error) {
         console.error("Error fetching sales:", error);
       }
@@ -74,8 +73,14 @@ const SalePage = () => {
   }, [sales, nickNameFilter]);
 
   const filteredSales = sales.filter((sale) => {
-    if (nickNameFilter === "") return true;
-    return sale.nickName === nickNameFilter;
+    if (nickNameFilter === "SIN ELECCIÓN") {
+      return true;
+    }
+
+    return (
+      sale.userFullName.toLowerCase().includes(nickNameFilter.toLowerCase()) ||
+      nickNameFilter === ""
+    );
   });
 
   const currentSales = filteredSales.slice(indexOfFirstSale, indexOfLastSale);
@@ -133,9 +138,9 @@ const SalePage = () => {
           headers: headers,
           data: currentSales.map((sale) => [
             sale.saleId,
-            sale.saleProducts.map((product) => (
+            sale.saleProducts.map((product) =>
               getProductLabel(product.productId)
-            )),
+            ),
             sale.totalPrice,
             sale.paymentMethod,
             sale.userFullName,

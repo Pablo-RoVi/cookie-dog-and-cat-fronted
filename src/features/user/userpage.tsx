@@ -67,15 +67,22 @@ const UserPage = () => {
   };
 
   const filteredUsers = users.filter((user) => {
-    return (
-      user.name.toLowerCase().includes(searchName.toLowerCase()) &&
-      (roleFilter === "" || user.role.role_name === roleFilter) &&
-      (accountStatusFilter === "" ||
-        // eslint-disable-next-line no-mixed-operators
-        (accountStatusFilter === "Activo" && user.is_active) ||
-        // eslint-disable-next-line no-mixed-operators
-        (accountStatusFilter === "Inactivo" && !user.is_active))
-    );
+    // Filtro por nombre
+    const matchesName = user.name.toLowerCase().includes(searchName.toLowerCase());
+  
+    // Filtro por rol
+    const matchesRole =
+      roleFilter === "SIN ELECCIÓN" || roleFilter === "" || user.role.role_name === roleFilter;
+  
+    // Filtro por estado de cuenta
+    const matchesAccountStatus =
+      accountStatusFilter === "SIN ELECCIÓN" ||
+      accountStatusFilter === "" ||
+      (accountStatusFilter === "Activo" && user.is_active) ||
+      (accountStatusFilter === "Inactivo" && !user.is_active);
+  
+    // Devolver true si todos los filtros coinciden
+    return matchesName && matchesRole && matchesAccountStatus;
   });
 
   const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
