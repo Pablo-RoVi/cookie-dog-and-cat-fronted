@@ -11,6 +11,7 @@ import { User } from '../../app/models/user';
 import { Sale } from "../../app/models/sale";
 import Modal from "../../app/components/modal";
 import Functions from "../../app/components/functions";
+import { useNavigate } from "react-router-dom";
 
 const headersShopping = [
   "Producto",
@@ -54,6 +55,8 @@ const AddSalesPage = () => {
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   const [isSaleCompleted, setIsSaleCompleted] = useState<boolean>(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const initializeData = async () => {
@@ -156,6 +159,7 @@ const AddSalesPage = () => {
     console.log(total);
 
     const sale : Sale = {
+      id: null,
       nickName: selectedEmployee,
       totalQuantity: products.reduce((acc, product) => acc + product.quantity, 0),
       paymentMethod: paymentMethod,
@@ -204,6 +208,10 @@ const AddSalesPage = () => {
         toggleErrorModal();
       });
   }
+
+  const handleNavigate = () => {
+    navigate("/sales");
+  };
 
   return (
     <div className="max-h-screen bg-white">
@@ -397,7 +405,7 @@ const AddSalesPage = () => {
             }
             <Buttons.FuchsiaButton
               text="Cancelar"
-              onClick={() => null}
+              onClick={() => handleNavigate()}
             />
           </div>
         </div>
