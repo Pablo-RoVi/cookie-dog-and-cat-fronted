@@ -132,6 +132,22 @@ const AddSalesPage = () => {
   };
 
   const handleAddProducts = () => {
+
+    if(products.find((product : SelectedProduct) => selectedProducts.find((p) => p.unique_id === product.unique_id))) {
+      const updatedProducts = products.map((product : SelectedProduct) => {
+        if (selectedProducts.find((p) => p.unique_id === product.unique_id)) {
+          const newQuantity = product.quantity + 1;
+          return { ...product, quantity: newQuantity };
+        }
+        return product;
+      });
+      setProducts(updatedProducts);
+      setSelectedProducts([]);
+      setModalOpen(false);
+      updateTotal(updatedProducts);
+      return;
+    }
+
     const updatedProducts = [
       ...products,
       ...selectedProducts.map((product : SelectedProduct) => ({ ...product, quantity: 1 })),
