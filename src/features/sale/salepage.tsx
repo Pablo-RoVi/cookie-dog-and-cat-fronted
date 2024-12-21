@@ -22,7 +22,7 @@ type user = {
 
 const SalePage = () => {
   const [sales, setSales] = useState([]);
-  const [users, setUsers] = useState<user[]>([]);
+  const [userOptions, setUserOptions] = useState([]);
   const [nickNameFilter, setNickNameFilter] = useState<string>("");
   const [selectedSale, setSelectedSale] = useState(null);
   const [products, setProducts] = useState([]);
@@ -45,6 +45,13 @@ const SalePage = () => {
       try {
         const sales = (await Agent.Sale.list()).data;
         setSales(sales);
+
+        const responseUsers = await Agent.User.list();
+        const users = responseUsers.data.map((user) => ({
+          value: user.nickName,
+          label: `${user.name} ${user.last_name}`,
+        }));
+        setUserOptions(users);
 
         const responseProducts = await Agent.Product.list();
 
@@ -115,7 +122,7 @@ const SalePage = () => {
               label: "Nombre del empleado",
               valueFilter: nickNameFilter,
               setOnChangeFilter: setNickNameFilter,
-              options: users,
+              options: userOptions,
               firstValue: "SIN ELECCIÓN",
             })}
           </div>
