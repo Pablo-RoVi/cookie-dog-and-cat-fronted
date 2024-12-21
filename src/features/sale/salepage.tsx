@@ -52,7 +52,6 @@ const SalePage = () => {
         );
         setSales(sales);
         setUsers(userOptions);
-        console.log(sales);
       } catch (error) {
         console.error("Error fetching sales:", error);
       }
