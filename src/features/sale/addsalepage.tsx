@@ -81,6 +81,15 @@ const AddSalesPage = () => {
     initializeData();
   }, []);
 
+  useEffect(() => {
+    Agent.Sale.getPaymentMethods().then((response) => {
+        setPaymentMethod(response.data.map((paymentMethod) => ({
+            value: paymentMethod,
+            label: paymentMethod
+        })));
+    })
+  },[]);
+
   const handleQuantityChange = (id, change) => {
     const updatedProducts = products.map((product : SelectedProduct) => {
       if (product.unique_id === id) {
