@@ -5,7 +5,6 @@ import Buttons from "../../app/components/buttons";
 import TableModule from "../../app/components/tablemodule";
 import Modal from "../../app/components/modal";
 import Functions from "../../app/components/functions";
-import { Sale } from "../../app/models/sale";
 
 const headers = [
   "Código",
@@ -44,14 +43,8 @@ const SalePage = () => {
     const initializeData = async () => {
       try {
         const sales = (await Agent.Sale.list()).data;
-        const userOptions: user[] = (await Agent.User.list()).data.map(
-          (user: any) => ({
-            label: `${user.name} ${user.last_name}`,
-            value: user.nick_name,
-          })
-        );
+        console.log("Sales:", sales);
         setSales(sales);
-        setUsers(userOptions);
       } catch (error) {
         console.error("Error fetching sales:", error);
       }
@@ -64,7 +57,7 @@ const SalePage = () => {
     setCurrentPage(1);
   }, [sales, nickNameFilter]);
 
-  const filteredSales = sales.filter((sale: Sale) => {
+  const filteredSales = sales.filter((sale) => {
     if (nickNameFilter === "") return true;
     return sale.nickName === nickNameFilter;
   });
@@ -88,7 +81,7 @@ const SalePage = () => {
       toggleConfirmationModal();
       if (selectedSale) {
         await Agent.Sale.delete(id.toString());
-        const newSales = sales.filter((sale: Sale) => sale.id !== id);
+        const newSales = sales.filter((sale) => sale.id !== id);
         setSales(newSales);
         toggleDeleteModal();
       }
@@ -117,12 +110,13 @@ const SalePage = () => {
         {/* Tabla */}
         {TableModule.table({
           headers: headers,
-          data: currentSales.map((sale: Sale) => [
-            sale.id,
-            "",
-            "",
-            "",
-            "",
+          data: currentSales.map((sale) => [
+            sale.saleId,
+            sale.saleProducts.map((product, productIndex) => (
+                <li key={productIndex}>{product.productId}</li> )),
+            sale.totalPrice,
+            sale.paymentMethod,
+            sale.userFullName,
             <>
               <div className="flex justify-between items-center ml-4 mr-4">
                 {Buttons.EditButton({
