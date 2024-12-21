@@ -33,7 +33,7 @@ const AddSalesPage = () => {
 
   const [errorMessage, setErrorMessage] = useState<string>("");
 
-  const [isSaleCompleted, setIsSaleCompleted] = useState<boolean>(false);
+  const [isSaleModified, setIsSaleModified] = useState<boolean>(false);
 
   const [originalData, setOriginalData] = useState<any>(null);
 
@@ -42,17 +42,16 @@ const AddSalesPage = () => {
   const sale = location.state;
 
   useEffect(() => {
+    console.log("sale", sale);
     const initializeData = async () => {
       try {
-        const responseDetail = await Agent.Sale.getDetail(sale.id);
-        const saleData = responseDetail.data;
-        setOriginalData(saleData);
-        setSaleId(saleData.saleId);
-        setSaleNickName(saleData.nickName);
-        setSaleUserFullName(saleData.userFullName);
-        setSalePaymentMethod(saleData.paymentMethod);
-        setSaleProducts(saleData.saleProducts);
-        setSaleTotalPrice(saleData.totalPrice);
+        setOriginalData(sale);
+        setSaleId(sale.saleId);
+        setSaleNickName(sale.nickName);
+        setSaleUserFullName(sale.userFullName);
+        setSalePaymentMethod(sale.paymentMethod);
+        setSaleProducts(sale.saleProducts);
+        setSaleTotalPrice(sale.totalPrice);
 
         const responsePaymentMethods = await Agent.Sale.getPaymentMethods();
         const paymentMethods = responsePaymentMethods.data.map(
@@ -78,19 +77,24 @@ const AddSalesPage = () => {
   }, [sale]);
 
   useEffect(() => {
-    if (
-      saleNickName !== "SIN ELECCIÓN" &&
-      salePaymentMethod !== "SIN ELECCIÓN" &&
-      saleNickName !== "" &&
-      salePaymentMethod !== "" &&
-      (saleNickName !== originalData.nickName ||
-      salePaymentMethod !== originalData.paymentMethod)
-    ) {
-      setIsSaleCompleted(true);
-    } else {
-      setIsSaleCompleted(false);
+    if (originalData) {
+      setIsSaleModified(
+        (saleNickName !== originalData.nickName && saleNickName !== "") ||
+          (salePaymentMethod !== originalData.paymentMethod &&
+            salePaymentMethod !== "")
+      );
     }
   }, [saleNickName, salePaymentMethod, originalData, userOptions]);
+  /**
+  useEffect(() => {
+      Agent.User.getByNickName(saleNickName)
+      .then((response) => {
+        setSaleUserFullName(response.data);
+    })
+    .catch((error) => {
+      console.log("error", error);
+    });
+  }, [saleNickName]);*/
 
   const toggleSuccessModal = () => {
     setIsSuccessModalOpen(!isSuccessModalOpen);
@@ -222,7 +226,7 @@ const AddSalesPage = () => {
             </span>
           </div>
           <div className="flex justify-end space-x-4">
-            {isSaleCompleted ? (
+            {isSaleModified ? (
               <Buttons.TurquoiseButton
                 text="Añadir"
                 onClick={() => toggleConfirmModal()}
