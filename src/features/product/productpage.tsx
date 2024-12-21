@@ -114,7 +114,7 @@ const ProductPage = () => {
                 product.specieName,
                 <>
                     <div className="flex justify-between items-center ml-4 mr-4">
-                    {buttons.EditButton({onClick: () => { setSelectedProduct(product); handleNavigate(`/products/edit-product/${product.unique_id}`,product); }})}
+                    {buttons.EditButton({onClick: () => { setSelectedProduct(product); handleNavigate(`/products/edit-product`,product); }})}
                     {buttons.DeleteButton({onClick: () => { setSelectedProduct(product); toggleConfirmationModal();}})}
                     </div>
                 </>

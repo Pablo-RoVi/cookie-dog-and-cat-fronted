@@ -53,7 +53,7 @@ const Routes = (props: Props) => {
     "/add-sale",
     "/reports",
     "/products",
-    "/products/edit-product/1",
+    "/products/edit-product",
     "/products/add-product",
     "*",
   ];
@@ -78,9 +78,10 @@ const Routes = (props: Props) => {
             <Route path="/edit-user" element={<EditUserPage />} />
             <Route path="/add-user" element={<AddUserPage />} />
             <Route path="/products" element={<ProductPage />} />
-            <Route path="edit-product/:id" element={<EditProductPage />} />
+            <Route path="/products/edit-product" element={<EditProductPage />} />
             <Route path="/products/add-product" element={<AddProductPage />} />
-            <Route path="/sales" element={<AddSalePage />} />
+            <Route path="/sales" element={<SalePage />} />
+            <Route path="/add-sale" element={<AddSalePage />} />
             <Route path="/edit-sale" element={<EditSalePage />} />
             <Route path="/detail-sale" element={<DetailSalePage />} />
             <Route path="/add-sale" element={<AddSalePage />} />
