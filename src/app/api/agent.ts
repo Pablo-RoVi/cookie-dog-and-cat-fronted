@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import emailjs from "@emailjs/browser";
+import { list } from "postcss";
 
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 axios.defaults.withCredentials = true;
@@ -26,10 +27,10 @@ const Auth = {
 
 const User = {
   list: () => requests.get("user/"),
-  active: () => requests.get("user/ActiveUsers"),
-  getByNickName: (nickName: string) => requests.get(`user/GetUserNameByNickName${nickName}`),
   add: (form: any) => requests.post("user/RegisterUser", form),
   update: (form: any) => requests.put("user/UpdateUser", form),
+  active: () => requests.get("user/ActiveUsers"),
+  getByNickName: (nickName: string) => requests.get(`user/GetUserNameByNickName${nickName}`),
   changeState: (id: string) => requests.put(`user/ChangeState/${id}`, id),
   changePasswordEmployee: (form: any) => requests.put("user/ChangePasswordEmployee", form),
   changePasswordAdmin: (form: any) => requests.put("user/ChangePasswordAdmin", form),
@@ -37,19 +38,20 @@ const User = {
 
 const Product = {
   list: () => requests.get("product/allProducts"),
-  available: () => requests.get("product/availableProducts"),
   add: (form: any) => requests.post("product/addProduct", form),
   update: (form: any, id: string) => requests.put(`product/editProduct/${id}`, form),
   delete: (unique_id: string) => requests.delete(`product/deleteProduct/${unique_id}`, unique_id),
+  available: () => requests.get("product/availableProducts"),
 };
 
 const Sale = {
-  getDetail: (id: string) => requests.get(`sale/getSaleDetails/${id}`),
+  list: () => requests.get("sale/"),
   add: (form: any) => requests.post("sale/addSale", form),
-  delete: (id: string) => requests.delete(`sale/deleteSale/${id}`, id),
-  getPaymentMethods: () => requests.get("sale/GetPaymentMethods"),
   edit: (form: any, id: string) => requests.put(`sale/editSale/${id}`, form),
-  getByDate: (form: any) => requests.get("sale/getSalesByDate", form),
+  delete: (id: string) => requests.delete(`sale/deleteSale/${id}`, id),
+  getDetail: (id: string) => requests.get(`sale/getSaleDetails/${id}`),
+  getPaymentMethods: () => requests.get("sale/GetPaymentMethods"),
+  getByDate: (form: any) => requests.post("sale/getSalesByDate", form),
 };
 
 const Brand = {
