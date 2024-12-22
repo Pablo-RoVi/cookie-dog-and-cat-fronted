@@ -64,7 +64,7 @@ const AddSalesPage = () => {
 
         const responseUsers = await Agent.User.list();
         const users = responseUsers.data.map((user) => ({
-          value: user.nickName,
+          value: user.nick_name,
           label: `${user.name} ${user.last_name}`,
         }));
         setUserOptions(users);
@@ -93,16 +93,18 @@ const AddSalesPage = () => {
       );
     }
   }, [saleNickName, salePaymentMethod, originalData, userOptions]);
-  /**
+
   useEffect(() => {
+    if (saleNickName) {
       Agent.User.getByNickName(saleNickName)
-      .then((response) => {
-        setSaleUserFullName(response.data);
-    })
-    .catch((error) => {
-      console.log("error", error);
-    });
-  }, [saleNickName]);*/
+        .then((response) => {
+          setSaleUserFullName(response.data);
+        })
+        .catch((error) => {
+          console.log("error", error);
+        });
+    }
+  }, [saleNickName, saleUserFullName]);
 
   const getProductLabel = (id: number) => {
     const foundProduct = products.find((p) => p.value === id.toString());
@@ -121,7 +123,35 @@ const AddSalesPage = () => {
     setIsConfirmModalOpen(!isConfirmModalOpen);
   };
 
-  const editSale = () => {};
+  const editSale = () => {
+    console.log("Editando venta");
+    if (
+      saleNickName === "" ||
+      salePaymentMethod === "" ||
+      saleNickName === originalData.nick_name ||
+      salePaymentMethod === originalData.paymentMethod
+    ) {
+      setErrorMessage("Debe completar los campos requeridos");
+      toggleErrorModal();
+      return;
+    }
+    try {
+      const form = {
+        saleId: saleId,
+        nickName: saleNickName,
+        paymentMethod: salePaymentMethod,
+      };
+      Agent.Sale.edit(form, saleId.toString())
+        .then(() => {
+          toggleSuccessModal();
+        })
+        .catch((error) => {
+          console.error("Error editando venta:", error);
+        });
+    } catch (error) {
+      console.error("Error editando venta:", error);
+    }
+  };
 
   return (
     <div className="max-h-screen bg-white">
@@ -190,7 +220,7 @@ const AddSalesPage = () => {
 
         {isConfirmModalOpen && (
           <Modal
-            title="¿Estás seguro de añadir la venta?"
+            title="¿Estás seguro de editar la venta?"
             activateConfirm={true}
             confirmation="Confirmar"
             confirmAction={() => {
@@ -204,12 +234,12 @@ const AddSalesPage = () => {
 
         {isSuccessModalOpen && (
           <Modal
-            title="Venta añadida con éxito"
+            title="Venta editada con éxito"
             activateConfirm={true}
             confirmation="Aceptar"
             confirmAction={() => {
               toggleSuccessModal();
-              Functions.refreshPage();
+              navigate("/sales");
             }}
           />
         )}
@@ -241,7 +271,7 @@ const AddSalesPage = () => {
           <div className="flex justify-end space-x-4">
             {isSaleModified ? (
               <Buttons.TurquoiseButton
-                text="Añadir"
+                text="Editar"
                 onClick={() => toggleConfirmModal()}
               />
             ) : (

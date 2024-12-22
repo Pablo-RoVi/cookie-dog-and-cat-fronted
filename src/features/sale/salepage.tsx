@@ -160,7 +160,6 @@ const SalePage = () => {
                 {userRoleId === 1 &&
                   Buttons.DeleteButton({
                     onClick: () => {
-                        console.log("sale", sale);
                       setSelectedSale(sale);
                       toggleConfirmationModal();
                     },
