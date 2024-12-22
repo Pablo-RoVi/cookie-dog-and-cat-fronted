@@ -160,6 +160,7 @@ const SalePage = () => {
                 {userRoleId === 1 &&
                   Buttons.DeleteButton({
                     onClick: () => {
+                        console.log("sale", sale);
                       setSelectedSale(sale);
                       toggleConfirmationModal();
                     },
@@ -171,7 +172,7 @@ const SalePage = () => {
 
         {isConfirmationModalOpen && (
           <Modal
-            title={`¿Borrar la venta ${selectedSale.id}?`}
+            title={`¿Borrar la venta ${selectedSale.saleId}?`}
             confirmAction={() => deleteSale(selectedSale.id)}
             confirmation="Eliminar"
             confirmCancel={toggleConfirmationModal}
