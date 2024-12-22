@@ -5,6 +5,7 @@ import Buttons from "../../app/components/buttons";
 import TableModule from "../../app/components/tablemodule";
 import Modal from "../../app/components/modal";
 import Functions from "../../app/components/functions";
+import ConfirmAdminLogged from "../../app/components/confirmadmin";
 import { useAuth } from "../../app/context/authcontext";
 
 const headers = [
@@ -27,6 +28,8 @@ const SalePage = () => {
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] =
     useState<boolean>(false);
   const [isDeletedModalOpen, setIsDeletedModalOpen] = useState<boolean>(false);
+  const [isConfirmationAdminLogged, setIsConfirmationAdminLogged] =
+    useState<boolean>(false);
 
   const [currentPage, setCurrentPage] = useState<number>(1);
   const navigate = useNavigate();
@@ -101,6 +104,10 @@ const SalePage = () => {
     setIsDeletedModalOpen(!isDeletedModalOpen);
   };
 
+  const toggleConfirmAdminLogged = () => {
+    setIsConfirmationAdminLogged(!isConfirmationAdminLogged);
+  };
+
   const deleteSale = async (id: number) => {
     try {
       toggleConfirmationModal();
@@ -109,6 +116,7 @@ const SalePage = () => {
         const newSales = sales.filter((sale) => sale.id !== id);
         setSales(newSales);
         toggleDeleteModal();
+        toggleConfirmAdminLogged();
       }
     } catch (error) {
       console.error("Error deleting sale:", error);
@@ -171,18 +179,32 @@ const SalePage = () => {
           ]),
         })}
 
-        {isConfirmationModalOpen && (
-          <Modal
-            title={`¿Borrar la venta ${selectedSale.saleId}?`}
-            confirmAction={() => deleteSale(selectedSale.id)}
-            confirmation="Eliminar"
-            confirmCancel={toggleConfirmationModal}
-            activateCancel={true}
-            activateConfirm={true}
-          />
-        )}
+        {isConfirmationModalOpen &&
+          !isConfirmationAdminLogged &&
+          userRoleId === 1 && (
+            <Modal
+              title={`¿Borrar la venta ${selectedSale.saleId}?`}
+              confirmAction={setIsConfirmationAdminLogged}
+              confirmation="Eliminar"
+              confirmCancel={toggleConfirmationModal}
+              activateCancel={true}
+              activateConfirm={true}
+            />
+          )}
 
-        {isDeletedModalOpen && (
+          {isConfirmationAdminLogged && (
+            <ConfirmAdminLogged
+              confirmation="Confirmar"
+              confirmAction={() => {
+                deleteSale(selectedSale.saleId);
+              }}
+              confirmCancel={toggleConfirmAdminLogged}
+              activateCancel={true}
+              activateConfirm={true}
+            />
+          )}
+
+        {isDeletedModalOpen && !isConfirmationAdminLogged && (
           <Modal
             title={"Venta eliminada con éxito"}
             confirmation="Aceptar"
