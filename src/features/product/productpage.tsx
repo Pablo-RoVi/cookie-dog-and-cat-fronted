@@ -131,7 +131,7 @@ const ProductPage = () => {
                 })})}
 
                 {isConfirmationModalOpen && (
-                    <Modal title={`¿Borrar el producto ${selectedProduct.product_name}?`} 
+                    <Modal title={`¿Borrar el producto '${selectedProduct.product_name}'?`} 
                     confirmAction={() => deleteProduct(selectedProduct.unique_id)} 
                     confirmation="Eliminar" 
                     confirmCancel={toggleConfirmationModal}
