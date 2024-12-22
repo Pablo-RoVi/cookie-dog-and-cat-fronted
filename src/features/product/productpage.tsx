@@ -29,6 +29,9 @@ const ProductPage = () => {
 
     const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState<boolean>(false);
     const [isDeletedModalOpen, setIsDeletedModalOpen] = useState<boolean>(false);
+    const [isErrorModalOpen, setIsErrorModalOpen] = useState<boolean>(false);
+
+    const [errorMessage, setErrorMessage] = useState<string>("");
 
     const indexOfLastProduct = currentPage * productsPerPage;
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
@@ -63,8 +66,28 @@ const ProductPage = () => {
                     }
                 }).catch(error => 
                     { 
-                        console.error("Error al eliminar el producto:", error); 
-                }); 
+                        console.log("error", error.response.data);
+                        let errorMessages = [];
+                        if(error.response && error.response.data && error.response.data.errors){
+                            const errors = error.response.data.errors;
+
+                            for(const key in errors){
+                                if (errors.hasOwnProperty(key)) { 
+                                    if (Array.isArray(errors[key])) 
+                                    {  
+                                        errors[key].forEach((msg) => { errorMessages.push(`${msg}`);}); 
+                                    } else { 
+                                        errorMessages.push(`${key}: ${errors[key]}`); 
+                                    } 
+                                }
+                            }
+                        }else{
+                            errorMessages.push(error.response.data)
+                        }
+                        setErrorMessage(errorMessages.join("\n"));
+                        toggleErrorModal();
+                    }
+                ); 
             }
         } 
     };
@@ -87,6 +110,10 @@ const ProductPage = () => {
 
     const toggleDeleteModal = () => {
         setIsDeletedModalOpen(!isDeletedModalOpen);
+    };
+
+    const toggleErrorModal = () => {
+        setIsErrorModalOpen(!isErrorModalOpen);
     };
 
     const handleNavigate = (path: string, state?: any) => {
@@ -119,7 +146,7 @@ const ProductPage = () => {
                 product.brandName,
                 product.specieName
                 ];
-                if(userRoleId == 1){
+                if(userRoleId === 1){
                     rows.push(
                         <div className="flex justify-between items-center ml-4 mr-4">
                         {buttons.EditButton({onClick: () => { setSelectedProduct(product); handleNavigate(`/products/edit-product`,product); }})}
@@ -134,7 +161,7 @@ const ProductPage = () => {
                     <Modal title={`¿Borrar el producto '${selectedProduct.product_name}'?`} 
                     confirmAction={() => deleteProduct(selectedProduct.unique_id)} 
                     confirmation="Eliminar" 
-                    confirmCancel={toggleConfirmationModal}
+                    confirmCancel={() => toggleConfirmationModal()}
                     activateCancel={true}
                     activateConfirm={true}/>
                 )}
@@ -147,6 +174,15 @@ const ProductPage = () => {
                     activateConfirm={true}/>
                 )}
 
+                {isErrorModalOpen && (
+                    <Modal title={`Corrija los siguientes errores: ${errorMessage}`} 
+                    confirmation="Aceptar" 
+                    confirmAction={() => toggleErrorModal()}
+                    activateCancel={false}
+                    activateConfirm={true}>
+                    </Modal>
+                )}
+
                 {/* Paginación */}
                 {TableModule.pagination({
                 length: filteredProducts.length, 
@@ -156,7 +192,7 @@ const ProductPage = () => {
                 })}
 
                 {/* Botón Agregar */}
-                {userRoleId == 1 ?
+                {userRoleId === 1 ?
                     buttons.TurquoiseButton({ text: "Añadir", onClick: () => handleNavigate("/products/add-product")})
                     : buttons.GrayButton({ text: "Añadir", onClick: () => null})
                 }      
