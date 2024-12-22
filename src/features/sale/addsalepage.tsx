@@ -81,7 +81,7 @@ const AddSalesPage = () => {
     };
 
     initializeData();
-  });
+  },[]);
 
   useEffect(() => {
     const initializeData = async () => {
@@ -113,7 +113,7 @@ const AddSalesPage = () => {
     const updatedProducts = products.map((product : SelectedProduct) => {
       if (product.unique_id === id) {
         const newQuantity = product.quantity + change;
-        if (newQuantity < 1) return product;
+        if (newQuantity < 1 || newQuantity > product.stock) return product;
         return { ...product, quantity: newQuantity };
       }
       return product;
@@ -157,6 +157,7 @@ const AddSalesPage = () => {
       ...products,
       ...selectedProducts.map((product : SelectedProduct) => ({ ...product, quantity: 1 })),
     ];
+    console.log("Updated products",updatedProducts);
     setProducts(updatedProducts);
     setSelectedProducts([]);
     setModalOpen(false);
@@ -173,6 +174,10 @@ const AddSalesPage = () => {
   
   const toggleConfirmModal = () => {
     setIsConfirmModalOpen(!isConfirmModalOpen);
+  };
+
+  const toggleModal = () => {
+    setModalOpen(!modalOpen);
   };
 
   const addSale = () => {
@@ -270,7 +275,7 @@ const AddSalesPage = () => {
             </h2>{" "}
             {/* Color ajustado */}
             <button
-              onClick={() => setModalOpen(true)}
+              onClick={() => toggleModal()}
               className="p-3 rounded-full shadow-md transition"
               style={{
                 backgroundColor: colors.turquoise,
@@ -345,20 +350,20 @@ const AddSalesPage = () => {
                   onChange={(e) => {
                     if (e.target.checked) {
                       setSelectedProducts([...selectedProducts, product]);
-                    } else {
+                    } else if(e.target.checked === false) {
                       setSelectedProducts(
-                        selectedProducts.filter((p) => p.id !== product.unique_id)
+                        selectedProducts.filter(p => p.unique_id !== product.unique_id)
                       );
                     }
                   }}
                   className="h-5 w-5"
                 />,
-              ])}
+            ])}
             activateConfirm={true}
             confirmation="Añadir"
-            confirmAction={() => handleAddProducts()}
+            confirmAction={() => {handleAddProducts();toggleModal()}}
             activateCancel={true}
-            confirmCancel={() => setModalOpen(false)}
+            confirmCancel={() => {toggleModal(); setSelectedProducts([]);}}
             />
         )}
 
