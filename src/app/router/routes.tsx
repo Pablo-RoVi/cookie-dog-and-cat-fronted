@@ -76,16 +76,41 @@ const Routes = (props: Props) => {
           }
         >
           <Route element={<PrivateRoutes />}>
-            <Route path="/users" element={<UserPage />} />
-            <Route path="/edit-user" element={<EditUserPage />} />
-            <Route path="/add-user" element={<AddUserPage />} />
+            <Route path="/users" element={
+                <RoleBasedRoute roles={[1]} redirectTo="/sales">
+                  {" "}
+                  <UserPage />{" "}
+                </RoleBasedRoute>
+              }  
+            />
+            <Route path="/edit-user" element={
+                <RoleBasedRoute roles={[1]} redirectTo="/sales">
+                  {" "}
+                  <EditUserPage />{" "}
+                </RoleBasedRoute>
+              } 
+            />
+
+            <Route path="/add-user" element={
+                <RoleBasedRoute roles={[1]} redirectTo="/sales">
+                  {" "}
+                  <AddUserPage />{" "}
+                </RoleBasedRoute>
+              }
+            />
             <Route path="/products" element={<ProductPage />} />
-            <Route path="/products/edit-product" element={<EditProductPage />} />
+            <Route path="/products/edit-product" element={
+                <RoleBasedRoute roles={[1]} redirectTo="/products">
+                  {" "}
+                  <EditProductPage />{" "}
+                </RoleBasedRoute>
+              } 
+            />
             <Route path="/products/add-product" element={<AddProductPage />} />
             <Route
               path="/sales"
               element={
-                <RoleBasedRoute roles={[1]} redirectTo="/add-sale">
+                <RoleBasedRoute roles={[1,2]} redirectTo="/sales">
                   {" "}
                   <SalePage />{" "}
                 </RoleBasedRoute>

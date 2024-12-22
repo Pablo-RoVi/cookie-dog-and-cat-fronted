@@ -11,6 +11,7 @@ import { User } from '../../app/models/user';
 import { Sale } from "../../app/models/sale";
 import Modal from "../../app/components/modal";
 import Functions from "../../app/components/functions";
+import { useNavigate } from "react-router-dom";
 
 const headersShopping = [
   "Producto",
@@ -54,6 +55,8 @@ const AddSalesPage = () => {
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   const [isSaleCompleted, setIsSaleCompleted] = useState<boolean>(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const initializeData = async () => {
@@ -129,6 +132,22 @@ const AddSalesPage = () => {
   };
 
   const handleAddProducts = () => {
+
+    if(products.find((product : SelectedProduct) => selectedProducts.find((p) => p.unique_id === product.unique_id))) {
+      const updatedProducts = products.map((product : SelectedProduct) => {
+        if (selectedProducts.find((p) => p.unique_id === product.unique_id)) {
+          const newQuantity = product.quantity + 1;
+          return { ...product, quantity: newQuantity };
+        }
+        return product;
+      });
+      setProducts(updatedProducts);
+      setSelectedProducts([]);
+      setModalOpen(false);
+      updateTotal(updatedProducts);
+      return;
+    }
+
     const updatedProducts = [
       ...products,
       ...selectedProducts.map((product : SelectedProduct) => ({ ...product, quantity: 1 })),
@@ -205,6 +224,10 @@ const AddSalesPage = () => {
         toggleErrorModal();
       });
   }
+
+  const handleNavigate = () => {
+    navigate("/sales");
+  };
 
   return (
     <div className="max-h-screen bg-white">
@@ -398,7 +421,7 @@ const AddSalesPage = () => {
             }
             <Buttons.FuchsiaButton
               text="Cancelar"
-              onClick={() => null}
+              onClick={() => handleNavigate()}
             />
           </div>
         </div>

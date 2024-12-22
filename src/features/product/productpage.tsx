@@ -8,9 +8,12 @@ import { Product } from '../../app/models/product';
 import Modal from "../../app/components/modal";
 import { useNavigate } from "react-router-dom";
 import { AxiosResponse } from "axios";
+import { useAuth } from "../../app/context/authcontext";
 
 
-const headers = ["Código", "Nombre", "Precio", "Stock", "Categoria","Marca","Especie","Acciones"];
+const headersAdmin = ["Código", "Nombre", "Precio", "Stock", "Categoria","Marca","Especie","Acciones"];
+
+const headersEmployee = ["Código", "Nombre", "Precio", "Stock", "Categoria","Marca","Especie"];
 
 const ProductPage = () => {
 
@@ -21,6 +24,8 @@ const ProductPage = () => {
     const productsPerPage = 8;
 
     const navigate = useNavigate();
+
+    const { userRoleId } = useAuth();
 
     const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState<boolean>(false);
     const [isDeletedModalOpen, setIsDeletedModalOpen] = useState<boolean>(false);
@@ -104,21 +109,26 @@ const ProductPage = () => {
                 </div>
 
                 {/* Tabla */}
-                {TableModule.table({headers: headers, data: currentProducts.map((product: Product) => [
+                {TableModule.table({headers: userRoleId == 1 ? headersAdmin : headersEmployee, data: currentProducts.map((product: Product) => {
+                const rows: (string | JSX.Element)[] = [
                 product.unique_id,
                 product.product_name,
                 product.price,
                 product.stock,
                 product.categoryName,
                 product.brandName,
-                product.specieName,
-                <>
-                    <div className="flex justify-between items-center ml-4 mr-4">
-                    {buttons.EditButton({onClick: () => { setSelectedProduct(product); handleNavigate(`/products/edit-product`,product); }})}
-                    {buttons.DeleteButton({onClick: () => { setSelectedProduct(product); toggleConfirmationModal();}})}
-                    </div>
-                </>
-                ])})}
+                product.specieName
+                ];
+                if(userRoleId == 1){
+                    rows.push(
+                        <div className="flex justify-between items-center ml-4 mr-4">
+                        {buttons.EditButton({onClick: () => { setSelectedProduct(product); handleNavigate(`/products/edit-product`,product); }})}
+                        {buttons.DeleteButton({onClick: () => { setSelectedProduct(product); toggleConfirmationModal();}})}
+                        </div>
+                    );
+                }
+                return rows;
+                })})}
 
                 {isConfirmationModalOpen && (
                     <Modal title={`¿Borrar el producto ${selectedProduct.product_name}?`} 
@@ -146,7 +156,10 @@ const ProductPage = () => {
                 })}
 
                 {/* Botón Agregar */}
-                {buttons.TurquoiseButton({ text: "Añadir", onClick: () => handleNavigate("/products/add-product") })}
+                {userRoleId == 1 ?
+                    buttons.TurquoiseButton({ text: "Añadir", onClick: () => handleNavigate("/products/add-product")})
+                    : buttons.GrayButton({ text: "Añadir", onClick: () => null})
+                }      
             </div>
         </div>
     );
