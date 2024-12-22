@@ -109,7 +109,7 @@ const ProductPage = () => {
                 </div>
 
                 {/* Tabla */}
-                {TableModule.table({headers: userRoleId == 1 ? headersAdmin : headersEmployee, data: currentProducts.map((product: Product) => {
+                {TableModule.table({headers: userRoleId === 1 ? headersAdmin : headersEmployee, data: currentProducts.map((product: Product) => {
                 const rows: (string | JSX.Element)[] = [
                 product.unique_id,
                 product.product_name,
@@ -119,7 +119,7 @@ const ProductPage = () => {
                 product.brandName,
                 product.specieName
                 ];
-                if(userRoleId == 1){
+                if(userRoleId === 1){
                     rows.push(
                         <div className="flex justify-between items-center ml-4 mr-4">
                         {buttons.EditButton({onClick: () => { setSelectedProduct(product); handleNavigate(`/products/edit-product`,product); }})}
@@ -156,7 +156,7 @@ const ProductPage = () => {
                 })}
 
                 {/* Botón Agregar */}
-                {userRoleId == 1 ?
+                {userRoleId === 1 ?
                     buttons.TurquoiseButton({ text: "Añadir", onClick: () => handleNavigate("/products/add-product")})
                     : buttons.GrayButton({ text: "Añadir", onClick: () => null})
                 }      

@@ -5,7 +5,6 @@ import Buttons from "../../app/components/buttons";
 import Agent from "../../app/api/agent";
 import colors from "../../app/static/colors";
 import Modal from "../../app/components/modal";
-import Functions from "../../app/components/functions";
 
 const headersShopping = [
   "Producto",
