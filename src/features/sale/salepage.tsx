@@ -5,6 +5,7 @@ import Buttons from "../../app/components/buttons";
 import TableModule from "../../app/components/tablemodule";
 import Modal from "../../app/components/modal";
 import Functions from "../../app/components/functions";
+import { useAuth } from "../../app/context/authcontext";
 
 const headers = [
   "Código",
@@ -15,12 +16,8 @@ const headers = [
   "Acciones",
 ];
 
-type user = {
-  label: string;
-  value: number;
-};
-
 const SalePage = () => {
+  const { userRoleId } = useAuth();
   const [sales, setSales] = useState([]);
   const [userOptions, setUserOptions] = useState([]);
   const [nickNameFilter, setNickNameFilter] = useState<string>("");
@@ -146,12 +143,13 @@ const SalePage = () => {
             sale.userFullName,
             <>
               <div className="flex justify-between items-center ml-4 mr-4">
-                {Buttons.EditButton({
-                  onClick: () => {
-                    setSelectedSale(sale);
-                    handleNavigate(`/edit-sale`, sale);
-                  },
-                })}
+                {userRoleId === 1 &&
+                  Buttons.EditButton({
+                    onClick: () => {
+                      setSelectedSale(sale);
+                      handleNavigate(`/edit-sale`, sale);
+                    },
+                  })}
                 {Buttons.DetailButton({
                   data: sale,
                   onClick: () => {
@@ -159,12 +157,13 @@ const SalePage = () => {
                     handleNavigate(`/detail-sale`, sale);
                   },
                 })}
-                {Buttons.DeleteButton({
-                  onClick: () => {
-                    setSelectedSale(sale);
-                    toggleConfirmationModal();
-                  },
-                })}
+                {userRoleId === 1 &&
+                  Buttons.DeleteButton({
+                    onClick: () => {
+                      setSelectedSale(sale);
+                      toggleConfirmationModal();
+                    },
+                  })}
               </div>
             </>,
           ]),
