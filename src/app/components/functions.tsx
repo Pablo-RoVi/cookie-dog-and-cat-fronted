@@ -40,7 +40,7 @@ const verifyProductPrice = (price: string): boolean => {
 }
 
 const verifyProductName = (name: string): boolean => {
-  const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s\d,.\-]{3,100}$/;
+  const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s\d,.-]{3,100}$/;
   return nameRegex.test(name) && name !== "";
 }
 
@@ -51,7 +51,7 @@ const verifyProductStock = (stock: string): boolean => {
 
 //Brand validations
 const verifyBrandName = (name: string): boolean => {
-  const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s\d,.\-]{3,30}$/;
+  const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s\d,.-]{3,30}$/;
   return nameRegex.test(name) && name !== "";
 }
 

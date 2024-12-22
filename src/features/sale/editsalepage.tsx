@@ -5,7 +5,6 @@ import Buttons from "../../app/components/buttons";
 import Agent from "../../app/api/agent";
 import colors from "../../app/static/colors";
 import Modal from "../../app/components/modal";
-import Functions from "../../app/components/functions";
 
 const headersShopping = [
   "Producto",
@@ -19,7 +18,6 @@ const headersShopping = [
 const AddSalesPage = () => {
   const [saleId, setSaleId] = useState<number>(0);
   const [saleNickName, setSaleNickName] = useState<string>("");
-  const [saleUserFullName, setSaleUserFullName] = useState<string>("");
   const [salePaymentMethod, setSalePaymentMethod] = useState<string>("");
   const [saleProducts, setSaleProducts] = useState([]);
   const [saleTotalPrice, setSaleTotalPrice] = useState<number>(0);
@@ -48,7 +46,6 @@ const AddSalesPage = () => {
         setOriginalData(sale);
         setSaleId(sale.saleId);
         setSaleNickName(sale.nickName);
-        setSaleUserFullName(sale.userFullName);
         setSalePaymentMethod(sale.paymentMethod);
         setSaleProducts(sale.saleProducts);
         setSaleTotalPrice(sale.totalPrice);
@@ -64,10 +61,11 @@ const AddSalesPage = () => {
 
         const responseUsers = await Agent.User.list();
         const users = responseUsers.data.map((user) => ({
-          value: user.nickName,
-          label: `${user.name} ${user.last_name}`,
+          value: user.nick_name,
+          label: user.nick_name,
+          isActive: user.is_active,
         }));
-        setUserOptions(users);
+        setUserOptions(users.filter((user) => user.isActive));
 
         const responseProducts = await Agent.Product.list();
 
@@ -93,16 +91,6 @@ const AddSalesPage = () => {
       );
     }
   }, [saleNickName, salePaymentMethod, originalData, userOptions]);
-  /**
-  useEffect(() => {
-      Agent.User.getByNickName(saleNickName)
-      .then((response) => {
-        setSaleUserFullName(response.data);
-    })
-    .catch((error) => {
-      console.log("error", error);
-    });
-  }, [saleNickName]);*/
 
   const getProductLabel = (id: number) => {
     const foundProduct = products.find((p) => p.value === id.toString());
@@ -121,7 +109,34 @@ const AddSalesPage = () => {
     setIsConfirmModalOpen(!isConfirmModalOpen);
   };
 
-  const editSale = () => {};
+  const editSale = () => {
+    if (
+      (saleNickName === "" ||
+      salePaymentMethod === "") &&
+      (saleNickName === originalData.nick_name ||
+      salePaymentMethod === originalData.paymentMethod)
+    ) {
+      setErrorMessage("Debe completar los campos requeridos");
+      toggleErrorModal();
+      return;
+    }
+    try {
+      const form = {
+        saleId: saleId,
+        nickName: saleNickName,
+        paymentMethod: salePaymentMethod,
+      };
+      Agent.Sale.edit(form, saleId.toString())
+        .then(() => {
+          toggleSuccessModal();
+        })
+        .catch((error) => {
+          console.error("Error editando venta:", error);
+        });
+    } catch (error) {
+      console.error("Error editando venta:", error);
+    }
+  };
 
   return (
     <div className="max-h-screen bg-white">
@@ -141,11 +156,11 @@ const AddSalesPage = () => {
 
           <div className="container max-w-[20%]">
             {TableModule.selectFilter({
-              label: "Empleado",
-              valueFilter: saleUserFullName,
+              label: "Nombre de usuario",
+              valueFilter: saleNickName,
               setOnChangeFilter: setSaleNickName,
               options: userOptions,
-              firstValue: saleUserFullName,
+              firstValue: saleNickName,
             })}
           </div>
 
@@ -190,7 +205,7 @@ const AddSalesPage = () => {
 
         {isConfirmModalOpen && (
           <Modal
-            title="¿Estás seguro de añadir la venta?"
+            title="¿Estás seguro de editar la venta?"
             activateConfirm={true}
             confirmation="Confirmar"
             confirmAction={() => {
@@ -204,12 +219,12 @@ const AddSalesPage = () => {
 
         {isSuccessModalOpen && (
           <Modal
-            title="Venta añadida con éxito"
+            title="Venta editada con éxito"
             activateConfirm={true}
             confirmation="Aceptar"
             confirmAction={() => {
               toggleSuccessModal();
-              Functions.refreshPage();
+              navigate("/sales");
             }}
           />
         )}
@@ -241,7 +256,7 @@ const AddSalesPage = () => {
           <div className="flex justify-end space-x-4">
             {isSaleModified ? (
               <Buttons.TurquoiseButton
-                text="Añadir"
+                text="Editar"
                 onClick={() => toggleConfirmModal()}
               />
             ) : (

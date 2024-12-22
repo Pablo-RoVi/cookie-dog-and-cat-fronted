@@ -141,7 +141,7 @@ const ProductPage = () => {
                 </div>
 
                 {/* Tabla */}
-                {TableModule.table({headers: userRoleId == 1 ? headersAdmin : headersEmployee, data: currentProducts.map((product: Product) => {
+                {TableModule.table({headers: userRoleId === 1 ? headersAdmin : headersEmployee, data: currentProducts.map((product: Product) => {
                 const rows: (string | JSX.Element)[] = [
                 product.unique_id,
                 product.product_name,

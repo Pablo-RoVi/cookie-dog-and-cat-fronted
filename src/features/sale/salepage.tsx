@@ -45,10 +45,12 @@ const SalePage = () => {
 
         const responseUsers = await Agent.User.list();
         const users = responseUsers.data.map((user) => ({
-          value: user.nickName,
-          label: `${user.name} ${user.last_name}`,
+          value: user.nick_name,
+          label: user.nick_name,
+          isActive: user.is_active,
         }));
-        setUserOptions(users);
+
+        setUserOptions(users.filter((user) => user.isActive));
 
         const responseProducts = await Agent.Product.list();
 
@@ -75,7 +77,7 @@ const SalePage = () => {
     }
 
     return (
-      sale.userFullName.toLowerCase().includes(nickNameFilter.toLowerCase()) ||
+      sale.nickName.toLowerCase().includes(nickNameFilter.toLowerCase()) ||
       nickNameFilter === ""
     );
   });
@@ -121,7 +123,7 @@ const SalePage = () => {
         <div className="flex space-x-4">
           <div className="container max-w-[20%]">
             {TableModule.selectFilter({
-              label: "Nombre del empleado",
+              label: "Nombre de usuario",
               valueFilter: nickNameFilter,
               setOnChangeFilter: setNickNameFilter,
               options: userOptions,
@@ -140,7 +142,7 @@ const SalePage = () => {
             ),
             sale.totalPrice,
             sale.paymentMethod,
-            sale.userFullName,
+            sale.nickName,
             <>
               <div className="flex justify-center items-center ml-4 mr-4 gap-x-4">
                 {userRoleId === 1 &&
@@ -171,7 +173,7 @@ const SalePage = () => {
 
         {isConfirmationModalOpen && (
           <Modal
-            title={`¿Borrar la venta ${selectedSale.id}?`}
+            title={`¿Borrar la venta ${selectedSale.saleId}?`}
             confirmAction={() => deleteSale(selectedSale.id)}
             confirmation="Eliminar"
             confirmCancel={toggleConfirmationModal}

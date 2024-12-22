@@ -7,7 +7,6 @@ import Buttons from "../../app/components/buttons";
 import Agent from "../../app/api/agent";
 import colors from "../../app/static/colors";
 import { Product, SelectedProduct } from "../../app/models/product";
-import { User } from '../../app/models/user';
 import { Sale } from "../../app/models/sale";
 import Modal from "../../app/components/modal";
 import Functions from "../../app/components/functions";
@@ -33,6 +32,9 @@ const headersProducts = [
 ]
 
 const AddSalesPage = () => {
+
+  const { userNickName, userRoleId } = useAuth();
+
   const [products, setProducts] = useState([]);
 
   const [availableProducts, setAvailableProducts] = useState([]);
@@ -65,8 +67,11 @@ const AddSalesPage = () => {
         const filteredEmployees = usersResponse.data.map((user) => ({
           value: user.nick_name,
           label: user.nick_name,
+          isActive: user.is_active,
         }));
-        setEmployees(filteredEmployees);
+        setEmployees(filteredEmployees.filter((user) => user.isActive));
+
+        setSelectedEmployee(userNickName);
 
         const productsResponse = await Agent.Product.available();
         setAvailableProducts(productsResponse.data);
@@ -76,7 +81,7 @@ const AddSalesPage = () => {
     };
 
     initializeData();
-  }, []);
+  });
 
   useEffect(() => {
     const initializeData = async () => {
@@ -171,9 +176,6 @@ const AddSalesPage = () => {
   };
 
   const addSale = () => {
-
-    console.log(total);
-
     const sale : Sale = {
       id: null,
       nickName: selectedEmployee,
@@ -192,17 +194,13 @@ const AddSalesPage = () => {
       ]
     };
 
-    console.log("Venta a añadir:", sale);
-
     Agent.Sale.add(sale)
       .then((response) => {
-        console.log("Venta añadida:", response);
         if (response.status === 200) {
           toggleSuccessModal();
         }
       })
       .catch((error) => {
-        console.log("error", error.response);
         let errorMessages = [];
         if(error.response && error.response.data && error.response.data.errors){
             const errors = error.response.data.errors;
@@ -239,11 +237,12 @@ const AddSalesPage = () => {
         <div className="flex space-x-4">
           <div className="container max-w-[20%]">
             {TableModule.selectFilter({
-              label: "Empleado",
+              label: "Nombre de usuario",
               valueFilter: selectedEmployee,
               setOnChangeFilter: setSelectedEmployee,
               options: employees,
-              firstValue: "SIN ELECCIÓN",
+              firstValue: selectedEmployee,
+              isDisabled: userRoleId === 2,
             })}
           </div>
 

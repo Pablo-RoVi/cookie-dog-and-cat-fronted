@@ -17,7 +17,6 @@ const headersShopping = [
 const DetailSalePage = () => {
 
     const [saleId, setSaleId] = useState<number>(0);
-    const [saleNickName, setSaleNickName] = useState<string>("");
     const [saleUserFullName, setSaleUserFullName] = useState<string>("");
     const [salePaymentMethod, setSalePaymentMethod] = useState<string>("");
     const [saleProducts, setSaleProducts] = useState([]);
@@ -33,7 +32,6 @@ const DetailSalePage = () => {
         const initializeData = async () => {
         try {
             setSaleId(sale.saleId);
-            setSaleNickName(sale.nickName);
             setSaleUserFullName(sale.userFullName);
             setSalePaymentMethod(sale.paymentMethod);
             setSaleProducts(sale.saleProducts);
