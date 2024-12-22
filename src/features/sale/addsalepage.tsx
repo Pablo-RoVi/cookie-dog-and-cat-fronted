@@ -12,6 +12,7 @@ import { Sale } from "../../app/models/sale";
 import Modal from "../../app/components/modal";
 import Functions from "../../app/components/functions";
 import { useNavigate } from "react-router-dom";
+import { isDisabled } from "@testing-library/user-event/dist/utils";
 
 const headersShopping = [
   "Producto",
@@ -33,6 +34,9 @@ const headersProducts = [
 ]
 
 const AddSalesPage = () => {
+
+  const { userNickName, userRoleId } = useAuth();
+
   const [products, setProducts] = useState([]);
 
   const [availableProducts, setAvailableProducts] = useState([]);
@@ -67,6 +71,8 @@ const AddSalesPage = () => {
           label: user.nick_name,
         }));
         setEmployees(filteredEmployees);
+
+        setSelectedEmployee(userNickName);
 
         const productsResponse = await Agent.Product.available();
         setAvailableProducts(productsResponse.data);
@@ -171,9 +177,6 @@ const AddSalesPage = () => {
   };
 
   const addSale = () => {
-
-    console.log(total);
-
     const sale : Sale = {
       id: null,
       nickName: selectedEmployee,
@@ -192,17 +195,13 @@ const AddSalesPage = () => {
       ]
     };
 
-    console.log("Venta a añadir:", sale);
-
     Agent.Sale.add(sale)
       .then((response) => {
-        console.log("Venta añadida:", response);
         if (response.status === 200) {
           toggleSuccessModal();
         }
       })
       .catch((error) => {
-        console.log("error", error.response);
         let errorMessages = [];
         if(error.response && error.response.data && error.response.data.errors){
             const errors = error.response.data.errors;
@@ -239,11 +238,12 @@ const AddSalesPage = () => {
         <div className="flex space-x-4">
           <div className="container max-w-[20%]">
             {TableModule.selectFilter({
-              label: "Empleado",
+              label: "Nombre de usuario",
               valueFilter: selectedEmployee,
               setOnChangeFilter: setSelectedEmployee,
               options: employees,
-              firstValue: "SIN ELECCIÓN",
+              firstValue: selectedEmployee,
+              isDisabled: userRoleId === 2,
             })}
           </div>
 

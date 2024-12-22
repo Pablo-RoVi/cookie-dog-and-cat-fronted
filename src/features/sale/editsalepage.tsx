@@ -18,7 +18,6 @@ const headersShopping = [
 const AddSalesPage = () => {
   const [saleId, setSaleId] = useState<number>(0);
   const [saleNickName, setSaleNickName] = useState<string>("");
-  const [saleUserFullName, setSaleUserFullName] = useState<string>("");
   const [salePaymentMethod, setSalePaymentMethod] = useState<string>("");
   const [saleProducts, setSaleProducts] = useState([]);
   const [saleTotalPrice, setSaleTotalPrice] = useState<number>(0);
@@ -47,7 +46,6 @@ const AddSalesPage = () => {
         setOriginalData(sale);
         setSaleId(sale.saleId);
         setSaleNickName(sale.nickName);
-        setSaleUserFullName(sale.userFullName);
         setSalePaymentMethod(sale.paymentMethod);
         setSaleProducts(sale.saleProducts);
         setSaleTotalPrice(sale.totalPrice);
@@ -64,7 +62,7 @@ const AddSalesPage = () => {
         const responseUsers = await Agent.User.list();
         const users = responseUsers.data.map((user) => ({
           value: user.nick_name,
-          label: `${user.name} ${user.last_name}`,
+          label: user.nick_name,
         }));
         setUserOptions(users);
 
@@ -93,18 +91,6 @@ const AddSalesPage = () => {
     }
   }, [saleNickName, salePaymentMethod, originalData, userOptions]);
 
-  useEffect(() => {
-    if (saleNickName) {
-      Agent.User.getByNickName(saleNickName)
-        .then((response) => {
-          setSaleUserFullName(response.data);
-        })
-        .catch((error) => {
-          console.log("error", error);
-        });
-    }
-  }, [saleNickName, saleUserFullName]);
-
   const getProductLabel = (id: number) => {
     const foundProduct = products.find((p) => p.value === id.toString());
     return foundProduct ? foundProduct.label : "Producto no encontrado";
@@ -123,12 +109,11 @@ const AddSalesPage = () => {
   };
 
   const editSale = () => {
-    console.log("Editando venta");
     if (
-      saleNickName === "" ||
-      salePaymentMethod === "" ||
-      saleNickName === originalData.nick_name ||
-      salePaymentMethod === originalData.paymentMethod
+      (saleNickName === "" ||
+      salePaymentMethod === "") &&
+      (saleNickName === originalData.nick_name ||
+      salePaymentMethod === originalData.paymentMethod)
     ) {
       setErrorMessage("Debe completar los campos requeridos");
       toggleErrorModal();
@@ -170,11 +155,11 @@ const AddSalesPage = () => {
 
           <div className="container max-w-[20%]">
             {TableModule.selectFilter({
-              label: "Empleado",
-              valueFilter: saleUserFullName,
+              label: "Nombre de usuario",
+              valueFilter: saleNickName,
               setOnChangeFilter: setSaleNickName,
               options: userOptions,
-              firstValue: saleUserFullName,
+              firstValue: saleNickName,
             })}
           </div>
 

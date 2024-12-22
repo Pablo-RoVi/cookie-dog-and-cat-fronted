@@ -45,8 +45,8 @@ const SalePage = () => {
 
         const responseUsers = await Agent.User.list();
         const users = responseUsers.data.map((user) => ({
-          value: user.nickName,
-          label: `${user.name} ${user.last_name}`,
+          value: user.nick_name,
+          label: user.nick_name,
         }));
         setUserOptions(users);
 
@@ -75,7 +75,7 @@ const SalePage = () => {
     }
 
     return (
-      sale.userFullName.toLowerCase().includes(nickNameFilter.toLowerCase()) ||
+      sale.nickName.toLowerCase().includes(nickNameFilter.toLowerCase()) ||
       nickNameFilter === ""
     );
   });
@@ -121,7 +121,7 @@ const SalePage = () => {
         <div className="flex space-x-4">
           <div className="container max-w-[20%]">
             {TableModule.selectFilter({
-              label: "Nombre del empleado",
+              label: "Nombre de usuario",
               valueFilter: nickNameFilter,
               setOnChangeFilter: setNickNameFilter,
               options: userOptions,
