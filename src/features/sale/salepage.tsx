@@ -140,7 +140,7 @@ const SalePage = () => {
             ),
             sale.totalPrice,
             sale.paymentMethod,
-            sale.userFullName,
+            sale.nickName,
             <>
               <div className="flex justify-center items-center ml-4 mr-4 gap-x-4">
                 {userRoleId === 1 &&

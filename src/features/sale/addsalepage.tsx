@@ -7,12 +7,10 @@ import Buttons from "../../app/components/buttons";
 import Agent from "../../app/api/agent";
 import colors from "../../app/static/colors";
 import { Product, SelectedProduct } from "../../app/models/product";
-import { User } from '../../app/models/user';
 import { Sale } from "../../app/models/sale";
 import Modal from "../../app/components/modal";
 import Functions from "../../app/components/functions";
 import { useNavigate } from "react-router-dom";
-import { isDisabled } from "@testing-library/user-event/dist/utils";
 
 const headersShopping = [
   "Producto",
@@ -82,7 +80,7 @@ const AddSalesPage = () => {
     };
 
     initializeData();
-  }, []);
+  });
 
   useEffect(() => {
     const initializeData = async () => {
