@@ -7,6 +7,10 @@ import Buttons from "../../app/components/buttons";
 import Agent from "../../app/api/agent";
 import colors from "../../app/static/colors";
 import { Product, SelectedProduct } from "../../app/models/product";
+import { Sale } from "../../app/models/sale";
+import Modal from "../../app/components/modal";
+import Functions from "../../app/components/functions";
+import { useNavigate } from "react-router-dom";
 
 const headersShopping = [
   "Producto",
@@ -28,13 +32,15 @@ const headersProducts = [
 ]
 
 const AddSalesPage = () => {
+
+  const { userNickName, userRoleId } = useAuth();
+
   const [products, setProducts] = useState([]);
 
   const [availableProducts, setAvailableProducts] = useState([]);
 
-  const { userNickName, userRoleId } = useAuth();
   const [employees, setEmployees] = useState([]);
-  const [selectedEmployee, setSelectedEmployee] = useState<string>(userNickName);
+  const [selectedEmployee, setSelectedEmployee] = useState<string>("");
   const [paymentMethod, setPaymentMethod] = useState<string>("");
   const [total, setTotal] = useState(
     products.reduce((acc, product) => acc + product.price * product.quantity, 0)
@@ -44,15 +50,28 @@ const AddSalesPage = () => {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState<boolean>(false);
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState<boolean>(false);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
+
+  const [errorMessage, setErrorMessage] = useState<string>("");
+
+  const [isSaleCompleted, setIsSaleCompleted] = useState<boolean>(false);
+
+  const navigate = useNavigate();
+
   useEffect(() => {
     const initializeData = async () => {
       try {
         const usersResponse = await Agent.User.list();
         const filteredEmployees = usersResponse.data.map((user) => ({
-          value: user.id,
+          value: user.nick_name,
           label: user.nick_name,
+          isActive: user.is_active,
         }));
-        setEmployees(filteredEmployees);
+        setEmployees(filteredEmployees.filter((user) => user.isActive));
+
+        setSelectedEmployee(userNickName);
 
         const productsResponse = await Agent.Product.available();
         setAvailableProducts(productsResponse.data);
@@ -62,24 +81,33 @@ const AddSalesPage = () => {
     };
 
     initializeData();
-  }, []);
+  });
 
   useEffect(() => {
     const initializeData = async () => {
       try {
         const response = await Agent.Sale.getPaymentMethods();
-        const filteredSales = response.data.map((sale) => ({
-          value: sale,
-          label: sale,
+        const paymentMethods = response.data.map((paymentMethod) => ({
+          value: paymentMethod,
+          label: paymentMethod,
         }));
-        setPaymentMethodOptions(filteredSales);
+        setPaymentMethodOptions(paymentMethods);
       } catch (error) {
-        console.error("Error fetching users:", error);
+        console.error("Error cargando métodos de pago:", error);
       }
     };
-
     initializeData();
   }, []);
+
+  useEffect(() => {
+          if ( selectedEmployee !== "SIN ELECCIÓN" && paymentMethod !== "SIN ELECCIÓN" && products.length > 0 &&
+              selectedEmployee !== "" && paymentMethod !== ""
+          ) {
+              setIsSaleCompleted(true);
+          } else {
+              setIsSaleCompleted(false);
+          }
+  }, [selectedEmployee, paymentMethod, products]);
 
   const handleQuantityChange = (id, change) => {
     const updatedProducts = products.map((product : SelectedProduct) => {
@@ -109,6 +137,22 @@ const AddSalesPage = () => {
   };
 
   const handleAddProducts = () => {
+
+    if(products.find((product : SelectedProduct) => selectedProducts.find((p) => p.unique_id === product.unique_id))) {
+      const updatedProducts = products.map((product : SelectedProduct) => {
+        if (selectedProducts.find((p) => p.unique_id === product.unique_id)) {
+          const newQuantity = product.quantity + 1;
+          return { ...product, quantity: newQuantity };
+        }
+        return product;
+      });
+      setProducts(updatedProducts);
+      setSelectedProducts([]);
+      setModalOpen(false);
+      updateTotal(updatedProducts);
+      return;
+    }
+
     const updatedProducts = [
       ...products,
       ...selectedProducts.map((product : SelectedProduct) => ({ ...product, quantity: 1 })),
@@ -117,6 +161,70 @@ const AddSalesPage = () => {
     setSelectedProducts([]);
     setModalOpen(false);
     updateTotal(updatedProducts);
+  };
+
+  const toggleSuccessModal = () => {
+    setIsSuccessModalOpen(!isSuccessModalOpen);
+  };
+
+  const toggleErrorModal = () => {
+    setIsErrorModalOpen(!isErrorModalOpen);
+  };
+  
+  const toggleConfirmModal = () => {
+    setIsConfirmModalOpen(!isConfirmModalOpen);
+  };
+
+  const addSale = () => {
+    const sale : Sale = {
+      id: null,
+      nickName: selectedEmployee,
+      totalQuantity: products.reduce((acc, product) => acc + product.quantity, 0),
+      paymentMethod: paymentMethod,
+      totalPrice: total,
+      saleProducts: [
+        ...products.map((product : SelectedProduct) => ({
+          productId: parseInt(product.unique_id),
+          productBrand: product.brandName,
+          productCategory: product.categoryName,
+          productSpecie: product.specieName,
+          totalPricePerProduct: parseInt(product.price) * product.quantity,
+          quantity: product.quantity,
+        })),
+      ]
+    };
+
+    Agent.Sale.add(sale)
+      .then((response) => {
+        if (response.status === 200) {
+          toggleSuccessModal();
+        }
+      })
+      .catch((error) => {
+        let errorMessages = [];
+        if(error.response && error.response.data && error.response.data.errors){
+            const errors = error.response.data.errors;
+
+            for(const key in errors){
+                if (errors.hasOwnProperty(key)) { 
+                    if (Array.isArray(errors[key])) 
+                    {  
+                        errors[key].forEach((msg) => { errorMessages.push(`${key}: ${msg}`);}); 
+                    } else { 
+                        errorMessages.push(`${key}: ${errors[key]}`); 
+                    } 
+                }
+            }
+        }else{
+            errorMessages.push(error.response.data)
+        }
+        setErrorMessage(errorMessages.join("\n"));
+        toggleErrorModal();
+      });
+  }
+
+  const handleNavigate = () => {
+    navigate("/sales");
   };
 
   return (
@@ -129,12 +237,12 @@ const AddSalesPage = () => {
         <div className="flex space-x-4">
           <div className="container max-w-[20%]">
             {TableModule.selectFilter({
-              label: "Empleado",
+              label: "Nombre de usuario",
               valueFilter: selectedEmployee,
               setOnChangeFilter: setSelectedEmployee,
               options: employees,
-              isDisabled: userRoleId !== 1,
-              firstValue: "SIN ELECCIÓN",
+              firstValue: selectedEmployee,
+              isDisabled: userRoleId === 2,
             })}
           </div>
 
@@ -254,6 +362,37 @@ const AddSalesPage = () => {
             />
         )}
 
+        {/* Modales de  confirmación, éxito y error*/}
+
+        {isConfirmModalOpen && (
+          <Modal
+            title="¿Estás seguro de añadir la venta?"
+            activateConfirm={true}
+            confirmation="Confirmar"
+            confirmAction={() => {addSale(); toggleConfirmModal()}}
+            activateCancel={true}
+            confirmCancel={() => toggleConfirmModal()}
+          />
+        )}
+
+        {isSuccessModalOpen && (
+          <Modal
+            title="Venta añadida con éxito"
+            activateConfirm={true}
+            confirmation="Aceptar"
+            confirmAction={() => {toggleSuccessModal(); Functions.refreshPage();}}
+          />
+        )}
+
+        {isErrorModalOpen && (
+          <Modal
+            title={`Corrija los siguientes errores: ${errorMessage}`}
+            activateConfirm={true}
+            confirmation="Aceptar"
+            confirmAction={() => toggleErrorModal()}
+          />
+        )}
+
         {/* Total y botones */}
         <div className="mt-8">
           <div className="text-right mb-4">
@@ -268,13 +407,20 @@ const AddSalesPage = () => {
             </span>
           </div>
           <div className="flex justify-end space-x-4">
-            <Buttons.TurquoiseButton
+            {isSaleCompleted ? 
+              <Buttons.TurquoiseButton
+              text="Añadir"
+              onClick={() => toggleConfirmModal()}
+              />
+              :
+              <Buttons.GrayButton
               text="Añadir"
               onClick={() => null}
-            />
+              />
+            }
             <Buttons.FuchsiaButton
               text="Cancelar"
-              onClick={() => null}
+              onClick={() => handleNavigate()}
             />
           </div>
         </div>

@@ -1,147 +1,189 @@
-import React, { useState } from "react";
-import "../../app/static/styles/index.css";
-import TableModule from "../../app/components/tablemodule";
-import Buttons from "../../app/components/buttons";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Agent from "../../app/api/agent";
+import Buttons from "../../app/components/buttons";
+import TableModule from "../../app/components/tablemodule";
 import Modal from "../../app/components/modal";
-import ConfirmAdminLogged from "../../app/components/confirmadmin";
 import Functions from "../../app/components/functions";
+import ConfirmAdminLogged from "../../app/components/confirmadmin";
+import { useAuth } from "../../app/context/authcontext";
 
-
-const headers = ["Código", "Producto(s)", "Precio Total", "Medio de pago", "Trabajador(a)","Acciones"];
+const headers = [
+  "Código",
+  "Producto(s)",
+  "Precio Total",
+  "Medio de Pago",
+  "Trabajador(a)",
+  "Acciones",
+];
 
 const SalePage = () => {
+  const { userRoleId } = useAuth();
+  const [sales, setSales] = useState([]);
+  const [userOptions, setUserOptions] = useState([]);
+  const [nickNameFilter, setNickNameFilter] = useState<string>("");
+  const [selectedSale, setSelectedSale] = useState(null);
+  const [products, setProducts] = useState([]);
 
-    const toggleConfirmationModal = () => {
-        setIsConfirmationModalOpen(!isConfirmationModalOpen);
-      };
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] =
+    useState<boolean>(false);
+  const [isDeletedModalOpen, setIsDeletedModalOpen] = useState<boolean>(false);
+  const [isConfirmationAdminLogged, setIsConfirmationAdminLogged] =
+    useState<boolean>(false);
 
-    const toggleConfirmAdminLogged = () => {
-        setIsConfirmationAdminLogged(!isConfirmationAdminLogged);
-      };
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const navigate = useNavigate();
+  const salesPerPage = 8;
 
-      const toggleChangedStateModal = () => {
-        setIsChangedStateModal(!isChangedStateModal);
-      };
+  const indexOfLastSale = currentPage * salesPerPage;
+  const indexOfFirstSale = indexOfLastSale - salesPerPage;
 
-    const navigate = useNavigate();
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-    const [isConfirmationModalOpen, setIsConfirmationModalOpen] =
-        useState<boolean>(false);
-    const [isChangedStateModal, setIsChangedStateModal] =
-        useState<boolean>(false);
-    const [isConfirmationAdminLogged, setIsConfirmationAdminLogged] =
-        useState<boolean>(false);
+  useEffect(() => {
+    const initializeData = async () => {
+      try {
+        const sales = (await Agent.Sale.list()).data;
+        setSales(sales);
 
-    
-    const [products, setProducts] = useState([
-        {
-          id: 1,
-          name: "Cachitos",
-          brand: "Cookie Dog + Cat",
-          category: "Comida Natural",
-          species: "Perro",
-          price: 2000,
-          quantity: 1,
-        },
-        {
-          id: 2,
-          name: "Bolsas de paseo",
-          brand: "PetSafe",
-          category: "Paseo",
-          species: "-",
-          price: 6000,
-          quantity: 3,
-        },
-        {
-          id: 3,
-          name: "Churu de Pollo",
-          brand: "Purina!",
-          category: "Alimento",
-          species: "Gato",
-          price: 50000,
-          quantity: 10,
-        },
-      ]);
-    const [sales, setSales] = useState([
-      {
-        id: 954252,
-        Total_quantity: 5,
-        Total: 2000,
-        Date: "12/12/2022",
-        Payment_method: "Debito",
-        UserId: 1,
-        products : products
-      },
-    ]);
+        const responseUsers = await Agent.User.list();
+        const users = responseUsers.data.map((user) => ({
+          value: user.nick_name,
+          label: user.nick_name,
+          isActive: user.is_active,
+        }));
 
-    const [employees] = useState([
-        { id: 1, name: "Camila Tessini", is_active: false },
-        { id: 2, name: "Carlos Martínez", is_active: true },
-        { id: 3, name: "Ana López", is_active: true },
-      ]);
-    const [selectedEmployee, setSelectedEmployee] = useState("");
-  
+        setUserOptions(users.filter((user) => user.isActive));
+
+        const responseProducts = await Agent.Product.list();
+
+        const products = responseProducts.data.map((product) => ({
+          value: product.unique_id,
+          label: product.product_name,
+        }));
+        setProducts(products);
+      } catch (error) {
+        console.error("Error fetching sales:", error);
+      }
+    };
+
+    initializeData();
+  }, []);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [sales, nickNameFilter]);
+
+  const filteredSales = sales.filter((sale) => {
+    if (nickNameFilter === "SIN ELECCIÓN") {
+      return true;
+    }
+
+    return (
+      sale.nickName.toLowerCase().includes(nickNameFilter.toLowerCase()) ||
+      nickNameFilter === ""
+    );
+  });
+
+  const currentSales = filteredSales.slice(indexOfFirstSale, indexOfLastSale);
+
+  const getProductLabel = (id: number) => {
+    const foundProduct = products.find((p) => p.value === id.toString());
+    return foundProduct ? foundProduct.label : "Producto no encontrado";
+  };
+
   const handleNavigate = (path: string, state?: any) => {
     navigate(path, state ? { state } : undefined);
   };
 
-    return (
-      <div className="max-h-screen bg-white">
-        <div className="container mx-auto px-4 py-6">
-          {/* Título */}
-          <h1 className="text-4xl font-bold text-[#6FC9D1] mb-6">Ventas</h1>
+  const toggleConfirmationModal = () => {
+    setIsConfirmationModalOpen(!isConfirmationModalOpen);
+  };
 
-          <div className="container max-w-[20%] mb-8">
-            <label className="block font-semibold text-[#6FC9D1] mb-2">Nombre de empleado</label>
-            <select
-              value={selectedEmployee}
-              onChange={(e) => setSelectedEmployee(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-md text-gray-700"
-            >
-              <option value="">Seleccione un empleado</option>
-              {employees.map((employee) => (
-                <option key={employee.id} value={employee.name}>
-                  {employee.name}
-                </option>
-              ))}
-            </select>
-          </div>
-  
-         
-  
-          {/* Tabla y botón del carrito */}
-          <div className="relative">
-            {TableModule.table({
-              headers: headers,
-              data: sales.map((sale) => [
-                sale.id,
-                sale.products.map((product) => product.name).join(", "),
-                sale.Total,
-                sale.Payment_method,
-                sale.products.map((product) => product.name).join(", "),
-                <div className="flex justify-center items-center ml-4 mr-4 space-x-4">
-                 {employees[1].is_active && (
-                  <Buttons.EditButton
-                    onClick={() => handleNavigate("/edit-sale")}/> )}
-                  <Buttons.DetailButton
-                    onClick={() => handleNavigate("/detail-sale")} data={sale}/>
-                 {employees[1].is_active && (
-                  <Buttons.DeleteButton
-                    onClick={() =>{
-                        toggleConfirmationModal();
-                    }
-                    
-                    }/>
-                 )}
-                 
-              </div>,
-              ]),
+  const toggleDeleteModal = () => {
+    setIsDeletedModalOpen(!isDeletedModalOpen);
+  };
+
+  const toggleConfirmAdminLogged = () => {
+    setIsConfirmationAdminLogged(!isConfirmationAdminLogged);
+  };
+
+  const deleteSale = async (id: number) => {
+    try {
+      toggleConfirmationModal();
+      if (selectedSale) {
+        await Agent.Sale.delete(id.toString());
+        const newSales = sales.filter((sale) => sale.id !== id);
+        setSales(newSales);
+        toggleDeleteModal();
+        toggleConfirmAdminLogged();
+      }
+    } catch (error) {
+      console.error("Error deleting sale:", error);
+    }
+  };
+
+  return (
+    <div className="max-h-screen bg-white">
+      <div className="container mx-auto px-4 py-6">
+        {TableModule.title({ title: "Ventas" })}
+        {/* Filtros */}
+        <div className="flex space-x-4">
+          <div className="container max-w-[20%]">
+            {TableModule.selectFilter({
+              label: "Nombre de usuario",
+              valueFilter: nickNameFilter,
+              setOnChangeFilter: setNickNameFilter,
+              options: userOptions,
+              firstValue: "SIN ELECCIÓN",
             })}
+          </div>
+        </div>
+
+        {/* Tabla */}
+        {TableModule.table({
+          headers: headers,
+          data: currentSales.map((sale) => [
+            sale.saleId,
+            sale.saleProducts.map((product) =>
+              getProductLabel(product.productId)
+            ),
+            sale.totalPrice,
+            sale.paymentMethod,
+            sale.nickName,
+            <>
+              <div className="flex justify-center items-center ml-4 mr-4 gap-x-4">
+                {userRoleId === 1 &&
+                  Buttons.EditButton({
+                    onClick: () => {
+                      setSelectedSale(sale);
+                      handleNavigate(`/edit-sale`, sale);
+                    },
+                  })}
+                {Buttons.DetailButton({
+                  data: sale,
+                  onClick: () => {
+                    setSelectedSale(sale);
+                    handleNavigate(`/detail-sale`, sale);
+                  },
+                })}
+                {userRoleId === 1 &&
+                  Buttons.DeleteButton({
+                    onClick: () => {
+                      setSelectedSale(sale);
+                      toggleConfirmationModal();
+                    },
+                  })}
+              </div>
+            </>,
+          ]),
+        })}
+
         {isConfirmationModalOpen &&
-          !isConfirmationAdminLogged && (
+          !isConfirmationAdminLogged &&
+          userRoleId === 1 && (
             <Modal
-              title="¿Desea eliminar la venta?"
+              title={`¿Borrar la venta ${selectedSale.saleId}?`}
               confirmAction={setIsConfirmationAdminLogged}
               confirmation="Eliminar"
               confirmCancel={toggleConfirmationModal}
@@ -149,40 +191,48 @@ const SalePage = () => {
               activateConfirm={true}
             />
           )}
-        {isConfirmationAdminLogged && (
-          <ConfirmAdminLogged
-            confirmation="Confirmar"
-            confirmAction={() => {
-                toggleConfirmationModal();
-                toggleChangedStateModal();
-            }}
-            confirmCancel={() => {
-              toggleConfirmAdminLogged();
-              toggleConfirmationModal();
-            }}
-            activateCancel={true}
-            activateConfirm={true}
-          />
-        )}          
-        {isChangedStateModal && !isConfirmationAdminLogged && (
+
+          {isConfirmationAdminLogged && (
+            <ConfirmAdminLogged
+              confirmation="Confirmar"
+              confirmAction={() => {
+                deleteSale(selectedSale.saleId);
+              }}
+              confirmCancel={toggleConfirmAdminLogged}
+              activateCancel={true}
+              activateConfirm={true}
+            />
+          )}
+
+        {isDeletedModalOpen && !isConfirmationAdminLogged && (
           <Modal
             title={"Venta eliminada con éxito"}
             confirmation="Aceptar"
             confirmAction={() => {
-              toggleChangedStateModal();
+              toggleDeleteModal();
               Functions.refreshPage();
             }}
             activateCancel={false}
             activateConfirm={true}
           />
-        )}        
-          </div>
+        )}
+
+        {/* Paginación */}
+        {TableModule.pagination({
+          length: filteredSales.length,
+          perPage: salesPerPage,
+          currentPage: currentPage,
+          paginate: paginate,
+        })}
+
+        {/* Botón Agregar */}
         <Buttons.TurquoiseButton
           text="Añadir"
           onClick={() => handleNavigate("/add-sale")}
         />
-        </div>
       </div>
-    );
-  };
+    </div>
+  );
+};
+
 export default SalePage;

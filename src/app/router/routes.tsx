@@ -55,7 +55,7 @@ const Routes = (props: Props) => {
     "/add-sale",
     "/reports",
     "/products",
-    "/products/edit-product/1",
+    "/products/edit-product",
     "/products/add-product",
     "*",
   ];
@@ -76,24 +76,57 @@ const Routes = (props: Props) => {
           }
         >
           <Route element={<PrivateRoutes />}>
-            <Route path="/users" element={<UserPage />} />
-            <Route path="/edit-user" element={<EditUserPage />} />
-            <Route path="/add-user" element={<AddUserPage />} />
+            <Route path="/users" element={
+                <RoleBasedRoute roles={[1]} redirectTo="/sales">
+                  {" "}
+                  <UserPage />{" "}
+                </RoleBasedRoute>
+              }  
+            />
+            <Route path="/edit-user" element={
+                <RoleBasedRoute roles={[1]} redirectTo="/sales">
+                  {" "}
+                  <EditUserPage />{" "}
+                </RoleBasedRoute>
+              } 
+            />
+
+            <Route path="/add-user" element={
+                <RoleBasedRoute roles={[1]} redirectTo="/sales">
+                  {" "}
+                  <AddUserPage />{" "}
+                </RoleBasedRoute>
+              }
+            />
             <Route path="/products" element={<ProductPage />} />
-            <Route path="edit-product/:id" element={<EditProductPage />} />
+            <Route path="/products/edit-product" element={
+                <RoleBasedRoute roles={[1]} redirectTo="/products">
+                  {" "}
+                  <EditProductPage />{" "}
+                </RoleBasedRoute>
+              } 
+            />
             <Route path="/products/add-product" element={<AddProductPage />} />
             <Route
               path="/sales"
               element={
-                <RoleBasedRoute roles={[1]} redirectTo="/add-sale">
+                <RoleBasedRoute roles={[1,2]} redirectTo="/sales">
                   {" "}
                   <SalePage />{" "}
                 </RoleBasedRoute>
               }
             />
-            <Route path="/edit-sale" element={<EditSalePage />} />
-            <Route path="/detail-sale" element={<DetailSalePage />} />
+            <Route
+              path="/edit-sale"
+              element={
+                <RoleBasedRoute roles={[1]} redirectTo="/sales">
+                  {" "}
+                  <EditSalePage />{" "}
+                </RoleBasedRoute>
+              }
+            />
             <Route path="/add-sale" element={<AddSalePage />} />
+            <Route path="/detail-sale" element={<DetailSalePage />} />
             <Route
               path="/reports"
               element={

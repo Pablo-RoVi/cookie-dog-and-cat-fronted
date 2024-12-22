@@ -8,6 +8,7 @@ import Options from "../../app/components/options";
 import Modal from "../../app/components/modal";
 import ConfirmAdminLogged from "../../app/components/confirmadmin";
 import Agent from "../../app/api/agent";
+import { AxiosResponse } from "axios";
 
 const AddUserPage = () => {
   const [name, setName] = useState<string>("");
@@ -19,12 +20,16 @@ const AddUserPage = () => {
 
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] =
     useState<boolean>(false);
-  const [isChangedRegisterModal, setIsChangedRegisterModal] =
-    useState<boolean>(false);
+
   const [isConfirmationAdminLogged, setIsConfirmationAdminLogged] =
     useState<boolean>(false);
 
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState<boolean>(false);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState<boolean>(false);
+  
   const [isFormCompleted, setIsFormCompleted] = useState<boolean>(false);
+
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   const navigate = useNavigate();
 
@@ -50,12 +55,16 @@ const AddUserPage = () => {
     setIsConfirmationModalOpen(!isConfirmationModalOpen);
   };
 
-  const toggleChangedRegisterUser = () => {
-    setIsChangedRegisterModal(!isChangedRegisterModal);
-  };
-
   const toggleConfirmAdminLogged = () => {
     setIsConfirmationAdminLogged(!isConfirmationAdminLogged);
+  };
+
+  const toggleErrorModal = () => {
+    setIsErrorModalOpen(!isErrorModalOpen);
+  };
+
+  const toggleSuccessModal = () => {
+    setIsSuccessModalOpen(!isSuccessModalOpen);
   };
 
   const registerUser = () => {
@@ -67,13 +76,35 @@ const AddUserPage = () => {
       confirmPassword: confirmNewPassword,
       roleName: role,
     })
-      .then(() => {
-        toggleConfirmationModal();
-        toggleChangedRegisterUser();
-        handleNavigate();
+      .then((response : AxiosResponse) => {
+        if(response.status === 200){
+          toggleConfirmAdminLogged();
+          toggleSuccessModal();
+        }else if(response.status === 400){
+          console.error(response.statusText);
+        }
       })
       .catch((error) => {
-        console.log("error", error);
+        console.log("error", error.response);
+        let errorMessages = [];
+        if(error.response && error.response.data && error.response.data.errors){
+            const errors = error.response.data.errors;
+
+            for(const key in errors){
+                if (errors.hasOwnProperty(key)) { 
+                    if (Array.isArray(errors[key])) 
+                    {  
+                        errors[key].forEach((msg) => { errorMessages.push(`${msg}`);}); 
+                    } else { 
+                        errorMessages.push(`${key}: ${errors[key]}`); 
+                    } 
+                }
+            }
+        }else{
+            errorMessages.push(error.response.data)
+        }
+        setErrorMessage(errorMessages.join("\n"));
+        toggleErrorModal();
       });
   };
 
@@ -143,12 +174,12 @@ const AddUserPage = () => {
           {isFormCompleted ? (
             <Buttons.TurquoiseButton
               text="Añadir"
-              onClick={toggleConfirmationModal}
+              onClick={() => toggleConfirmationModal()}
             />
           ) : (
             <Buttons.GrayButton text="Añadir" onClick={null} />
           )}
-          <Buttons.FuchsiaButton text="Cancelar" onClick={handleNavigate} />
+          <Buttons.FuchsiaButton text="Cancelar" onClick={() => handleNavigate()} />
         </div>
       </div>
       {isConfirmationModalOpen && (
@@ -156,9 +187,9 @@ const AddUserPage = () => {
           title={`¿Estás seguro de que deseas registrar a ${name} ${lastName} de RUT ${rut} y rol ${Functions.translateRole(
             role
           )}?`}
-          confirmAction={setIsConfirmationAdminLogged}
-          confirmation="Editar"
-          confirmCancel={toggleConfirmationModal}
+          confirmAction={() =>  { toggleConfirmAdminLogged(); toggleConfirmationModal(); }}
+          confirmation="Añadir"
+          confirmCancel={() => toggleConfirmationModal()}
           activateCancel={true}
           activateConfirm={true}
         />
@@ -172,9 +203,28 @@ const AddUserPage = () => {
           }}
           confirmCancel={() => {
             toggleConfirmAdminLogged();
-            toggleConfirmationModal();
           }}
           activateCancel={true}
+          activateConfirm={true}
+        />
+      )}
+
+      {isSuccessModalOpen && (
+        <Modal
+          title={"Usuario registrado con éxito"}
+          confirmation="Aceptar"
+          confirmAction={() => {toggleSuccessModal(); handleNavigate();}}
+          activateCancel={false}
+          activateConfirm={true}
+        />
+      )}
+
+      {isErrorModalOpen && (
+        <Modal
+          title={`Corrija los siguientes errores: ${errorMessage}`}
+          confirmation="Aceptar"
+          confirmAction={() => toggleErrorModal()}
+          activateCancel={false}
           activateConfirm={true}
         />
       )}

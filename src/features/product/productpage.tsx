@@ -8,9 +8,13 @@ import { Product } from '../../app/models/product';
 import Modal from "../../app/components/modal";
 import { useNavigate } from "react-router-dom";
 import { AxiosResponse } from "axios";
+import { useAuth } from "../../app/context/authcontext";
+import ConfirmAdminLogged from "../../app/components/confirmadmin";
 
 
-const headers = ["Código", "Nombre", "Precio", "Stock", "Categoria","Marca","Especie","Acciones"];
+const headersAdmin = ["Código", "Nombre", "Precio", "Stock", "Categoria","Marca","Especie","Acciones"];
+
+const headersEmployee = ["Código", "Nombre", "Precio", "Stock", "Categoria","Marca","Especie"];
 
 const ProductPage = () => {
 
@@ -22,8 +26,14 @@ const ProductPage = () => {
 
     const navigate = useNavigate();
 
+    const { userRoleId } = useAuth();
+
     const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState<boolean>(false);
     const [isDeletedModalOpen, setIsDeletedModalOpen] = useState<boolean>(false);
+    const [isErrorModalOpen, setIsErrorModalOpen] = useState<boolean>(false);
+    const [isConfirmAdminLoggedModalOpen, setIsConfirmAdminLoggedModalOpen] = useState<boolean>(false);
+
+    const [errorMessage, setErrorMessage] = useState<string>("");
 
     const indexOfLastProduct = currentPage * productsPerPage;
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
@@ -36,7 +46,7 @@ const ProductPage = () => {
             const response = await Agent.Product.list();
             setProducts(response.data);
           } catch (error) {
-            console.error("Error fetching products:", error);
+            console.error("Error cargando lista de productos:", error);
           }
         };
     
@@ -46,7 +56,6 @@ const ProductPage = () => {
     const deleteProduct = (unique_id) => { if (selectedProduct) 
         {   
             if(unique_id){
-                toggleConfirmationModal();
                 Agent.Product.delete(unique_id).then(
                     (response : AxiosResponse) => { 
                     if(response.status === 200) 
@@ -58,8 +67,28 @@ const ProductPage = () => {
                     }
                 }).catch(error => 
                     { 
-                        console.error("Error al eliminar el producto:", error); 
-                }); 
+                        console.log("error", error.response.data);
+                        let errorMessages = [];
+                        if(error.response && error.response.data && error.response.data.errors){
+                            const errors = error.response.data.errors;
+
+                            for(const key in errors){
+                                if (errors.hasOwnProperty(key)) { 
+                                    if (Array.isArray(errors[key])) 
+                                    {  
+                                        errors[key].forEach((msg) => { errorMessages.push(`${msg}`);}); 
+                                    } else { 
+                                        errorMessages.push(`${key}: ${errors[key]}`); 
+                                    } 
+                                }
+                            }
+                        }else{
+                            errorMessages.push(error.response.data)
+                        }
+                        setErrorMessage(errorMessages.join("\n"));
+                        toggleErrorModal();
+                    }
+                ); 
             }
         } 
     };
@@ -84,6 +113,14 @@ const ProductPage = () => {
         setIsDeletedModalOpen(!isDeletedModalOpen);
     };
 
+    const toggleErrorModal = () => {
+        setIsErrorModalOpen(!isErrorModalOpen);
+    };
+
+    const toggleConfirmAdminLoggedModal = () => {
+        setIsConfirmAdminLoggedModalOpen(!isConfirmAdminLoggedModalOpen);
+    };
+
     const handleNavigate = (path: string, state?: any) => {
         navigate(path, state ? { state } : undefined);
     };
@@ -104,29 +141,44 @@ const ProductPage = () => {
                 </div>
 
                 {/* Tabla */}
-                {TableModule.table({headers: headers, data: currentProducts.map((product: Product) => [
+                {TableModule.table({headers: userRoleId === 1 ? headersAdmin : headersEmployee, data: currentProducts.map((product: Product) => {
+                const rows: (string | JSX.Element)[] = [
                 product.unique_id,
                 product.product_name,
                 product.price,
                 product.stock,
                 product.categoryName,
                 product.brandName,
-                product.specieName,
-                <>
-                    <div className="flex justify-between items-center ml-4 mr-4">
-                    {buttons.EditButton({onClick: () => { setSelectedProduct(product); handleNavigate(`/products/edit-product/${product.unique_id}`,product); }})}
-                    {buttons.DeleteButton({onClick: () => { setSelectedProduct(product); toggleConfirmationModal();}})}
-                    </div>
-                </>
-                ])})}
+                product.specieName
+                ];
+                if(userRoleId === 1){
+                    rows.push(
+                        <div className="flex justify-between items-center ml-4 mr-4">
+                        {buttons.EditButton({onClick: () => { setSelectedProduct(product); handleNavigate(`/products/edit-product`,product); }})}
+                        {buttons.DeleteButton({onClick: () => { setSelectedProduct(product); toggleConfirmationModal();}})}
+                        </div>
+                    );
+                }
+                return rows;
+                })})}
 
                 {isConfirmationModalOpen && (
-                    <Modal title={`¿Borrar el producto ${selectedProduct.product_name}?`} 
-                    confirmAction={() => deleteProduct(selectedProduct.unique_id)} 
+                    <Modal title={`¿Borrar el producto '${selectedProduct.product_name}'?`} 
+                    confirmAction={() => {toggleConfirmationModal(); toggleConfirmAdminLoggedModal();}}
                     confirmation="Eliminar" 
-                    confirmCancel={toggleConfirmationModal}
+                    confirmCancel={() => toggleConfirmationModal()}
                     activateCancel={true}
                     activateConfirm={true}/>
+                )}
+
+                {isConfirmAdminLoggedModalOpen && (
+                    <ConfirmAdminLogged
+                        confirmation="Aceptar"
+                        confirmAction={() => {toggleConfirmAdminLoggedModal();deleteProduct(selectedProduct.unique_id)}}
+                        confirmCancel={() => toggleConfirmAdminLoggedModal()}
+                        activateCancel={true}
+                        activateConfirm={true}
+                    />
                 )}
 
                 {isDeletedModalOpen && (
@@ -135,6 +187,15 @@ const ProductPage = () => {
                     confirmAction={() => {toggleDeleteModal(); Functions.refreshPage();}}
                     activateCancel={false}
                     activateConfirm={true}/>
+                )}
+
+                {isErrorModalOpen && (
+                    <Modal title={`Corrija los siguientes errores: ${errorMessage}`} 
+                    confirmation="Aceptar" 
+                    confirmAction={() => toggleErrorModal()}
+                    activateCancel={false}
+                    activateConfirm={true}>
+                    </Modal>
                 )}
 
                 {/* Paginación */}
@@ -146,7 +207,10 @@ const ProductPage = () => {
                 })}
 
                 {/* Botón Agregar */}
-                {buttons.TurquoiseButton({ text: "Añadir", onClick: () => handleNavigate("/products/add-product") })}
+                {userRoleId === 1 ?
+                    buttons.TurquoiseButton({ text: "Añadir", onClick: () => handleNavigate("/products/add-product")})
+                    : buttons.GrayButton({ text: "Añadir", onClick: () => null})
+                }      
             </div>
         </div>
     );
