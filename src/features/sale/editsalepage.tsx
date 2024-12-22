@@ -5,6 +5,8 @@ import Buttons from "../../app/components/buttons";
 import Agent from "../../app/api/agent";
 import colors from "../../app/static/colors";
 import Modal from "../../app/components/modal";
+import ConfirmAdminLogged from "../../app/components/confirmadmin";
+import { AxiosResponse } from "axios";
 
 const headersShopping = [
   "Producto",
@@ -29,6 +31,7 @@ const AddSalesPage = () => {
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState<boolean>(false);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState<boolean>(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
+  const [isAdminConfirmModalOpen, setIsAdminConfirmModalOpen] = useState<boolean>(false);
 
   const [errorMessage, setErrorMessage] = useState<string>("");
 
@@ -109,6 +112,10 @@ const AddSalesPage = () => {
     setIsConfirmModalOpen(!isConfirmModalOpen);
   };
 
+  const toggleAdminConfirmModal = () => {
+    setIsAdminConfirmModalOpen(!isAdminConfirmModalOpen);
+  };
+
   const editSale = () => {
     if (
       (saleNickName === "" ||
@@ -127,14 +134,58 @@ const AddSalesPage = () => {
         paymentMethod: salePaymentMethod,
       };
       Agent.Sale.edit(form, saleId.toString())
-        .then(() => {
-          toggleSuccessModal();
+        .then((response : AxiosResponse) => {
+          
+          if(response.status === 200){
+            toggleSuccessModal();
+          }else if(response.status === 400){
+            setErrorMessage("Error al editar la venta");
+            toggleErrorModal();
+          }
         })
         .catch((error) => {
-          console.error("Error editando venta:", error);
+          console.log("error", error.response.data);
+          let errorMessages = [];
+          if(error.response && error.response.data && error.response.data.errors){
+              const errors = error.response.data.errors;
+
+              for(const key in errors){
+                  if (errors.hasOwnProperty(key)) { 
+                      if (Array.isArray(errors[key])) 
+                      {  
+                          errors[key].forEach((msg) => { errorMessages.push(`${msg}`);}); 
+                      } else { 
+                          errorMessages.push(`${key}: ${errors[key]}`); 
+                      } 
+                  }
+              }
+          }else{
+              errorMessages.push(error.response.data)
+          }
+          setErrorMessage(errorMessages.join("\n"));
+          toggleErrorModal();
         });
     } catch (error) {
-      console.error("Error editando venta:", error);
+      console.log("error", error.response.data);
+      let errorMessages = [];
+      if(error.response && error.response.data && error.response.data.errors){
+          const errors = error.response.data.errors;
+
+          for(const key in errors){
+              if (errors.hasOwnProperty(key)) { 
+                  if (Array.isArray(errors[key])) 
+                  {  
+                      errors[key].forEach((msg) => { errorMessages.push(`${msg}`);}); 
+                  } else { 
+                      errorMessages.push(`${key}: ${errors[key]}`); 
+                  } 
+              }
+          }
+      }else{
+          errorMessages.push(error.response.data)
+      }
+      setErrorMessage(errorMessages.join("\n"));
+      toggleErrorModal();
     }
   };
 
@@ -209,11 +260,24 @@ const AddSalesPage = () => {
             activateConfirm={true}
             confirmation="Confirmar"
             confirmAction={() => {
-              editSale();
               toggleConfirmModal();
+              toggleAdminConfirmModal();
             }}
             activateCancel={true}
             confirmCancel={() => toggleConfirmModal()}
+          />
+        )}
+
+        {isAdminConfirmModalOpen && (
+          <ConfirmAdminLogged
+            confirmation="Confirmar"
+            confirmAction={() => {
+              toggleAdminConfirmModal();
+              editSale();
+            }}
+            confirmCancel={() => toggleAdminConfirmModal()}
+            activateCancel={true}
+            activateConfirm={true}
           />
         )}
 
