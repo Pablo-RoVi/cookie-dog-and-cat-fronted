@@ -9,6 +9,7 @@ import Modal from "../../app/components/modal";
 import { useNavigate } from "react-router-dom";
 import { AxiosResponse } from "axios";
 import { useAuth } from "../../app/context/authcontext";
+import ConfirmAdminLogged from "../../app/components/confirmadmin";
 
 
 const headersAdmin = ["Código", "Nombre", "Precio", "Stock", "Categoria","Marca","Especie","Acciones"];
@@ -30,6 +31,7 @@ const ProductPage = () => {
     const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState<boolean>(false);
     const [isDeletedModalOpen, setIsDeletedModalOpen] = useState<boolean>(false);
     const [isErrorModalOpen, setIsErrorModalOpen] = useState<boolean>(false);
+    const [isConfirmAdminLoggedModalOpen, setIsConfirmAdminLoggedModalOpen] = useState<boolean>(false);
 
     const [errorMessage, setErrorMessage] = useState<string>("");
 
@@ -44,7 +46,7 @@ const ProductPage = () => {
             const response = await Agent.Product.list();
             setProducts(response.data);
           } catch (error) {
-            console.error("Error fetching products:", error);
+            console.error("Error cargando lista de productos:", error);
           }
         };
     
@@ -54,7 +56,6 @@ const ProductPage = () => {
     const deleteProduct = (unique_id) => { if (selectedProduct) 
         {   
             if(unique_id){
-                toggleConfirmationModal();
                 Agent.Product.delete(unique_id).then(
                     (response : AxiosResponse) => { 
                     if(response.status === 200) 
@@ -116,6 +117,10 @@ const ProductPage = () => {
         setIsErrorModalOpen(!isErrorModalOpen);
     };
 
+    const toggleConfirmAdminLoggedModal = () => {
+        setIsConfirmAdminLoggedModalOpen(!isConfirmAdminLoggedModalOpen);
+    };
+
     const handleNavigate = (path: string, state?: any) => {
         navigate(path, state ? { state } : undefined);
     };
@@ -159,11 +164,21 @@ const ProductPage = () => {
 
                 {isConfirmationModalOpen && (
                     <Modal title={`¿Borrar el producto '${selectedProduct.product_name}'?`} 
-                    confirmAction={() => deleteProduct(selectedProduct.unique_id)} 
+                    confirmAction={() => {toggleConfirmationModal(); toggleConfirmAdminLoggedModal();}}
                     confirmation="Eliminar" 
                     confirmCancel={() => toggleConfirmationModal()}
                     activateCancel={true}
                     activateConfirm={true}/>
+                )}
+
+                {isConfirmAdminLoggedModalOpen && (
+                    <ConfirmAdminLogged
+                        confirmation="Aceptar"
+                        confirmAction={() => {toggleConfirmAdminLoggedModal();deleteProduct(selectedProduct.unique_id)}}
+                        confirmCancel={() => toggleConfirmAdminLoggedModal()}
+                        activateCancel={true}
+                        activateConfirm={true}
+                    />
                 )}
 
                 {isDeletedModalOpen && (
