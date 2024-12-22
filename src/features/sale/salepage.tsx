@@ -142,7 +142,7 @@ const SalePage = () => {
             sale.paymentMethod,
             sale.userFullName,
             <>
-              <div className="flex justify-between items-center ml-4 mr-4">
+              <div className="flex justify-center items-center ml-4 mr-4 gap-x-4">
                 {userRoleId === 1 &&
                   Buttons.EditButton({
                     onClick: () => {
