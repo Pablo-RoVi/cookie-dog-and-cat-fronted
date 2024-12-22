@@ -2,7 +2,6 @@ import React, { useState, FormEvent } from "react";
 import "../../app/static/styles/index.css";
 import colors from "../../app/static/colors";
 import cookie from "../../app/static/images/cookie.png";
-import TableModal from "../../app/components/tablemodal";
 import { useAuth } from "../../app/context/authcontext";
 
 const Login = () => {
@@ -33,7 +32,7 @@ const Login = () => {
         style={{ backgroundColor: colors.fuchsiaTransparent }}
       >
         <div className="ml-10 mr-10">
-          <h3 className="text-3xl text-left mt-2 mb-7">Iniciar Sesión</h3>
+          <h3 className="text-3xl text-left mt-4 mb-4">Iniciar Sesión</h3>
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
               <h3 className="text-sm text-left mb-2">Nombre de usuario</h3>
@@ -55,7 +54,7 @@ const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
               />
               <div
-                className="text-sm mt-2"
+                className="mt-4 justify-center"
                 style={{
                   color: colors.white,
                   height: "10px",
@@ -67,7 +66,7 @@ const Login = () => {
             </div>
             <button
               type="submit"
-              className="w-full p-2 mb-10 mt-10 text-white rounded-lg "
+              className="w-full p-2 mb-4 mt-4 text-white rounded-lg "
               style={{ backgroundColor: colors.turquoise }}
             >
               Ingresar
