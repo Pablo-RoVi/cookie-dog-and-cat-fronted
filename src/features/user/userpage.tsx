@@ -177,7 +177,7 @@ const UserPage = () => {
             if(userRoleId === 1) {
               rows.push(
               <>
-                <div className="flex justify-between items-center ml-4 mr-4">
+                <div className="flex justify-center items-center ml-4 mr-4 gap-x-16">
                   <Buttons.EditButton
                     onClick={() => handleNavigate("/edit-user", user)}
                   />

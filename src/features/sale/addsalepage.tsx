@@ -67,8 +67,9 @@ const AddSalesPage = () => {
         const filteredEmployees = usersResponse.data.map((user) => ({
           value: user.nick_name,
           label: user.nick_name,
+          isActive: user.is_active,
         }));
-        setEmployees(filteredEmployees);
+        setEmployees(filteredEmployees.filter((user) => user.isActive));
 
         setSelectedEmployee(userNickName);
 

@@ -63,8 +63,9 @@ const AddSalesPage = () => {
         const users = responseUsers.data.map((user) => ({
           value: user.nick_name,
           label: user.nick_name,
+          isActive: user.is_active,
         }));
-        setUserOptions(users);
+        setUserOptions(users.filter((user) => user.isActive));
 
         const responseProducts = await Agent.Product.list();
 
