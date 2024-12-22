@@ -10,7 +10,6 @@ import options from "../../app/components/options";
 import Modal from "../../app/components/modal";
 import ConfirmAdminLogged from "../../app/components/confirmadmin";
 import { useAuth } from "../../app/context/authcontext";
-import { isDisabled } from "@testing-library/user-event/dist/utils";
 
 const adminHeaders = [
   "Código",
@@ -165,7 +164,7 @@ const UserPage = () => {
 
         {/* Tabla */}
         {TableModule.table({
-          headers: userRoleId == 1 ? adminHeaders : employeeHeaders,
+          headers: userRoleId === 1 ? adminHeaders : employeeHeaders,
           data: currentUsers.map((user: User) => {
             const rows : (string | JSX.Element)[] = [
             user.id,
@@ -175,7 +174,7 @@ const UserPage = () => {
             Functions.translateRole(user.role.role_name),
             user.nick_name
             ];
-            if(userRoleId == 1) {
+            if(userRoleId === 1) {
               rows.push(
               <>
                 <div className="flex justify-between items-center ml-4 mr-4">
@@ -261,7 +260,7 @@ const UserPage = () => {
         })}
 
         {/* Botón Agregar */}
-        {userRoleId == 1 ?
+        {userRoleId === 1 ?
           <Buttons.TurquoiseButton
           text="Añadir"
           onClick={() => handleNavigate("/add-user")}
