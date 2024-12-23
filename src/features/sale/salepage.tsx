@@ -6,6 +6,7 @@ import TableModule from "../../app/components/tablemodule";
 import Modal from "../../app/components/modal";
 import Functions from "../../app/components/functions";
 import { useAuth } from "../../app/context/authcontext";
+import { SaleProducts } from '../../app/models/sale';
 
 const headers = [
   "Código",
@@ -137,16 +138,16 @@ const SalePage = () => {
           headers: headers,
           data: currentSales.map((sale) => {
             let counter = 0;
-            let productLabelCount = sale.saleProducts.length;
+            let productLabelCount = sale.products.length;
             return [
               sale.saleId,
-              sale.saleProducts.map((product) => {
-                const productLabel = getProductLabel(product.productId);
+              sale.products.map((product) => {
+                const productLabel = getProductLabel(product.unique_id);
                 if (productLabel) {
                   counter++
                 }
                 return (
-                  <div key={product.productId} className="flex text-left">
+                  <div key={product.unique_id} className="flex text-left">
                     <p>{productLabel}</p>
                     {productLabelCount/counter !== 1 && (
                       <p>,</p>
