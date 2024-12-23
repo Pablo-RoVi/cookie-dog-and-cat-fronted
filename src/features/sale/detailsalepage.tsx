@@ -16,7 +16,7 @@ const headersShopping = [
 const DetailSalePage = () => {
 
     const [saleId, setSaleId] = useState<number>(0);
-    const [saleUserFullName, setSaleUserFullName] = useState<string>("");
+    const [saleNickName, setSaleNickName] = useState<string>("");
     const [salePaymentMethod, setSalePaymentMethod] = useState<string>("");
     const [saleProducts, setSaleProducts] = useState([]);
     const [saleTotalPrice, setSaleTotalPrice] = useState<number>(0);
@@ -29,7 +29,7 @@ const DetailSalePage = () => {
         const initializeData = async () => {
         try {
             setSaleId(sale.saleId);
-            setSaleUserFullName(sale.userFullName);
+            setSaleNickName(sale.nickName);
             setSalePaymentMethod(sale.paymentMethod);
             setSaleProducts(sale.products);
             setSaleTotalPrice(sale.totalPrice);
@@ -60,8 +60,8 @@ const DetailSalePage = () => {
 
           <div className="container max-w-[20%]">
             {TableModule.inputFilter({
-              label: "Empleado",
-              valueFilter: saleUserFullName,
+              label: "Nombre de usuario",
+              valueFilter: saleNickName,
               isDisabled: true,
             })}
           </div>
@@ -118,7 +118,7 @@ const DetailSalePage = () => {
           </div>
           <div className="flex justify-end space-x-4">
             <Buttons.FuchsiaButton
-              text="Cancelar"
+              text="Volver"
               onClick={() => navigate("/sales")}
             />
           </div>
