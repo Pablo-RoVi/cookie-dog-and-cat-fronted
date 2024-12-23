@@ -7,6 +7,7 @@ import Modal from "../../app/components/modal";
 import Functions from "../../app/components/functions";
 import ConfirmAdminLogged from "../../app/components/confirmadmin";
 import { useAuth } from "../../app/context/authcontext";
+import { SaleProducts } from '../../app/models/sale';
 
 const headers = [
   "Código",
@@ -143,40 +144,55 @@ const SalePage = () => {
         {/* Tabla */}
         {TableModule.table({
           headers: headers,
-          data: currentSales.map((sale) => [
-            sale.saleId,
-            sale.saleProducts.map((product) =>
-              getProductLabel(product.productId)
-            ),
-            sale.totalPrice,
-            sale.paymentMethod,
-            sale.nickName,
-            <>
-              <div className="flex justify-center items-center ml-4 mr-4 gap-x-4">
-                {userRoleId === 1 &&
-                  Buttons.EditButton({
+          data: currentSales.map((sale) => {
+            let counter = 0;
+            let productLabelCount = sale.products.length;
+            return [
+              sale.saleId,
+              sale.products.map((product) => {
+                const productLabel = getProductLabel(product.unique_id);
+                if (productLabel) {
+                  counter++
+                }
+                return (
+                  <div key={product.unique_id} className="flex text-left">
+                    <p>{productLabel}</p>
+                    {productLabelCount/counter !== 1 && (
+                      <p>,</p>
+                    )}
+                  </div>
+                );
+              }),
+              sale.totalPrice,
+              sale.paymentMethod,
+              sale.nickName,
+              <>
+                <div className="flex justify-center items-center ml-4 mr-4 gap-x-4">
+                  {userRoleId === 1 &&
+                    Buttons.EditButton({
+                      onClick: () => {
+                        setSelectedSale(sale);
+                        handleNavigate(`/edit-sale`, sale);
+                      },
+                    })}
+                  {Buttons.DetailButton({
+                    data: sale,
                     onClick: () => {
                       setSelectedSale(sale);
-                      handleNavigate(`/edit-sale`, sale);
+                      handleNavigate(`/detail-sale`, sale);
                     },
                   })}
-                {Buttons.DetailButton({
-                  data: sale,
-                  onClick: () => {
-                    setSelectedSale(sale);
-                    handleNavigate(`/detail-sale`, sale);
-                  },
-                })}
-                {userRoleId === 1 &&
-                  Buttons.DeleteButton({
-                    onClick: () => {
-                      setSelectedSale(sale);
-                      toggleConfirmationModal();
-                    },
-                  })}
-              </div>
-            </>,
-          ]),
+                  {userRoleId === 1 &&
+                    Buttons.DeleteButton({
+                      onClick: () => {
+                        setSelectedSale(sale);
+                        toggleConfirmationModal();
+                      },
+                    })}
+                </div>
+              </>,
+            ];
+          }),
         })}
 
         {isConfirmationModalOpen &&

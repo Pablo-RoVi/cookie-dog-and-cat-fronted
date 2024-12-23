@@ -34,7 +34,7 @@ const DetailSalePage = () => {
             setSaleId(sale.saleId);
             setSaleUserFullName(sale.userFullName);
             setSalePaymentMethod(sale.paymentMethod);
-            setSaleProducts(sale.saleProducts);
+            setSaleProducts(sale.products);
             setSaleTotalPrice(sale.totalPrice);
 
             const responseProducts = await Agent.Product.list();
@@ -107,11 +107,11 @@ const DetailSalePage = () => {
           {TableModule.table({
             headers: headersShopping,
             data: saleProducts.map((product) => [
-              getProductLabel(product.productId),
-              product.productBrand,
-              product.productCategory,
-              product.productSpecie,
-              `$${product.totalPricePerProduct.toLocaleString()}`,
+              product.product_name,
+              product.brandName,
+              product.categoryName,
+              product.specieName,
+              `$${product.price.toLocaleString()}`,
               product.quantity,
             ]),
           })}

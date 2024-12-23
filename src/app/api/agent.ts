@@ -44,11 +44,10 @@ const Product = {
 };
 
 const Sale = {
-  list: () => requests.get("sale/"),
+  list: () => requests.get("sale/getSales"),
   add: (form: any) => requests.post("sale/addSale", form),
   edit: (form: any, id: string) => requests.put("sale/editSale", form),
   delete: (id: string) => requests.delete(`sale/deleteSale/${id}`, id),
-  getDetail: (id: string) => requests.get(`sale/getSaleDetails/${id}`),
   getPaymentMethods: () => requests.get("sale/GetPaymentMethods"),
   getByDate: (form: any) => requests.post("sale/getSalesByDate", form),
 };
