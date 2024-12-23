@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Agent from '../../app/api/agent'; // Replace with the actual path to your Agent module
-import TableModule from "../../app/components/tablemodule"; // Replace with the actual path to your TableModule
+import TableModule from "../../app/components/tablemodule";
 import colors from '../../app/static/colors';
 import Buttons from '../../app/components/buttons';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -22,8 +21,6 @@ const DetailSalePage = () => {
     const [saleProducts, setSaleProducts] = useState([]);
     const [saleTotalPrice, setSaleTotalPrice] = useState<number>(0);
 
-    const [products, setProducts] = useState([]);
-
     const location = useLocation();
     const navigate = useNavigate();
     const sale = location.state;
@@ -36,14 +33,7 @@ const DetailSalePage = () => {
             setSalePaymentMethod(sale.paymentMethod);
             setSaleProducts(sale.products);
             setSaleTotalPrice(sale.totalPrice);
-
-            const responseProducts = await Agent.Product.list();
-
-            const products = responseProducts.data.map((product) => ({
-            value: product.unique_id,
-            label: product.product_name,
-            }));
-            setProducts(products);
+            
         } catch (error) {
             console.error("Error cargando datos iniciales:", error);
         }
@@ -51,12 +41,6 @@ const DetailSalePage = () => {
 
         initializeData();
     }, [sale]);
-
-    const getProductLabel = (id: number) => {
-        const foundProduct = products.find((p) => p.value === id.toString());
-        return foundProduct ? foundProduct.label : "Producto no encontrado";
-    };
-
 
     return (
         <div className="max-h-screen bg-white">
