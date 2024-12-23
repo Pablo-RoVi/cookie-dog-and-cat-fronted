@@ -7,7 +7,6 @@ import Modal from "../../app/components/modal";
 import Functions from "../../app/components/functions";
 import ConfirmAdminLogged from "../../app/components/confirmadmin";
 import { useAuth } from "../../app/context/authcontext";
-import { SaleProducts } from '../../app/models/sale';
 
 const headers = [
   "Código",

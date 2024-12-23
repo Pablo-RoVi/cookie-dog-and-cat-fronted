@@ -81,7 +81,7 @@ const AddSalesPage = () => {
     };
 
     initializeData();
-  },[]);
+  },[userNickName]);
 
   useEffect(() => {
     const initializeData = async () => {
