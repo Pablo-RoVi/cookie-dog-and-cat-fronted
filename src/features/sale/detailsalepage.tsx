@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Agent from '../../app/api/agent'; // Replace with the actual path to your Agent module
-import TableModule from "../../app/components/tablemodule"; // Replace with the actual path to your TableModule
+import TableModule from "../../app/components/tablemodule";
 import colors from '../../app/static/colors';
 import Buttons from '../../app/components/buttons';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -17,12 +16,10 @@ const headersShopping = [
 const DetailSalePage = () => {
 
     const [saleId, setSaleId] = useState<number>(0);
-    const [saleUserFullName, setSaleUserFullName] = useState<string>("");
+    const [saleNickName, setSaleNickName] = useState<string>("");
     const [salePaymentMethod, setSalePaymentMethod] = useState<string>("");
     const [saleProducts, setSaleProducts] = useState([]);
     const [saleTotalPrice, setSaleTotalPrice] = useState<number>(0);
-
-    const [products, setProducts] = useState([]);
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -32,18 +29,11 @@ const DetailSalePage = () => {
         const initializeData = async () => {
         try {
             setSaleId(sale.saleId);
-            setSaleUserFullName(sale.userFullName);
+            setSaleNickName(sale.nickName);
             setSalePaymentMethod(sale.paymentMethod);
-            setSaleProducts(sale.saleProducts);
+            setSaleProducts(sale.products);
             setSaleTotalPrice(sale.totalPrice);
-
-            const responseProducts = await Agent.Product.list();
-
-            const products = responseProducts.data.map((product) => ({
-            value: product.unique_id,
-            label: product.product_name,
-            }));
-            setProducts(products);
+            
         } catch (error) {
             console.error("Error cargando datos iniciales:", error);
         }
@@ -51,12 +41,6 @@ const DetailSalePage = () => {
 
         initializeData();
     }, [sale]);
-
-    const getProductLabel = (id: number) => {
-        const foundProduct = products.find((p) => p.value === id.toString());
-        return foundProduct ? foundProduct.label : "Producto no encontrado";
-    };
-
 
     return (
         <div className="max-h-screen bg-white">
@@ -76,8 +60,8 @@ const DetailSalePage = () => {
 
           <div className="container max-w-[20%]">
             {TableModule.inputFilter({
-              label: "Empleado",
-              valueFilter: saleUserFullName,
+              label: "Nombre de usuario",
+              valueFilter: saleNickName,
               isDisabled: true,
             })}
           </div>
@@ -107,11 +91,11 @@ const DetailSalePage = () => {
           {TableModule.table({
             headers: headersShopping,
             data: saleProducts.map((product) => [
-              getProductLabel(product.productId),
-              product.productBrand,
-              product.productCategory,
-              product.productSpecie,
-              `$${product.totalPricePerProduct.toLocaleString()}`,
+              product.product_name,
+              product.brandName,
+              product.categoryName,
+              product.specieName,
+              `$${product.price.toLocaleString()}`,
               product.quantity,
             ]),
           })}
@@ -134,7 +118,7 @@ const DetailSalePage = () => {
           </div>
           <div className="flex justify-end space-x-4">
             <Buttons.FuchsiaButton
-              text="Cancelar"
+              text="Volver"
               onClick={() => navigate("/sales")}
             />
           </div>

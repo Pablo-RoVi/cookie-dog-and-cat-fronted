@@ -26,7 +26,6 @@ const AddSalesPage = () => {
 
   const [userOptions, setUserOptions] = useState([]);
   const [paymentMethodOptions, setPaymentMethodOptions] = useState([]);
-  const [products, setProducts] = useState([]);
 
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState<boolean>(false);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState<boolean>(false);
@@ -50,7 +49,7 @@ const AddSalesPage = () => {
         setSaleId(sale.saleId);
         setSaleNickName(sale.nickName);
         setSalePaymentMethod(sale.paymentMethod);
-        setSaleProducts(sale.saleProducts);
+        setSaleProducts(sale.products);
         setSaleTotalPrice(sale.totalPrice);
 
         const responsePaymentMethods = await Agent.Sale.getPaymentMethods();
@@ -69,14 +68,7 @@ const AddSalesPage = () => {
           isActive: user.is_active,
         }));
         setUserOptions(users.filter((user) => user.isActive));
-
-        const responseProducts = await Agent.Product.list();
-
-        const products = responseProducts.data.map((product) => ({
-          value: product.unique_id,
-          label: product.product_name,
-        }));
-        setProducts(products);
+        
       } catch (error) {
         console.error("Error cargando datos iniciales:", error);
       }
@@ -94,11 +86,6 @@ const AddSalesPage = () => {
       );
     }
   }, [saleNickName, salePaymentMethod, originalData, userOptions]);
-
-  const getProductLabel = (id: number) => {
-    const foundProduct = products.find((p) => p.value === id.toString());
-    return foundProduct ? foundProduct.label : "Producto no encontrado";
-  };
 
   const toggleSuccessModal = () => {
     setIsSuccessModalOpen(!isSuccessModalOpen);
@@ -242,11 +229,11 @@ const AddSalesPage = () => {
           {TableModule.table({
             headers: headersShopping,
             data: saleProducts.map((product) => [
-              getProductLabel(product.productId),
-              product.productBrand,
-              product.productCategory,
-              product.productSpecie,
-              `$${product.totalPricePerProduct.toLocaleString()}`,
+              product.product_name,
+              product.brandName,
+              product.categoryName,
+              product.specieName,
+              `$${product.price}`,
               product.quantity,
             ]),
           })}

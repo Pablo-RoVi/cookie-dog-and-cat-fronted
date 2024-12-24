@@ -209,7 +209,7 @@ const ProductPage = () => {
                 {/* Botón Agregar */}
                 {userRoleId === 1 ?
                     buttons.TurquoiseButton({ text: "Añadir", onClick: () => handleNavigate("/products/add-product")})
-                    : buttons.GrayButton({ text: "Añadir", onClick: () => null})
+                    : null
                 }      
             </div>
         </div>
