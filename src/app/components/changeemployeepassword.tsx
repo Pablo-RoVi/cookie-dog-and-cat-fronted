@@ -15,7 +15,7 @@ const ChangeEmployeePassword = (props) => {
   const [isPasswordVerify, setIsPasswordVerify] = useState<boolean>(false);
 
   const verifyEmployeeLogged = () => {
-    Agent.Users.changePasswordEmployee({
+    Agent.User.changePasswordEmployee({
       nick_name: userNickName,
       currentPassword: currentPassword,
       newPassword: newPassword,

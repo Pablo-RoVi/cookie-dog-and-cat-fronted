@@ -58,6 +58,26 @@ const selectFilter = (props) => {
   );
 };
 
+const dateFilter = (props) => {
+  return (
+    <div className="flex flex-col space-y-2 w-auto mb-4">
+      {/* Texto arriba del input */}
+      <label className="text-xl font-bold" style={{ color: colors.turquoise }}>
+        {props.label}
+      </label>
+      {/* Input */}
+      <input
+        type="date"
+        value={props.valueFilter}
+        onChange={(e) => props.setOnChangeFilter(e.target.value)}
+        className="p-2 border border-gray-300 rounded-lg shadow-sm"
+        disabled={props.isDisabled}
+        min={props.minDate}
+      />
+    </div>
+  );
+};
+
 const table = (props) => {
   return (
     <table className="table-fixed w-full bg-white shadow-md rounded-lg overflow-hidden">
@@ -115,6 +135,7 @@ const tablemodule = {
   title,
   inputFilter,
   selectFilter,
+  dateFilter,
   table,
   pagination,
 };

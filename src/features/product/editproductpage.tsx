@@ -7,8 +7,9 @@ import cookie from '../../app/static/images/cookie.png';
 import Agent from '../../app/api/agent';
 import { AxiosResponse } from "axios";
 import Modal from "../../app/components/modal";
-
-//TODO: Agregar modal de confirmación, luego redireccionar a la lista de productos
+import Functions from "../../app/components/functions";
+import ConfirmAdminLogged from "../../app/components/confirmadmin";
+import { Brand } from "../../app/models/brand";
 
 const EditProductPage = () => {
 
@@ -26,10 +27,20 @@ const EditProductPage = () => {
     const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState<boolean>(false);
     const [isEditedProductModalOpen, setIsEditedProductModalOpen] = useState<boolean>(false);
 
+    const [isErrorModalOpen, setIsErrorModalOpen] = useState<boolean>(false);
+
+    const [isConfirmationAdminLogged, setIsConfirmAdminLogged] = useState<boolean>(false);
+
+    const [errorMessage, setErrorMessage] = useState<string>("");
+
+    const [brands,setBrands] = useState([]);
+
     const location = useLocation();
     const product = location.state;
 
     const navigate = useNavigate();
+
+    const formattedErrorTitle = "Corrija los siguientes errores:\n";
 
     useEffect(() => {
            if (product) {
@@ -67,9 +78,18 @@ const EditProductPage = () => {
                 );
             }
     }, [originalData, unique_id, productName, price, stock, categoryName, brandName, specieName]);
+
+    useEffect(() => {
+        Agent.Brand.list().then((response) => {
+            setBrands(response.data.map((brand: Brand) => ({
+                value: brand.brand_name,
+                label: brand.brand_name
+            })));
+        })
+    },[]);
     
     const updateProduct = () => {
-        Agent.Products.updateProduct({
+        Agent.Product.update({
             unique_id: unique_id,
             product_name: productName,
             price: price,
@@ -87,7 +107,26 @@ const EditProductPage = () => {
                 console.log("Error al actualizar el producto");
             }
         }).catch((error) => {
-            console.log("Error al actualizar el producto", error);
+            console.log("error", error.response.data);
+            let errorMessages = [];
+            if(error.response && error.response.data && error.response.data.errors){
+                const errors = error.response.data.errors;
+
+                for(const key in errors){
+                    if (errors.hasOwnProperty(key)) { 
+                        if (Array.isArray(errors[key])) 
+                        {  
+                            errors[key].forEach((msg) => { errorMessages.push(`${msg}`);}); 
+                        } else { 
+                            errorMessages.push(`${key}: ${errors[key]}`); 
+                        } 
+                    }
+                }
+            }else{
+                errorMessages.push(error.response.data)
+            }
+            setErrorMessage(errorMessages.join("\n"));
+            toggleErrorModal();
         });
     };
 
@@ -103,6 +142,14 @@ const EditProductPage = () => {
         setIsEditedProductModalOpen(!isEditedProductModalOpen);
     };
 
+    const toggleErrorModal = () => {
+        setIsErrorModalOpen(!isErrorModalOpen);
+    };
+
+    const toggleConfirmAdminLogged = () => {
+        setIsConfirmAdminLogged(!isConfirmationAdminLogged);
+    };
+
 
     return (
         <div className="max-h-screen bg-white flex-auto flex h-1/2">
@@ -111,22 +158,30 @@ const EditProductPage = () => {
                 {TableModule.inputFilter({
                     label: "Código",
                     valueFilter: unique_id,
-                    setOnChangeFilter: setId
+                    setOnChangeFilter: setId,
+                    errorInput: !Functions.verifyProductCode(unique_id) && unique_id !== "",
+                    errorMessage: "El código debe ser numérico y de 8 a 15 dígitos"
                 })}
                 {TableModule.inputFilter({
                     label: "Nombre",
                     valueFilter: productName,
                     setOnChangeFilter: setName,
+                    errorInput: !Functions.verifyProductName(productName) && productName !== "",
+                    errorMessage: "El nombre debe tener entre 3 y 100 caracteres del abecedario español"
                 })}
                 {TableModule.inputFilter({
                     label: "Precio",
                     valueFilter: price,
                     setOnChangeFilter: setPrice,
+                    errorInput: !Functions.verifyProductPrice(price) && price !== "",
+                    errorMessage: "El precio debe ser un número mayor a 0, de máximo de 9 dígitos con o sin puntos",
                 })}
                 {TableModule.inputFilter({
                     label: "Stock",
                     valueFilter: stock,
                     setOnChangeFilter: setStock,
+                    errorInput: !Functions.verifyProductStock(stock) && stock !== "",
+                    errorMessage: "El stock debe ser un número mayor a 0, de máximo de 9 dígitos",
                 })}
                 {TableModule.selectFilter({
                     label: "Categoría",
@@ -139,7 +194,7 @@ const EditProductPage = () => {
                     label: "Marca",
                     valueFilter: brandName,
                     setOnChangeFilter: setBrandName,
-                    options: Options.brandOptions,
+                    options: brands,
                     firstValue: "SIN ELECCIÓN",
                 })}
                 {TableModule.selectFilter({
@@ -152,19 +207,33 @@ const EditProductPage = () => {
                 <div className="flex items-center space-x-4">
                     {
                         isProductModified ?
-                            <Buttons.TurquoiseButton text="Editar" onClick={toggleConfirmationModal}/>
+                            <Buttons.TurquoiseButton text="Editar" onClick={ () => toggleConfirmationModal()}/>
                             : 
                             <Buttons.GrayButton text="Editar" onClick={null} />
                     }
-                    <Buttons.FuchsiaButton text="Cancelar" onClick={handleNavigate} />
+                    <Buttons.FuchsiaButton text="Cancelar" onClick={() => handleNavigate()} />
                 </div>
             </div>
             {isConfirmationModalOpen && (
                 <Modal
                     title={`¿Estás seguro de que deseas editar el producto '${productName}' de '${brandName}'?`}
-                    confirmAction={() => updateProduct()} 
+                    confirmAction={() => toggleConfirmAdminLogged()} 
                     confirmation="Editar"
-                    confirmCancel={toggleConfirmationModal}
+                    confirmCancel={() => toggleConfirmationModal()}
+                    activateCancel={true}
+                    activateConfirm={true}
+                />
+            )}
+            {isConfirmationAdminLogged && (
+                <ConfirmAdminLogged
+                    confirmation="Confirmar"
+                    confirmAction={() => {
+                        updateProduct();
+                    }}
+                    confirmCancel={() => {
+                        toggleConfirmAdminLogged();
+                        toggleConfirmationModal();
+                    }}
                     activateCancel={true}
                     activateConfirm={true}
                 />
@@ -174,6 +243,15 @@ const EditProductPage = () => {
                     title={`Producto '${productName}' editado con éxito`}
                     confirmation="Aceptar"
                     confirmAction={() => {toggleEditedProductModal(); handleNavigate();}}
+                    activateCancel={false}
+                    activateConfirm={true}
+                />
+            )}
+            {isErrorModalOpen && (
+                <Modal
+                    title={`${formattedErrorTitle}${errorMessage}`}
+                    confirmation="Aceptar"
+                    confirmAction={() => toggleErrorModal()}
                     activateCancel={false}
                     activateConfirm={true}
                 />

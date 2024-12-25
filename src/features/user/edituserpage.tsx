@@ -8,6 +8,7 @@ import Functions from "../../app/components/functions";
 import Modal from "../../app/components/modal";
 import ConfirmAdminLogged from "../../app/components/confirmadmin";
 import Agent from "../../app/api/agent";
+import { AxiosResponse } from "axios";
 
 const EditUserPage = () => {
   const [id, setId] = useState<number>(0);
@@ -29,6 +30,9 @@ const EditUserPage = () => {
     useState<boolean>(false);
   const [isConfirmationAdminLogged, setIsConfirmationAdminLogged] =
     useState<boolean>(false);
+
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   const [originalData, setOriginalData] = useState<any>(null);
   const [isUserModified, setIsUserModified] = useState<boolean>(false);
@@ -107,8 +111,12 @@ const EditUserPage = () => {
     setIsConfirmationAdminLogged(!isConfirmationAdminLogged);
   };
 
+  const toggleErrorModal = () => {
+    setIsErrorModalOpen(!isErrorModalOpen);
+  };
+
   const editUser = () => {
-    Agent.Users.updateUser({
+    Agent.User.update({
       id: id,
       name: name,
       last_name: lastName,
@@ -130,17 +138,41 @@ const EditUserPage = () => {
   };
 
   const editPassword = () => {
-    Agent.Users.changePasswordAdmin({
+    Agent.User.changePasswordAdmin({
       nick_name: nickName,
       newPassword: newPassword,
       confirmPassword: confirmNewPassword,
     })
-      .then(() => {
-        toggleConfirmationPasswordModal();
-        toggleChangedPasswordModal();
+      .then((response : AxiosResponse) => {
+
+        if(response.status === 200){
+          toggleConfirmationPasswordModal();
+          toggleChangedPasswordModal();
+        }else if(response.status === 400){
+          console.error(response.statusText);
+        }
       })
       .catch((error) => {
-        console.log("error", error);
+        console.log("error", error.response.data);
+        let errorMessages = [];
+        if(error.response && error.response.data && error.response.data.errors){
+            const errors = error.response.data.errors;
+
+            for(const key in errors){
+                if (errors.hasOwnProperty(key)) { 
+                    if (Array.isArray(errors[key])) 
+                    {  
+                        errors[key].forEach((msg) => { errorMessages.push(`${key}: ${msg}`);}); 
+                    } else { 
+                        errorMessages.push(`${key}: ${errors[key]}`); 
+                    } 
+                }
+            }
+        }else{
+            errorMessages.push(error.response.data)
+        }
+        setErrorMessage(errorMessages.join("\n"));
+        toggleErrorModal();
       });
   };
 
@@ -191,12 +223,12 @@ const EditUserPage = () => {
           {isUserModified ? (
             <Buttons.TurquoiseButton
               text="Editar"
-              onClick={toggleConfirmationUserModal}
+              onClick={() => toggleConfirmationUserModal()}
             />
           ) : (
             <Buttons.GrayButton text="Editar" onClick={null} />
           )}
-          <Buttons.FuchsiaButton text="Cancelar" onClick={handleNavigate} />
+          <Buttons.FuchsiaButton text="Cancelar" onClick={() => handleNavigate()} />
         </div>
       </div>
 
@@ -206,7 +238,7 @@ const EditUserPage = () => {
           title={confirmText}
           confirmAction={setIsConfirmationAdminLogged}
           confirmation="Editar"
-          confirmCancel={toggleConfirmationUserModal}
+          confirmCancel={() => toggleConfirmationUserModal()}
           activateCancel={true}
           activateConfirm={true}
         />
@@ -217,6 +249,7 @@ const EditUserPage = () => {
           confirmation="Aceptar"
           confirmAction={() => {
             toggleChangedUserModal();
+            handleNavigate();
           }}
           activateCancel={false}
           activateConfirm={true}
@@ -253,12 +286,12 @@ const EditUserPage = () => {
           {isPasswordModified ? (
             <Buttons.TurquoiseButton
               text="Editar"
-              onClick={toggleConfirmationPasswordModal}
+              onClick={() => toggleConfirmationPasswordModal()}
             />
           ) : (
             <Buttons.GrayButton text="Editar" onClick={null} />
           )}
-          <Buttons.FuchsiaButton text="Cancelar" onClick={handleNavigate} />
+          <Buttons.FuchsiaButton text="Cancelar" onClick={() => handleNavigate()} />
         </div>
       </div>
 
@@ -266,9 +299,9 @@ const EditUserPage = () => {
       {isConfirmationPasswordModalOpen && !isConfirmationAdminLogged && (
         <Modal
           title={confirmText}
-          confirmAction={setIsConfirmationAdminLogged}
+          confirmAction={() => toggleConfirmAdminLogged()}
           confirmation="Editar"
-          confirmCancel={toggleConfirmationPasswordModal}
+          confirmCancel={() => toggleConfirmationPasswordModal()}
           activateCancel={true}
           activateConfirm={true}
         />
@@ -279,6 +312,7 @@ const EditUserPage = () => {
           confirmation="Aceptar"
           confirmAction={() => {
             toggleChangedPasswordModal();
+            handleNavigate();
           }}
           activateCancel={false}
           activateConfirm={true}
@@ -299,6 +333,18 @@ const EditUserPage = () => {
               : toggleConfirmationPasswordModal();
           }}
           activateCancel={true}
+          activateConfirm={true}
+        />
+      )}
+
+      {isErrorModalOpen && (
+        <Modal
+          title={`Corrija los siguientes errores: ${errorMessage}`}
+          confirmation="Aceptar"
+          confirmAction={() => {
+            toggleErrorModal();
+          }}
+          activateCancel={false}
           activateConfirm={true}
         />
       )}

@@ -24,30 +24,42 @@ const Auth = {
   login: (form: any) => requests.post("Auth/login", form),
 };
 
-const Users = {
+const User = {
   list: () => requests.get("user/"),
+  add: (form: any) => requests.post("user/RegisterUser", form),
+  update: (form: any) => requests.put("user/UpdateUser", form),
   active: () => requests.get("user/ActiveUsers"),
-  getNickName: () => requests.get("user/GetUserNameByNickName"),
-  registerUser: (form: any) => requests.post("user/RegisterUser", form),
-  updateUser: (form: any) => requests.put("user/UpdateUser", form),
+  getByNickName: (nickName: string) => requests.get(`user/GetUserNameByNickName/${nickName}`),
   changeState: (id: string) => requests.put(`user/ChangeState/${id}`, id),
   changePasswordEmployee: (form: any) => requests.put("user/ChangePasswordEmployee", form),
   changePasswordAdmin: (form: any) => requests.put("user/ChangePasswordAdmin", form),
 };
 
-const Products = {
+const Product = {
   list: () => requests.get("product/allProducts"),
-  availableProducts: () => requests.get("product/availableProducts"),
-  addProduct: (form: any) => requests.post("product/addProduct", form),
-  updateProduct: (form: any, id: string) => requests.put(`product/editProduct/${id}`, form),
-  deleteProduct: (unique_id:string ) => requests.delete(`product/deleteProduct/${unique_id}`, unique_id),
+  add: (form: any) => requests.post("product/addProduct", form),
+  update: (form: any, id: string) => requests.put(`product/editProduct/${id}`, form),
+  delete: (unique_id: string) => requests.delete(`product/deleteProduct/${unique_id}`, unique_id),
+  available: () => requests.get("product/availableProducts"),
 };
 
-const SendEmail = (
-  userEmail: string,
-  adminName: string,
-  messsage: string
-) => {
+const Sale = {
+  list: () => requests.get("sale/getSales"),
+  add: (form: any) => requests.post("sale/addSale", form),
+  edit: (form: any, id: string) => requests.put("sale/editSale", form),
+  delete: (id: string) => requests.delete(`sale/deleteSale/${id}`, id),
+  getPaymentMethods: () => requests.get("sale/GetPaymentMethods"),
+  getByDate: (form: any) => requests.post("sale/getSalesByDate", form),
+};
+
+const Brand = {
+  list: () => requests.get("brand/getBrands"),
+  add: (form: any) => requests.post("brand/addBrand", form),
+  update: (form: any, id: string) => requests.put(`brand/editBrand/${id}`, form),
+  delete: (id: string) => requests.delete(`brand/deleteBrand/${id}`, id),
+};
+
+const SendEmail = (userEmail: string, adminName: string, messsage: string) => {
   emailjs
     .send(
       process.env.REACT_APP_EMAIL_JS_SERVICE_ID,
@@ -70,6 +82,6 @@ const SendEmail = (
     );
 };
 
-const agent = { Auth, requests, Users, Products, SendEmail };
+const agent = { Auth, User, Product, Sale, Brand, SendEmail };
 
 export default agent;

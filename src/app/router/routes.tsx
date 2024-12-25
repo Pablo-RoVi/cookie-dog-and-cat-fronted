@@ -23,14 +23,16 @@ type Props = {};
 const RoleBasedRoute = ({
   roles,
   children,
+  redirectTo = "/",
 }: {
   roles: number[];
   children: React.ReactNode;
+  redirectTo?: string;
 }) => {
   const { userRoleId } = useAuth();
 
   if (!roles.includes(userRoleId)) {
-    return <Navigate to="/" replace />;
+    return <Navigate to={redirectTo}  replace />;
   }
   return <>{children}</>;
 };
@@ -53,7 +55,7 @@ const Routes = (props: Props) => {
     "/add-sale",
     "/reports",
     "/products",
-    "/products/edit-product/1",
+    "/products/edit-product",
     "/products/add-product",
     "*",
   ];
@@ -74,27 +76,66 @@ const Routes = (props: Props) => {
           }
         >
           <Route element={<PrivateRoutes />}>
-            <Route path="/users" element={<UserPage />} />
-            <Route path="/edit-user" element={<EditUserPage />} />
-            <Route path="/add-user" element={<AddUserPage />} />
-            <Route path="/sales" element={<AddSalePage />} />
-            <Route path="/edit-sale" element={<EditSalePage />} />
-            <Route path="/detail-sale" element={<DetailSalePage />} />
+            <Route path="/users" element={
+                <RoleBasedRoute roles={[1]} redirectTo="/sales">
+                  {" "}
+                  <UserPage />{" "}
+                </RoleBasedRoute>
+              }  
+            />
+            <Route path="/edit-user" element={
+                <RoleBasedRoute roles={[1]} redirectTo="/sales">
+                  {" "}
+                  <EditUserPage />{" "}
+                </RoleBasedRoute>
+              } 
+            />
+
+            <Route path="/add-user" element={
+                <RoleBasedRoute roles={[1]} redirectTo="/sales">
+                  {" "}
+                  <AddUserPage />{" "}
+                </RoleBasedRoute>
+              }
+            />
+            <Route path="/products" element={<ProductPage />} />
+            <Route path="/products/edit-product" element={
+                <RoleBasedRoute roles={[1]} redirectTo="/products">
+                  {" "}
+                  <EditProductPage />{" "}
+                </RoleBasedRoute>
+              } 
+            />
+            <Route path="/products/add-product" element={<AddProductPage />} />
+            <Route
+              path="/sales"
+              element={
+                <RoleBasedRoute roles={[1,2]} redirectTo="/sales">
+                  {" "}
+                  <SalePage />{" "}
+                </RoleBasedRoute>
+              }
+            />
+            <Route
+              path="/edit-sale"
+              element={
+                <RoleBasedRoute roles={[1]} redirectTo="/sales">
+                  {" "}
+                  <EditSalePage />{" "}
+                </RoleBasedRoute>
+              }
+            />
             <Route path="/add-sale" element={<AddSalePage />} />
+            <Route path="/detail-sale" element={<DetailSalePage />} />
             <Route
               path="/reports"
               element={
-                <RoleBasedRoute roles={[1]}>
+                <RoleBasedRoute roles={[1]} redirectTo="/">
                   {" "}
                   <ReportPage />{" "}
                 </RoleBasedRoute>
               }
             />
-            <Route path="/products" element={<Outlet />}>
-              <Route path="" element={<ProductPage />} />
-              <Route path="edit-product/:id" element={<EditProductPage />} />
-              <Route path="add-product" element={<AddProductPage />} />
-            </Route>
           </Route>
           <Route path="*" element={<NotFound />} />
         </Route>
