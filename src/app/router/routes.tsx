@@ -42,7 +42,7 @@ const PrivateRoutes = () => {
   return authenticated ? <Outlet /> : <Navigate to="/" replace />;
 };
 
-const Routes = (props: Props) => {
+const Routes = () => {
   const { authenticated } = useAuth();
   const location = useLocation();
   const views = [
