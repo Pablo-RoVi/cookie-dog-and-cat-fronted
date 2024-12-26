@@ -12,7 +12,7 @@ const verifyName = (name: string): boolean => {
 };
 
 const verifyRut = (rut: string): boolean => {
-  const rutRegex = /^[0-9]+[-|‐]{1}[0-9kK]{1}$/;
+  const rutRegex = /^[0-9]{7,8}[-|‐]{1}[0-9kK]{1}$/;
   return rutRegex.test(rut) && rut !== "";
 };
 
