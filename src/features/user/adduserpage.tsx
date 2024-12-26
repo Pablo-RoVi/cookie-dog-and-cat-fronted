@@ -77,8 +77,7 @@ const AddUserPage = () => {
       roleName: role,
     })
       .then((response : AxiosResponse) => {
-        if(response.status === 200){
-          toggleConfirmAdminLogged();
+        if(response.status === 204){
           toggleSuccessModal();
         }else if(response.status === 400){
           console.error(response.statusText);
@@ -184,9 +183,9 @@ const AddUserPage = () => {
       </div>
       {isConfirmationModalOpen && (
         <Modal
-          title={`¿Estás seguro de que deseas registrar a ${name} ${lastName} de RUT ${rut} y rol ${Functions.translateRole(
+          title={`¿Estás seguro de que deseas registrar a '${name} ${lastName}' de RUT '${rut}' y rol '${Functions.translateRole(
             role
-          )}?`}
+          )}'?`}
           confirmAction={() =>  { toggleConfirmAdminLogged(); toggleConfirmationModal(); }}
           confirmation="Añadir"
           confirmCancel={() => toggleConfirmationModal()}
@@ -199,6 +198,7 @@ const AddUserPage = () => {
         <ConfirmAdminLogged
           confirmation="Confirmar"
           confirmAction={() => {
+            toggleConfirmAdminLogged();
             registerUser();
           }}
           confirmCancel={() => {
