@@ -37,7 +37,8 @@ const RoleBasedRoute = ({
   return <>{children}</>;
 };
 
-const PrivateRoutes = (authenticated) => {
+const PrivateRoutes = () => {
+  const { authenticated } = useAuth();
   return authenticated ? <Outlet /> : <Navigate to="/" replace />;
 };
 
@@ -74,7 +75,7 @@ const Routes = (props: Props) => {
             </>
           }
         >
-          <Route element={<PrivateRoutes authenticated={authenticated} />}>
+          <Route element={<PrivateRoutes />}>
             <Route
               path="/users"
               element={

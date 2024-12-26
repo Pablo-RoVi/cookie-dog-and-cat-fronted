@@ -101,12 +101,10 @@ const Navbar = () => {
   const logout = async () => {
     try {
       localStorage.clear();
-      console.log("Logged out", localStorage);
       setAuthenticated(false);
       setUserRoleId(0);
       setUserNickName("");
-      window.location.reload();
-      navigate("/", { replace: true });
+      window.location.href = "/";
     } catch (err) {
       console.error("Logout error:", err);
     }

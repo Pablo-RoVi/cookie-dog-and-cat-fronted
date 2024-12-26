@@ -17,21 +17,19 @@ const Login = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    try {
-      Agent.Auth.login({ Nick_name: nick_name, Password: password }).then(
-        (response) => {
-          localStorage.setItem("nickName", response.data.nick_name);
-          localStorage.setItem("roleId", response.data.roleId);
-          setAuthenticated(true);
-          setUserRoleId(response.data.roleId);
-          setUserNickName(response.data.nick_name);
-          navigate("/sales");
-        }
-      );
-    } catch (err) {
-      setErrorMessage("Credenciales incorrectas");
-      setIsErrorModalOpen(true);
-    }
+    Agent.Auth.login({ Nick_name: nick_name, Password: password })
+      .then((response) => {
+        localStorage.setItem("nickName", response.data.nick_name);
+        localStorage.setItem("roleId", response.data.roleId);
+        setAuthenticated(true);
+        setUserRoleId(response.data.roleId);
+        setUserNickName(response.data.nick_name);
+        navigate("/sales");
+      })
+      .catch((err) => {
+        setErrorMessage("Credenciales incorrectas");
+        setIsErrorModalOpen(true);
+      });
   };
 
   return (
