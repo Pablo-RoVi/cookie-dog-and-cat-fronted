@@ -8,13 +8,12 @@ import { useAuth } from "../../app/context/authcontext";
 const ConfirmAdminLogged = (props) => {
   const { userNickName } = useAuth();
 
-  const [verifyNickName, setVerifyNickName] = useState<string>("");
   const [verifyPassword, setVerifyPassword] = useState<string>("");
   const [isInvalid, setIsInvalid] = useState<boolean>(false);
   
   const verifyAdminLogged = () => {
     Agent.Auth.login({
-      nick_name: verifyNickName,
+      nick_name: userNickName,
       password: verifyPassword,
     })
       .then((response) => {
@@ -31,13 +30,12 @@ const ConfirmAdminLogged = (props) => {
         console.error("Error al verificar administrador:", error);
       })
       .finally(() => {
-        setVerifyNickName("");
         setVerifyPassword("");
       });
   };
 
-  const isEmpty = (nickName: string, password: string) => {
-    return nickName === "" || password === "";
+  const isEmpty = (password: string) => {
+    return password === "";
   };
 
   return (
@@ -51,9 +49,9 @@ const ConfirmAdminLogged = (props) => {
         <div className="relative h-52">
           <div className="container mx-auto mt-6">
             {TableModule.inputFilter({
-              valueFilter: verifyNickName,
-              setOnChangeFilter: setVerifyNickName,
+              valueFilter: userNickName,
               placeholder: "Nombre de Usuario",
+              isDisabled: true,
             })}
             {TableModule.inputFilter({
               valueFilter: verifyPassword,
@@ -66,7 +64,7 @@ const ConfirmAdminLogged = (props) => {
           </div>
           <div className="absolute inset-x-0 bottom-0 flex justify-center gap-4">
             {props.activateConfirm &&
-            !isEmpty(verifyNickName, verifyPassword) ? (
+            !isEmpty(verifyPassword) ? (
               Buttons.TurquoiseButton({
                 text: props.confirmation,
                 onClick: verifyAdminLogged,
@@ -79,7 +77,6 @@ const ConfirmAdminLogged = (props) => {
                 text: "Cancelar",
                 onClick: () => {
                   props.confirmCancel();
-                  setVerifyNickName("");
                   setVerifyPassword("");
                 },
               })}
