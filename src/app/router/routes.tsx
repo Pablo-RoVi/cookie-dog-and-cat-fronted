@@ -18,8 +18,6 @@ import NotFound from "../../features/error/notfound";
 import EditProductPage from "../../features/product/editproductpage";
 import AddProductPage from "../../features/product/addproductpage";
 
-type Props = {};
-
 const RoleBasedRoute = ({
   roles,
   children,
