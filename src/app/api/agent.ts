@@ -25,7 +25,7 @@ const Auth = {
 };
 
 const User = {
-  list: () => requests.get("user/"),
+  list: () => requests.get("user/getUsers"),
   add: (form: any) => requests.post("user/RegisterUser", form),
   update: (form: any) => requests.put("user/UpdateUser", form),
   active: () => requests.get("user/ActiveUsers"),
