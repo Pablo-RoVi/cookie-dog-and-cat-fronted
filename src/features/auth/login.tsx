@@ -2,20 +2,32 @@ import React, { useState, FormEvent } from "react";
 import "../../app/static/styles/index.css";
 import colors from "../../app/static/colors";
 import cookie from "../../app/static/images/cookie.png";
+import Agent from "../../app/api/agent";
 import { useAuth } from "../../app/context/authcontext";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const { setAuthenticated, setUserRoleId, setUserNickName } = useAuth();
   const [nick_name, setNick_Name] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [isErrorModalOpen, setIsErrorModalOpen] = useState<boolean>(false);
 
-  const { login } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      await login(nick_name, password);
+      Agent.Auth.login({ Nick_name: nick_name, Password: password }).then(
+        (response) => {
+          localStorage.setItem("nickName", response.data.nick_name);
+          localStorage.setItem("roleId", response.data.roleId);
+          setAuthenticated(true);
+          setUserRoleId(response.data.roleId);
+          setUserNickName(response.data.nick_name);
+          navigate("/sales");
+        }
+      );
     } catch (err) {
       setErrorMessage("Credenciales incorrectas");
       setIsErrorModalOpen(true);

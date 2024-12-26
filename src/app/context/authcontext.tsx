@@ -1,80 +1,76 @@
-import React, { createContext, useState, useEffect, ReactNode, useContext } from "react";
-import { useNavigate } from "react-router-dom";
-import Agent from "../api/agent";
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  ReactNode,
+  useContext,
+} from "react";
 
 interface AuthContextProps {
   authenticated: boolean;
+  setAuthenticated: (newState: boolean) => void;
   userRoleId: number | null;
+  setUserRoleId: (newState: number) => void;
   userNickName: string | null;
-  login: (nick_name: string, password: string) => Promise<void>;
-  logout: () => void;
-  checkAuthStatus: () => void;
+  setUserNickName: (newState: string) => void;
 }
 
-const AuthContext = createContext<AuthContextProps | undefined>(undefined);
+const initialValue: AuthContextProps = {
+  authenticated: false,
+  setAuthenticated: () => {},
+  userRoleId: null,
+  setUserRoleId: () => {},
+  userNickName: null,
+  setUserNickName: () => {},
+};
+
+const AuthContext = createContext<AuthContextProps>(initialValue);
 
 interface AuthProviderProps {
   children: ReactNode;
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [authenticated, setAuthenticated] = useState(false);
-  const [userRoleId, setUserRoleId] = useState<number | null>(null);
-  const [userNickName, setUserNickName] = useState<string | null>(null);
-  const navigate = useNavigate();
+  const [authenticated, setAuthenticated] = useState(
+    initialValue.authenticated
+  );
+  const [userRoleId, setUserRoleId] = useState<number | undefined>(
+    initialValue.userRoleId
+  );
+  const [userNickName, setUserNickName] = useState<string | undefined>(
+    initialValue.userNickName
+  );
 
   useEffect(() => {
     checkAuthStatus();
   }, []);
 
-  const login = async (nick_name: string, password: string) => {
-    try {
-      const response = await Agent.Auth.login({ Nick_name: nick_name, Password: password });
-      localStorage.setItem("nick_name", response.data.nick_name);
-      localStorage.setItem("roleId", response.data.roleId);
-      setAuthenticated(true);
-      setUserRoleId(response.data.roleId);
-      setUserNickName(response.data.nick_name);
-      navigate("/users");
-    } catch (err) {
-      console.error("Login error:", err);
-      throw new Error("Usuario o contraseña incorrectos.");
-    }
-  };
-
-  const logout = async () => {
-    try {
-      localStorage.removeItem("nick_name");
-      localStorage.removeItem("roleId");
-      setAuthenticated(false);
-      setUserRoleId(null);
-      setUserNickName(null);
-      navigate("/");
-    } catch (err) {
-      console.error("Logout error:", err);
-    }
-  };
-
   const checkAuthStatus = () => {
-    const nickName = localStorage.getItem("nick_name");
+    const nickName = localStorage.getItem("nickName");
     const roleId = parseInt(localStorage.getItem("roleId"));
     if (nickName && roleId) {
       setAuthenticated(true);
-      setUserRoleId(roleId);
+      setUserRoleId(Number(roleId));
       setUserNickName(nickName);
-    } else {
-      setAuthenticated(false);
-      setUserRoleId(null);
-      setUserNickName(null);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ authenticated, userNickName, userRoleId, login, logout, checkAuthStatus }}>
+    <AuthContext.Provider
+      value={{
+        authenticated,
+        setAuthenticated,
+        userNickName,
+        setUserNickName,
+        userRoleId,
+        setUserRoleId,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
 };
+
 export const useAuth = (): AuthContextProps => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -82,6 +78,3 @@ export const useAuth = (): AuthContextProps => {
   }
   return context;
 };
-
-
-  
