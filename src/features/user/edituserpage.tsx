@@ -73,9 +73,7 @@ const EditUserPage = () => {
     if (originalData) {
       setIsUserModified(
         name !== originalData.name ||
-          // eslint-disable-next-line no-mixed-operators
           lastName !== originalData.lastName ||
-          // eslint-disable-next-line no-mixed-operators
           (role !== originalData.role && role !== "")
       );
     }

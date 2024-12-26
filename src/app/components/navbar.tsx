@@ -9,16 +9,16 @@ import Modal from "../../app/components/modal";
 
 const adminMenu = [
   {
-    value: "/users",
-    label: "Empleados",
+    value: "/sales",
+    label: "Ventas",
   },
   {
     value: "/products",
     label: "Productos",
   },
   {
-    value: "/sales",
-    label: "Ventas",
+    value: "/users",
+    label: "Empleados",
   },
   {
     value: "/reports",
@@ -27,12 +27,12 @@ const adminMenu = [
 ];
 const employeeMenu = [
   {
-    value: "/products",
-    label: "Productos",
-  },
-  {
     value: "/sales",
     label: "Ventas",
+  },
+  {
+    value: "/products",
+    label: "Productos",
   },
 ];
 const adminSettings = [{ value: "/", label: "Cerrar Sesión" }];
@@ -48,7 +48,13 @@ const employeeSettings = [
 ];
 
 const Navbar = () => {
-  const { logout, userRoleId, userNickName } = useAuth();
+  const {
+    userRoleId,
+    setUserRoleId,
+    userNickName,
+    setUserNickName,
+    setAuthenticated,
+  } = useAuth();
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
   const [menu, setMenu] = useState([]);
@@ -90,6 +96,18 @@ const Navbar = () => {
     logout();
     toggleConfirmationModal();
     togglePasswordModified();
+  };
+
+  const logout = async () => {
+    try {
+      localStorage.clear();
+      setAuthenticated(false);
+      setUserRoleId(0);
+      setUserNickName("");
+      window.location.href = "/";
+    } catch (err) {
+      console.error("Logout error:", err);
+    }
   };
 
   return (
@@ -203,7 +221,7 @@ const Navbar = () => {
                 }}
                 onClick={() =>
                   item.label === "Cerrar Sesión"
-                    ? [logout(), navigate(item.value), toggleSettings()]
+                    ? [logout(), toggleSettings()]
                     : [toggleConfirmationModal(), toggleSettings()]
                 }
               >
