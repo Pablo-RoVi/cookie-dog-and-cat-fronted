@@ -50,10 +50,8 @@ const employeeSettings = [
 const Navbar = () => {
   const {
     userRoleId,
-    setUserRoleId,
     userNickName,
-    setUserNickName,
-    setAuthenticated,
+    logout,
   } = useAuth();
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
@@ -96,18 +94,6 @@ const Navbar = () => {
     logout();
     toggleConfirmationModal();
     togglePasswordModified();
-  };
-
-  const logout = async () => {
-    try {
-      localStorage.clear();
-      setAuthenticated(false);
-      setUserRoleId(0);
-      setUserNickName("");
-      window.location.href = "/";
-    } catch (err) {
-      console.error("Logout error:", err);
-    }
   };
 
   return (

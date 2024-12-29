@@ -13,6 +13,7 @@ interface AuthContextProps {
   setUserRoleId: (newState: number) => void;
   userNickName: string | null;
   setUserNickName: (newState: string) => void;
+  logout: () => void;
 }
 
 const initialValue: AuthContextProps = {
@@ -22,6 +23,7 @@ const initialValue: AuthContextProps = {
   setUserRoleId: () => {},
   userNickName: null,
   setUserNickName: () => {},
+  logout: () => {},
 };
 
 const AuthContext = createContext<AuthContextProps>(initialValue);
@@ -47,11 +49,29 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const checkAuthStatus = () => {
     const nickName = localStorage.getItem("nickName");
-    const roleId = parseInt(localStorage.getItem("roleId"));
-    if (nickName && roleId) {
+    const roleId = localStorage.getItem("roleId");
+
+    if (nickName && roleId && !isNaN(Number(roleId))) {
       setAuthenticated(true);
       setUserRoleId(Number(roleId));
       setUserNickName(nickName);
+    } else {
+      setAuthenticated(false);
+      setUserRoleId(null);
+      setUserNickName(null);
+    }
+  };
+
+  const logout = () => {
+    try {
+      localStorage.removeItem("nickName");
+      localStorage.removeItem("roleId");
+      setAuthenticated(false);
+      setUserRoleId(null);
+      setUserNickName(null);
+      window.location.href = "/";
+    } catch (err) {
+      console.error("Logout error:", err);
     }
   };
 
@@ -64,6 +84,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setUserNickName,
         userRoleId,
         setUserRoleId,
+        logout,
       }}
     >
       {children}
