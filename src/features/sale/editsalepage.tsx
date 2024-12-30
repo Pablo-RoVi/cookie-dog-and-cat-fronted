@@ -30,7 +30,8 @@ const AddSalesPage = () => {
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState<boolean>(false);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState<boolean>(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
-  const [isAdminConfirmModalOpen, setIsAdminConfirmModalOpen] = useState<boolean>(false);
+  const [isAdminConfirmModalOpen, setIsAdminConfirmModalOpen] =
+    useState<boolean>(false);
 
   const [errorMessage, setErrorMessage] = useState<string>("");
 
@@ -68,7 +69,6 @@ const AddSalesPage = () => {
           isActive: user.is_active,
         }));
         setUserOptions(users.filter((user) => user.isActive));
-        
       } catch (error) {
         console.error("Error cargando datos iniciales:", error);
       }
@@ -105,10 +105,9 @@ const AddSalesPage = () => {
 
   const editSale = () => {
     if (
-      (saleNickName === "" ||
-      salePaymentMethod === "") &&
+      (saleNickName === "" || salePaymentMethod === "") &&
       (saleNickName === originalData.nick_name ||
-      salePaymentMethod === originalData.paymentMethod)
+        salePaymentMethod === originalData.paymentMethod)
     ) {
       setErrorMessage("Debe completar los campos requeridos");
       toggleErrorModal();
@@ -121,11 +120,10 @@ const AddSalesPage = () => {
         paymentMethod: salePaymentMethod,
       };
       Agent.Sale.edit(form, saleId.toString())
-        .then((response : AxiosResponse) => {
-          
-          if(response.status === 200){
+        .then((response: AxiosResponse) => {
+          if (response.status === 200) {
             toggleSuccessModal();
-          }else if(response.status === 400){
+          } else if (response.status === 400) {
             setErrorMessage("Error al editar la venta");
             toggleErrorModal();
           }
@@ -133,21 +131,26 @@ const AddSalesPage = () => {
         .catch((error) => {
           console.log("error", error.response.data);
           let errorMessages = [];
-          if(error.response && error.response.data && error.response.data.errors){
-              const errors = error.response.data.errors;
+          if (
+            error.response &&
+            error.response.data &&
+            error.response.data.errors
+          ) {
+            const errors = error.response.data.errors;
 
-              for(const key in errors){
-                  if (errors.hasOwnProperty(key)) { 
-                      if (Array.isArray(errors[key])) 
-                      {  
-                          errors[key].forEach((msg) => { errorMessages.push(`${msg}`);}); 
-                      } else { 
-                          errorMessages.push(`${key}: ${errors[key]}`); 
-                      } 
-                  }
+            for (const key in errors) {
+              if (errors.hasOwnProperty(key)) {
+                if (Array.isArray(errors[key])) {
+                  errors[key].forEach((msg) => {
+                    errorMessages.push(`${msg}`);
+                  });
+                } else {
+                  errorMessages.push(`${key}: ${errors[key]}`);
+                }
               }
-          }else{
-              errorMessages.push(error.response.data)
+            }
+          } else {
+            errorMessages.push(error.response.data);
           }
           setErrorMessage(errorMessages.join("\n"));
           toggleErrorModal();
@@ -155,21 +158,22 @@ const AddSalesPage = () => {
     } catch (error) {
       console.log("error", error.response.data);
       let errorMessages = [];
-      if(error.response && error.response.data && error.response.data.errors){
-          const errors = error.response.data.errors;
+      if (error.response && error.response.data && error.response.data.errors) {
+        const errors = error.response.data.errors;
 
-          for(const key in errors){
-              if (errors.hasOwnProperty(key)) { 
-                  if (Array.isArray(errors[key])) 
-                  {  
-                      errors[key].forEach((msg) => { errorMessages.push(`${msg}`);}); 
-                  } else { 
-                      errorMessages.push(`${key}: ${errors[key]}`); 
-                  } 
-              }
+        for (const key in errors) {
+          if (errors.hasOwnProperty(key)) {
+            if (Array.isArray(errors[key])) {
+              errors[key].forEach((msg) => {
+                errorMessages.push(`${msg}`);
+              });
+            } else {
+              errorMessages.push(`${key}: ${errors[key]}`);
+            }
           }
-      }else{
-          errorMessages.push(error.response.data)
+        }
+      } else {
+        errorMessages.push(error.response.data);
       }
       setErrorMessage(errorMessages.join("\n"));
       toggleErrorModal();
@@ -186,6 +190,7 @@ const AddSalesPage = () => {
         <div className="flex space-x-4">
           <div className="container max-w-[20%]">
             {TableModule.inputFilter({
+              id: "saleId",
               label: "Código",
               valueFilter: saleId,
               isDisabled: true,
@@ -194,6 +199,7 @@ const AddSalesPage = () => {
 
           <div className="container max-w-[20%]">
             {TableModule.selectFilter({
+              id: "saleNickName",
               label: "Nombre de usuario",
               valueFilter: saleNickName,
               setOnChangeFilter: setSaleNickName,
@@ -204,6 +210,7 @@ const AddSalesPage = () => {
 
           <div className="container max-w-[20%]">
             {TableModule.selectFilter({
+              id: "salePaymentMethod",
               label: "Método de pago",
               valueFilter: salePaymentMethod,
               setOnChangeFilter: setSalePaymentMethod,

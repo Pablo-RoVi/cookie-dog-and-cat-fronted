@@ -141,33 +141,37 @@ const EditUserPage = () => {
       newPassword: newPassword,
       confirmPassword: confirmNewPassword,
     })
-      .then((response : AxiosResponse) => {
-
-        if(response.status === 200){
+      .then((response: AxiosResponse) => {
+        if (response.status === 200) {
           toggleConfirmationPasswordModal();
           toggleChangedPasswordModal();
-        }else if(response.status === 400){
+        } else if (response.status === 400) {
           console.error(response.statusText);
         }
       })
       .catch((error) => {
         console.log("error", error.response.data);
         let errorMessages = [];
-        if(error.response && error.response.data && error.response.data.errors){
-            const errors = error.response.data.errors;
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.errors
+        ) {
+          const errors = error.response.data.errors;
 
-            for(const key in errors){
-                if (errors.hasOwnProperty(key)) { 
-                    if (Array.isArray(errors[key])) 
-                    {  
-                        errors[key].forEach((msg) => { errorMessages.push(`${key}: ${msg}`);}); 
-                    } else { 
-                        errorMessages.push(`${key}: ${errors[key]}`); 
-                    } 
-                }
+          for (const key in errors) {
+            if (errors.hasOwnProperty(key)) {
+              if (Array.isArray(errors[key])) {
+                errors[key].forEach((msg) => {
+                  errorMessages.push(`${key}: ${msg}`);
+                });
+              } else {
+                errorMessages.push(`${key}: ${errors[key]}`);
+              }
             }
-        }else{
-            errorMessages.push(error.response.data)
+          }
+        } else {
+          errorMessages.push(error.response.data);
         }
         setErrorMessage(errorMessages.join("\n"));
         toggleErrorModal();
@@ -180,11 +184,13 @@ const EditUserPage = () => {
       <div className="container mx-auto mt-6 ml-52">
         {TableModule.title({ title: "Editar empleado" })}
         {TableModule.inputFilter({
+          id: "id",
           label: "Código",
           valueFilter: id.toString(),
           isDisabled: true,
         })}
         {TableModule.inputFilter({
+          id: "name",
           label: "Nombre",
           valueFilter: name,
           setOnChangeFilter: setName,
@@ -193,6 +199,7 @@ const EditUserPage = () => {
           errorMessage: "Nombre inválido",
         })}
         {TableModule.inputFilter({
+          id: "lastName",
           label: "Apellido",
           valueFilter: lastName,
           setOnChangeFilter: setLastName,
@@ -201,16 +208,19 @@ const EditUserPage = () => {
           errorMessage: "Apellido inválido",
         })}
         {TableModule.inputFilter({
+          id: "rut",
           label: "RUT",
           valueFilter: rut,
           isDisabled: true,
         })}
         {TableModule.inputFilter({
+          id: "nickName",
           label: "Nombre de usuario",
           valueFilter: nickName,
           isDisabled: true,
         })}
         {TableModule.selectFilter({
+          id: "role",
           label: "Rol",
           valueFilter: role,
           setOnChangeFilter: setRole,
@@ -226,7 +236,10 @@ const EditUserPage = () => {
           ) : (
             <Buttons.GrayButton text="Editar" onClick={null} />
           )}
-          <Buttons.FuchsiaButton text="Cancelar" onClick={() => handleNavigate()} />
+          <Buttons.FuchsiaButton
+            text="Cancelar"
+            onClick={() => handleNavigate()}
+          />
         </div>
       </div>
 
@@ -262,6 +275,7 @@ const EditUserPage = () => {
       <div className="container mx-auto mt-6 mr-52">
         {TableModule.title({ title: "Editar contraseña" })}
         {TableModule.inputFilter({
+          id: "newPassword",
           label: "Nueva Contraseña",
           valueFilter: newPassword,
           setOnChangeFilter: setNewPassword,
@@ -269,6 +283,7 @@ const EditUserPage = () => {
           placeholder: "Alfanumérica y contener al menos 8 caracteres",
         })}
         {TableModule.inputFilter({
+          id: "confirmNewPassword",
           label: "Confirmar Contraseña",
           valueFilter: confirmNewPassword,
           setOnChangeFilter: setConfirmNewPassword,
@@ -278,7 +293,9 @@ const EditUserPage = () => {
             newPassword,
             confirmNewPassword
           ),
-          errorMessage: newPassword ? "Contraseñas no coinciden o inválidas" : "",
+          errorMessage: newPassword
+            ? "Contraseñas no coinciden o inválidas"
+            : "",
         })}
         <div className="flex items-center space-x-4">
           {isPasswordModified ? (
@@ -289,7 +306,10 @@ const EditUserPage = () => {
           ) : (
             <Buttons.GrayButton text="Editar" onClick={null} />
           )}
-          <Buttons.FuchsiaButton text="Cancelar" onClick={() => handleNavigate()} />
+          <Buttons.FuchsiaButton
+            text="Cancelar"
+            onClick={() => handleNavigate()}
+          />
         </div>
       </div>
 
