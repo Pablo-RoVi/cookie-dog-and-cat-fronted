@@ -25,7 +25,7 @@ const Auth = {
 };
 
 const User = {
-  list: () => requests.get("user/"),
+  list: () => requests.get("user/GetUsers"),
   add: (form: any) => requests.post("user/RegisterUser", form),
   update: (form: any) => requests.put("user/UpdateUser", form),
   active: () => requests.get("user/ActiveUsers"),
@@ -49,7 +49,10 @@ const Sale = {
   edit: (form: any, id: string) => requests.put("sale/editSale", form),
   delete: (id: string) => requests.delete(`sale/deleteSale/${id}`, id),
   getPaymentMethods: () => requests.get("sale/GetPaymentMethods"),
-  getByDate: (form: any) => requests.post("sale/getSalesByDate", form),
+  getByDate: (date: any) => { 
+    const form = { date };
+    return requests.post("sale/getSalesByDate", form);
+  },
 };
 
 const Brand = {
@@ -58,6 +61,8 @@ const Brand = {
   update: (form: any, id: string) => requests.put(`brand/editBrand/${id}`, form),
   delete: (id: string) => requests.delete(`brand/deleteBrand/${id}`, id),
 };
+
+
 
 const SendEmail = (userEmail: string, adminName: string, messsage: string) => {
   emailjs
@@ -82,6 +87,7 @@ const SendEmail = (userEmail: string, adminName: string, messsage: string) => {
     );
 };
 
-const agent = { Auth, User, Product, Sale, Brand, SendEmail };
+
+const agent = { Auth, User, Product, Sale, Brand,SendEmail};
 
 export default agent;

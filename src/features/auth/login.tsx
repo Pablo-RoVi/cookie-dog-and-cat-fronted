@@ -21,7 +21,6 @@ const Login = () => {
       setIsErrorModalOpen(true);
     }
   };
-  
 
   return (
     <div
@@ -65,11 +64,6 @@ const Login = () => {
                 {isErrorModalOpen && errorMessage}
               </div>
             </div>
-            {error && (
-              <p className="text-sm text-left text-red-900 p-2 rounded-lg" >
-                {error}
-              </p>
-              )}
             <button
               type="submit"
               className="w-full p-2 mb-4 mt-4 text-white rounded-lg "
