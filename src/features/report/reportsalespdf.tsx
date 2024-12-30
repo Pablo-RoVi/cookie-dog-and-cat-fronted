@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Agent from "../../app/api/agent";
 import TableModule from "../../app/components/tablemodule";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 
 const headers = [
@@ -12,7 +14,36 @@ const headers = [
 ];
 
 const ReportSalesPDF = () => {
-    
+
+    const generateSalesPDF = async () => {
+        const tableElement = document.getElementById("sales-table");
+      
+        if (!tableElement) {
+          console.error("No se encontró la tabla para exportar.");
+          return;
+        }
+      
+        try {
+          // Capturar la tabla como una imagen
+          const canvas = await html2canvas(tableElement, {
+            scale: 2, // Mejorar la calidad
+            useCORS: true,
+          });
+      
+          const imgData = canvas.toDataURL("image/png");
+      
+          const pdf = new jsPDF("p", "mm", "a4"); // Formato A4 vertical
+      
+          const pdfWidth = pdf.internal.pageSize.getWidth();
+          const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+          pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+          pdf.save(`reporte_ventas${formatDate(date.split('T')[0])}.pdf`);
+          window.close()
+        } catch (error) {
+          console.error("Error al generar el PDF:", error);
+        }
+      };
+
   const [sales, setSales] = useState([]);
   const [users, setUsers] = useState([]);
   const date = localStorage.getItem('reportDate');
@@ -52,6 +83,7 @@ const ReportSalesPDF = () => {
     };
   
     initializeData();
+    setTimeout(generateSalesPDF, 2000); 
   }, []);
 
   return (
