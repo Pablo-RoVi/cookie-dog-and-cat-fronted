@@ -1,15 +1,9 @@
 module.exports = {
-    preset: 'ts-jest',
-    testEnvironment: 'jsdom',
+    preset: 'react-native',
     transform: {
-      '^.+\\.[tj]sx?$': 'ts-jest', // Transforma archivos TypeScript y JavaScript
+      '^.+\\.(ts|tsx)?$': 'ts-jest',
+      '^.+\\.(js|jsx)$': 'babel-jest',
     },
-    transformIgnorePatterns: [
-      'node_modules/(?!(axios)/)', // Transforma módulos específicos que utilizan ESModules
-    ],
-    moduleNameMapper: {
-      '\\.(css|less|scss|sass)$': 'identity-obj-proxy', // Mockea archivos CSS
-      '\\.(png|jpg|jpeg|gif|svg)$': '<rootDir>/__mocks__/fileMock.js', // Mockea imágenes
-    },
-  };
-  
+    moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+    transformIgnorePatterns: ['/node_modules/?!(react-native-blurhash|@react-native)'],
+  }
