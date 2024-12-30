@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
+import Agent from "../../app/api/agent";
 import TableModule from "../../app/components/tablemodule";
 import Buttons from "../../app/components/buttons";
+
 
 const headers = ["Código", "Fecha", "Total", "PDF"];
 
@@ -40,7 +42,7 @@ const reportsExamples: Report[] = [
 const ReportPage = () => {
   const [initialDate, setInitialDate] = useState<string>("");
   const [finalDate, setFinalDate] = useState<string>("");
-  const [reports, setReports] = useState<Report[]>(reportsExamples);
+  const [reports, setReports] = useState<Report[] >(reportsExamples);
 
   const [currentPage, setCurrentPage] = useState<number>(1);
   const reportsPerPage = 8;
@@ -50,7 +52,48 @@ const ReportPage = () => {
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
+  const fetchDataInRange = async (startDate: string | null, endDate: string | null): Promise<Report[]> => {
+    const allData: Report[] = [];
+  
+    if (startDate && endDate) {
+      // Rango de fechas si ambas fechas están disponibles
+      const dates = generateDateRange(startDate, endDate);
+      for (const date of dates) {
+        try {
+          const response = await Agent.Report.getByDate(date);
+          console.log("global");
+          allData.push(response.data);
+        } catch (error) {
+          console.error(`Error al obtener datos para la fecha ${date}:`, error);
+        }
+      }
+    } else if (startDate) {
+      // Solo fecha inicial
+      try {
+        const response = await Agent.Report.getByDate(startDate);
+        allData.push(response.data);
+      } catch (error) {
+        console.error(`Error al obtener datos para la fecha inicial ${startDate}:`, error);
+      }
+    } else if (endDate) {
+      // Solo fecha final
+      try {
+        const response = await Agent.Report.getByDate(endDate);
+        allData.push(response.data);
+      } catch (error) {
+        console.error(`Error al obtener datos para la fecha final ${endDate}:`, error);
+      }
+    } else {
+      console.warn("Se requieren al menos una fecha inicial o final para obtener datos.");
+    }
+  
+    return allData;
+  };
+
+
+
   useEffect(() => {
+    fetchDataInRange
     setCurrentPage(1);
   }, [initialDate, finalDate]);
 
@@ -96,15 +139,14 @@ const ReportPage = () => {
             headers: headers,
             data: currentReports.map((report: Report) => [
               report.id,
-              report.date,
+              report.date.split('T')[0],
               report.total,
               <>
                 <div className="flex justify-center items-center">
                   <Buttons.DownloadPDFButton
-                    onClick={() => null}
                   />
                 </div>
-              </>,
+              </>,  
             ]),
           })}
           {TableModule.pagination({
