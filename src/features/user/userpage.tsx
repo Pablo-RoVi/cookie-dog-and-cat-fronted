@@ -137,6 +137,7 @@ const UserPage = () => {
         <div className="flex space-x-4">
           <div className="container max-w-[20%]">
             {TableModule.inputFilter({
+              id: "searchName",
               label: "Nombre",
               valueFilter: searchName,
               setOnChangeFilter: setSearchName,
@@ -144,6 +145,7 @@ const UserPage = () => {
           </div>
           <div className="container max-w-[20%]">
             {TableModule.selectFilter({
+              id: "searchRole",
               label: "Rol",
               valueFilter: roleFilter,
               setOnChangeFilter: setRoleFilter,
@@ -153,6 +155,7 @@ const UserPage = () => {
           </div>
           <div className="container max-w-[20%]">
             {TableModule.selectFilter({
+              id: "searchAccountStatus",
               label: "Estado de la Cuenta",
               valueFilter: accountStatusFilter,
               setOnChangeFilter: setAccountStatusFilter,

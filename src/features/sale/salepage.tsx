@@ -131,6 +131,7 @@ const SalePage = () => {
         <div className="flex space-x-4">
           <div className="container max-w-[20%]">
             {TableModule.selectFilter({
+              id: "searchUserName",
               label: "Nombre de usuario",
               valueFilter: nickNameFilter,
               setOnChangeFilter: setNickNameFilter,
