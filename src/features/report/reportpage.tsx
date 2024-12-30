@@ -52,6 +52,15 @@ const ReportPage = () => {
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
+  const normalizeReports = (data: Report[] | Report[][]): Report[] => {
+    if (Array.isArray(data[0])) {
+      // Si el primer elemento es un array, aplanar todos los arrays
+      return (data as Report[][]).flat();
+    }
+    // Si ya es un array plano, devolver tal cual
+    return data as Report[];
+  };
+
   const fetchDataInRange = async (startDate: string | null, endDate: string | null): Promise<Report[]> => {
     const allData: Report[] = [];
   
@@ -63,6 +72,7 @@ const ReportPage = () => {
           const response = await Agent.Report.getByDate(date);
           console.log("global");
           allData.push(response.data);
+          setReports(normalizeReports(allData))
         } catch (error) {
           console.error(`Error al obtener datos para la fecha ${date}:`, error);
         }
@@ -72,6 +82,7 @@ const ReportPage = () => {
       try {
         const response = await Agent.Report.getByDate(startDate);
         allData.push(response.data);
+        setReports(normalizeReports(allData))
       } catch (error) {
         console.error(`Error al obtener datos para la fecha inicial ${startDate}:`, error);
       }
@@ -80,6 +91,7 @@ const ReportPage = () => {
       try {
         const response = await Agent.Report.getByDate(endDate);
         allData.push(response.data);
+        setReports(normalizeReports(allData))
       } catch (error) {
         console.error(`Error al obtener datos para la fecha final ${endDate}:`, error);
       }
@@ -93,12 +105,13 @@ const ReportPage = () => {
 
 
   useEffect(() => {
-    fetchDataInRange
+    fetchDataInRange(initialDate, finalDate);
     setCurrentPage(1);
   }, [initialDate, finalDate]);
 
   const filteredReports = reports.filter((report) => {
-    const reportDate = new Date(report.date);
+    const Datestring = report.date.split('T')[0];
+    const reportDate = new Date(Datestring);
     const startDate = initialDate ? new Date(initialDate) : null;
     const endDate = finalDate ? new Date(finalDate) : null;
 
