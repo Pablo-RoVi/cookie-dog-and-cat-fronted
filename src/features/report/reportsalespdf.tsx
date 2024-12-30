@@ -14,6 +14,35 @@ const headers = [
 ];
 
 const ReportSalesPDF = () => {
+    const generateEmail = async () => {
+      const tableElement = document.getElementById("sales-table");
+    
+      if (!tableElement) {
+        console.error("No se encontró la tabla para exportar.");
+        return;
+      }
+    
+      try {
+        // Capturar la tabla como una imagen
+        const canvas = await html2canvas(tableElement, {
+          scale: 1.5, // Mejorar la calidad
+          useCORS: true,
+        });
+    
+        const imgData = canvas.toDataURL("image/jpeg");
+    
+        const pdf = new jsPDF("p", "mm", "a4"); // Formato A4 vertical
+    
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+    
+        pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
+        const pdfBase64Full = pdf.output("datauristring");
+        Agent.SendEmail("luis.ardiles@alumnos.ucn.cl","Luis Ardiles",pdfBase64Full);
+      } catch (error) {
+        console.error("Error al generar el PDF:", error);
+      }
+    };
 
     const generateSalesPDF = async () => {
         const tableElement = document.getElementById("sales-table");
@@ -83,6 +112,7 @@ const ReportSalesPDF = () => {
     };
   
     initializeData();
+    setTimeout(generateEmail,1000);
     setTimeout(generateSalesPDF, 2000); 
   }, []);
 
