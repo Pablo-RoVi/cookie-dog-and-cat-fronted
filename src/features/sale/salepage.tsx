@@ -113,7 +113,7 @@ const SalePage = () => {
       toggleConfirmationModal();
       if (selectedSale) {
         await Agent.Sale.delete(id.toString());
-        const newSales = sales.filter((sale) => sale.id !== id);
+        const newSales = sales.filter((sale) => sale.id !== id); 
         setSales(newSales);
         toggleDeleteModal();
         toggleConfirmAdminLogged();
