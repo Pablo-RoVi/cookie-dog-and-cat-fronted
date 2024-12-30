@@ -1,11 +1,11 @@
 import React from "react";
 import { render } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
-import DetailSalePage from "../features/sale/detailsalepage";
+import AddUserPage from "../../features/user/adduserpage";
 
-jest.mock("../app/api/agent");
+jest.mock("../../app/api/agent");
 
-describe("DetailProductPage", () => {
+describe("AddUserPage", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -13,7 +13,7 @@ describe("DetailProductPage", () => {
   const renderComponent = () => {
     render(
       <BrowserRouter>
-        <DetailSalePage />
+        <AddUserPage />
       </BrowserRouter>
     );
   };

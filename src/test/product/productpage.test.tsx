@@ -1,19 +1,19 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
-import ProductPage from "../features/product/productpage";
-import Agent from "../app/api/agent";
-import { useAuth } from "../app/context/authcontext";
+import ProductPage from "../../features/product/productpage";
+import Agent from "../../app/api/agent";
+import { useAuth } from "../../app/context/authcontext";
 
 // Mock de Agent y AuthContext
-jest.mock("../app/api/agent", () => ({
+jest.mock("../../app/api/agent", () => ({
   Product: {
     list: jest.fn(),
     delete: jest.fn(),
   },
 }));
 
-jest.mock("../app/context/authcontext", () => ({
+jest.mock("../../app/context/authcontext", () => ({
   useAuth: jest.fn(),
 }));
 

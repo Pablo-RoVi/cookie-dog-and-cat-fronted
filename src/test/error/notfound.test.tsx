@@ -2,7 +2,7 @@ import React from "react";
 import "@testing-library/jest-dom";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { BrowserRouter as Router } from "react-router-dom";
-import NotFound from "../features/error/notfound";
+import NotFound from "../../features/error/notfound";
 
 const mockNavigate = jest.fn();
 jest.mock("react-router-dom", () => ({

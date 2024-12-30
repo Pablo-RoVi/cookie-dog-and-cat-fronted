@@ -2,12 +2,12 @@ import React from "react";
 import "@testing-library/jest-dom";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { BrowserRouter as Router } from "react-router-dom";
-import { AuthProvider } from "../app/context/authcontext";
-import Login from "../features/auth/login";
-import Agent from "../app/api/agent";
+import { AuthProvider } from "../../app/context/authcontext";
+import Login from "../../features/auth/login";
+import Agent from "../../app/api/agent";
 
 // Mock para simular el comportamiento de Agent
-jest.mock("../app/api/agent", () => ({
+jest.mock("../../app/api/agent", () => ({
   Auth: {
     login: jest.fn(),
   },
