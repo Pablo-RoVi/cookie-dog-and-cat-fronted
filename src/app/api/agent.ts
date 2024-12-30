@@ -62,7 +62,12 @@ const Brand = {
   delete: (id: string) => requests.delete(`brand/deleteBrand/${id}`, id),
 };
 
-
+const Report = {
+  getByDate: (date: any) => {
+    const form = { date };
+    return requests.post("Report/GetReportsByDate", form);
+  }
+};
 
 const SendEmail = (userEmail: string, adminName: string, messsage: string) => {
   emailjs
@@ -88,6 +93,6 @@ const SendEmail = (userEmail: string, adminName: string, messsage: string) => {
 };
 
 
-const agent = { Auth, User, Product, Sale, Brand,SendEmail};
+const agent = { Auth, User, Product, Sale, Brand, Report,SendEmail};
 
 export default agent;
