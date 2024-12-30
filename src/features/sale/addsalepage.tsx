@@ -201,7 +201,7 @@ const AddSalesPage = () => {
 
     Agent.Sale.add(sale)
       .then((response) => {
-        if (response.status === 200) {
+        if (response.status === 204) {
           toggleSuccessModal();
         }
       })

@@ -1,0 +1,11 @@
+version: '3.3'
+services:
+  deploy:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    restart: always
+    ports:
+      - '3000:3000'
+    environment:
+      - REACT_APP_API_URL=${REACT_APP_API_URL}

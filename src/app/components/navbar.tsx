@@ -9,16 +9,16 @@ import Modal from "../../app/components/modal";
 
 const adminMenu = [
   {
-    value: "/users",
-    label: "Empleados",
+    value: "/sales",
+    label: "Ventas",
   },
   {
     value: "/products",
     label: "Productos",
   },
   {
-    value: "/sales",
-    label: "Ventas",
+    value: "/users",
+    label: "Empleados",
   },
   {
     value: "/reports",
@@ -27,12 +27,12 @@ const adminMenu = [
 ];
 const employeeMenu = [
   {
-    value: "/products",
-    label: "Productos",
-  },
-  {
     value: "/sales",
     label: "Ventas",
+  },
+  {
+    value: "/products",
+    label: "Productos",
   },
 ];
 const adminSettings = [{ value: "/", label: "Cerrar Sesión" }];
@@ -48,7 +48,11 @@ const employeeSettings = [
 ];
 
 const Navbar = () => {
-  const { logout, userRoleId, userNickName } = useAuth();
+  const {
+    userRoleId,
+    userNickName,
+    logout,
+  } = useAuth();
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
   const [menu, setMenu] = useState([]);
@@ -203,7 +207,7 @@ const Navbar = () => {
                 }}
                 onClick={() =>
                   item.label === "Cerrar Sesión"
-                    ? [logout(), navigate(item.value), toggleSettings()]
+                    ? [logout(), toggleSettings()]
                     : [toggleConfirmationModal(), toggleSettings()]
                 }
               >

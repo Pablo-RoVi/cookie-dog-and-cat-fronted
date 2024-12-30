@@ -104,7 +104,7 @@ const AddProductPage = () => {
             specieName: specieName
         }).then((response : AxiosResponse) => {
             console.log("response", response);
-            if(response.status === 200){
+            if(response.status === 204){
                 toggleAddedProductModal();
                 console.log("Producto agregado con éxito");
             }else if(response.status === 400){
