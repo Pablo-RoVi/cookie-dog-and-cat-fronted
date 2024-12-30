@@ -18,7 +18,7 @@ describe("Login Component", () => {
     jest.clearAllMocks();
   });
 
-  const renderLogin = () => {
+  const renderComponent = () => {
     render(
       <AuthProvider>
         <Router>
@@ -29,7 +29,7 @@ describe("Login Component", () => {
   };
 
   test("renders login form", () => {
-    renderLogin();
+    renderComponent();
     expect(screen.getByPlaceholderText("Nombre de usuario")).toBeInTheDocument();
     expect(screen.getByPlaceholderText("Contraseña")).toBeInTheDocument();
     expect(screen.getByText("Iniciar Sesión")).toBeInTheDocument();
@@ -39,7 +39,7 @@ describe("Login Component", () => {
   test("shows error when credentials are incorrect", async () => {
     (Agent.Auth.login as jest.Mock).mockRejectedValue(new Error("Invalid credentials"));
 
-    renderLogin();
+    renderComponent();
 
     fireEvent.change(screen.getByPlaceholderText("Nombre de usuario"), {
       target: { value: "wrongUser" },
@@ -59,7 +59,7 @@ describe("Login Component", () => {
       data: { nick_name: "PRobledo", roleId: 2 },
     });
 
-    renderLogin();
+    renderComponent();
 
     fireEvent.change(screen.getByPlaceholderText("Nombre de usuario"), {
       target: { value: "PRobledo" },
@@ -82,7 +82,7 @@ describe("Login Component", () => {
   test("clears error when input is modified", async () => {
     (Agent.Auth.login as jest.Mock).mockRejectedValue(new Error("Invalid credentials"));
 
-    renderLogin();
+    renderComponent();
 
     fireEvent.change(screen.getByPlaceholderText("Nombre de usuario"), {
       target: { value: "wrongUser" },

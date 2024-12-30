@@ -11,7 +11,7 @@ jest.mock("react-router-dom", () => ({
 }));
 
 describe("NotFound Component", () => {
-  const renderNotFound = () => {
+  const renderComponent = () => {
     render(
       <Router>
         <NotFound />
@@ -20,7 +20,7 @@ describe("NotFound Component", () => {
   };
 
   test("renders NotFound page correctly", () => {
-    renderNotFound();
+    renderComponent();
 
     expect(screen.getByText(/¡Oops!/i)).toBeInTheDocument();
     expect(
@@ -40,7 +40,7 @@ describe("NotFound Component", () => {
   });
 
   test("calls navigate(-1) when 'Volver' button is clicked", () => {
-    renderNotFound();
+    renderComponent();
 
     const backButton = screen.getByRole("button", { name: /volver/i });
     fireEvent.click(backButton);
