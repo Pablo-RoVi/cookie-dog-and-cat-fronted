@@ -11,6 +11,10 @@ type Report = {
   date: string;
   total: string;
 };
+const handleGeneratePDF = (date) => {
+  localStorage.setItem('reportDate', date);
+  window.open(`/reports/pdf`, "_blank");
+};
 
 const generateDateRange = (startDate: string, endDate: string): string[] => {
   const dates: string[] = [];
@@ -168,7 +172,8 @@ const ReportPage = () => {
               report.total,
               <>
                 <div className="flex justify-center items-center">
-                  <Buttons.DownloadPDFButton                          
+                  <Buttons.DownloadPDFButton
+                                      onClick={() => handleGeneratePDF(report.date)}
                   />
                 </div>
               </>,  
