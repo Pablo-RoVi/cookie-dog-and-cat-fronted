@@ -1,9 +1,14 @@
 import React from "react";
-import { render } from "@testing-library/react";
-import { BrowserRouter } from "react-router-dom";
+import "@testing-library/jest-dom";
+import { render, screen } from "@testing-library/react";
+import { BrowserRouter as Router } from "react-router-dom";
 import UserPage from "../features/user/userpage";
 
-jest.mock("../app/api/agent");
+const mockNavigate = jest.fn();
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
+  useNavigate: () => mockNavigate,
+}));
 
 describe("UserPage", () => {
   beforeEach(() => {
@@ -12,13 +17,15 @@ describe("UserPage", () => {
 
   const renderComponent = () => {
     render(
-      <BrowserRouter>
+      <Router>
         <UserPage />
-      </BrowserRouter>
+      </Router>
     );
   };
 
   test("renders all fields and buttons", () => {
     renderComponent();
+
+    expect(screen.getByText(/Empleados/i)).toBeInTheDocument();         
   });
 });
