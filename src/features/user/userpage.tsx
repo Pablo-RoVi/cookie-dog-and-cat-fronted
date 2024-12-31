@@ -75,7 +75,7 @@ const UserPage = () => {
 
   const deleteText = (selectedUser: User) => {
     const actionText = selectedUser.is_active ? "eliminar" : "restaurar";
-    const text = `¿Desear ${actionText} a '${selectedUser.name} ${selectedUser.last_name}' de RUT '${selectedUser.rut}'?`;
+    const text = `¿Desea ${actionText} a '${selectedUser.name} ${selectedUser.last_name}' de RUT '${selectedUser.rut}'?`;
     return text;
   };
 
