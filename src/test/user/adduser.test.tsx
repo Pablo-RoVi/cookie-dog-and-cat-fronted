@@ -48,6 +48,7 @@ describe("UserPage", () => {
     expect(screen.getByPlaceholderText(/Ejemplo: 12345678-9/i)).toBeInTheDocument();
     expect(screen.getByText(/SIN ELECCIÓN/i)).toBeInTheDocument();
     expect(screen.getAllByPlaceholderText(/Alfanumérica y contener al menos 8 caracteres/i)[0]).toBeInTheDocument();
+    expect(screen.getAllByPlaceholderText(/Alfanumérica y contener al menos 8 caracteres/i)[1]).toBeInTheDocument();
     expect(screen.getByText(/Añadir/i)).toBeInTheDocument();
     expect(screen.getByText(/Cancelar/i)).toBeInTheDocument();
   });
@@ -88,6 +89,14 @@ describe("UserPage", () => {
     });
 
     await fireEvent.click(addButton);
+
+    const addButton2 = screen.getByText(/Añadir/i);
+
+    await fireEvent.click(addButton2);
+
+    const confirmButton = screen.getByText(/Confirmar/i);
+
+    await fireEvent.click(confirmButton);
 
   });
 
