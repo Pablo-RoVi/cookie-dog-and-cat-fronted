@@ -56,7 +56,7 @@ describe("UserPage", () => {
     );
   };
 
-  test("renders all fields and buttons", () => {
+  test("renders all fields", () => {
     renderComponent();
 
     expect(screen.getByText(/Empleados/i)).toBeInTheDocument();
@@ -69,8 +69,9 @@ describe("UserPage", () => {
     expect(screen.getByText(/Nombre de Usuario/i)).toBeInTheDocument();
   });
 
-  test("renders all users", () => {
+  test("renders all buttons", () => {
     renderComponent();
-    
+    expect(screen.getAllByText(/SIN ELECCIÓN/i)[0]).toBeInTheDocument();
+    expect(screen.getByText(/Añadir/i)).toBeInTheDocument();
   });
 });
