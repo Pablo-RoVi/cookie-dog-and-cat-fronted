@@ -7,7 +7,7 @@ const translateRole = (role: string) => {
 };
 
 const verifyName = (name: string): boolean => {
-  const nameRegex = /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]+$/;
+  const nameRegex = /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]{3,20}$/;
   return nameRegex.test(name) && name !== "";
 };
 
@@ -20,7 +20,7 @@ const verifyPasswords = (
   password: string,
   confirmPassword: string
 ): boolean => {
-  const passwordRegex = /^[a-zA-Z0-9]{8,}$/;
+  const passwordRegex = /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{8,}$/;
   return (
     password === confirmPassword && 
     password !== "" && confirmPassword !== "" &&
