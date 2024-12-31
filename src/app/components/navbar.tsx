@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "../static/styles/navbar.css";
 import colors from "../static/colors";
 import cookie from "../static/images/cookie.png";
 import { useAuth } from "../../app/context/authcontext";

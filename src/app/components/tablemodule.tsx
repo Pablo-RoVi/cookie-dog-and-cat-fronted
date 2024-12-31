@@ -18,6 +18,7 @@ const inputFilter = (props) => {
       </label>
       {/* Input */}
       <input
+        id={props.id}
         type={props.isPassword ? "password" : "text"}
         value={props.valueFilter}
         onChange={(e) => props.setOnChangeFilter(e.target.value)}
@@ -42,6 +43,7 @@ const selectFilter = (props) => {
       </label>
       {/* Select */}
       <select
+        id={props.id}
         value={props.valueFilter}
         onChange={(e) => props.setOnChangeFilter(e.target.value)}
         className="p-2 border border-gray-300 rounded-lg shadow-sm"
@@ -67,6 +69,7 @@ const dateFilter = (props) => {
       </label>
       {/* Input */}
       <input
+        id={props.id}
         type="date"
         value={props.valueFilter}
         onChange={(e) => props.setOnChangeFilter(e.target.value)}
