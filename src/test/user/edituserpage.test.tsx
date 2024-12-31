@@ -101,4 +101,38 @@ describe("UserPage", () => {
 
     await fireEvent.click(confirmButton);
   });
+
+  test("redirects on successful edit password", async () => {
+    (Agent.User.update as jest.Mock).mockResolvedValue({
+      data: { id: 1, name: "Camilo", last_name: "Tessini", role: "employee" },
+    });
+
+    renderComponent();
+
+    const passwordInput = screen.getAllByPlaceholderText(
+      /Alfanumérica y contener al menos 8 caracteres/i
+    )[0];
+    const confirmPasswordInput = screen.getAllByPlaceholderText(
+      /Alfanumérica y contener al menos 8 caracteres/i
+    )[1];
+
+    const editButton = screen.getAllByText(/Editar/i)[1];
+
+    fireEvent.change(passwordInput, {
+      target: { value: "hola12345" },
+    });
+    fireEvent.change(confirmPasswordInput, {
+      target: { value: "hola12345" },
+    });
+
+    await fireEvent.click(editButton);
+
+    const editButton2 = screen.getAllByText(/Editar/i)[3];
+
+    await fireEvent.click(editButton2);
+
+    const confirmButton = screen.getByText(/Confirmar/i);
+
+    await fireEvent.click(confirmButton);
+  });
 });
