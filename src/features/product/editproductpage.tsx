@@ -182,6 +182,7 @@ const EditProductPage = () => {
           label: "Código",
           valueFilter: unique_id,
           setOnChangeFilter: setId,
+          placeholder: "Código del producto",
           errorInput:
             !Functions.verifyProductCode(unique_id) && unique_id !== "",
           errorMessage: "El código debe ser numérico y de 8 a 15 dígitos",
@@ -191,6 +192,7 @@ const EditProductPage = () => {
           label: "Nombre",
           valueFilter: productName,
           setOnChangeFilter: setName,
+          placeholder: "Nombre del producto",
           errorInput:
             !Functions.verifyProductName(productName) && productName !== "",
           errorMessage:
@@ -201,6 +203,7 @@ const EditProductPage = () => {
           label: "Precio",
           valueFilter: price,
           setOnChangeFilter: setPrice,
+          placeholder: "Precio",
           errorInput: !Functions.verifyProductPrice(price) && price !== "",
           errorMessage:
             "El precio debe ser un número mayor a 0, de máximo de 9 dígitos con o sin puntos",
@@ -210,6 +213,7 @@ const EditProductPage = () => {
           label: "Stock",
           valueFilter: stock,
           setOnChangeFilter: setStock,
+          placeholder: "Stock",
           errorInput: !Functions.verifyProductStock(stock) && stock !== "",
           errorMessage:
             "El stock debe ser un número mayor a 0, de máximo de 9 dígitos",
