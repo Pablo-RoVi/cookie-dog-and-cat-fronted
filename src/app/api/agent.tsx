@@ -49,7 +49,10 @@ const Sale = {
   edit: (form: any, id: string) => requests.put("sale/editSale", form),
   delete: (id: string) => requests.delete(`sale/deleteSale/${id}`, id),
   getPaymentMethods: () => requests.get("sale/GetPaymentMethods"),
-  getByDate: (form: any) => requests.post("sale/getSalesByDate", form),
+  getByDate: (date: any) => { 
+    const form = { date };
+    return requests.post("sale/getSalesByDate", form);
+  },
 };
 
 const Brand = {
@@ -57,6 +60,13 @@ const Brand = {
   add: (form: any) => requests.post("brand/addBrand", form),
   update: (form: any, id: string) => requests.put(`brand/editBrand/${id}`, form),
   delete: (id: string) => requests.delete(`brand/deleteBrand/${id}`, id),
+};
+
+const Report = {
+  getByDate: (date: any) => {
+    const form = { date };
+    return requests.post("Report/GetReportsByDate", form);
+  }
 };
 
 const SendEmail = (userEmail: string, adminName: string, messsage: string) => {
@@ -82,6 +92,7 @@ const SendEmail = (userEmail: string, adminName: string, messsage: string) => {
     );
 };
 
-const agent = { Auth, User, Product, Sale, Brand, SendEmail };
+
+const agent = { Auth, User, Product, Sale, Brand, Report,SendEmail};
 
 export default agent;
