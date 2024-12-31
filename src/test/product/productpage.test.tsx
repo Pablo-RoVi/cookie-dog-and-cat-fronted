@@ -13,19 +13,7 @@ jest.mock("react-router-dom", () => ({
 
 jest.mock("../../app/api/agent", () => ({
   Product: {
-    list: jest.fn().mockResolvedValue({
-      data: [
-        {
-          unique_id: "12345678",
-          product_name: "Carne",
-          stock: "20",
-          price: "2500",
-          categoryName: "Alimento",
-          brandName: "Royal",
-          specieName: "Perro",
-        },
-      ],
-    }),
+    list: jest.fn().mockResolvedValue({}),
   },
 }));
 describe("ProductPage", () => {

@@ -13,34 +13,7 @@ jest.mock("react-router-dom", () => ({
 
 jest.mock("../../app/api/agent", () => ({
   User: {
-    list: jest.fn().mockResolvedValue({
-      data: [
-        {
-          id: 1,
-          rut: "17132083-6",
-          name: "Camila",
-          last_name: "Tessini",
-          is_active: true,
-          nick_name: "CTessini",
-          role: {
-            id: 1,
-            role_name: "Admin",
-          },
-        },
-        {
-          id: 2,
-          rut: "20776296-2",
-          name: "Pablo",
-          last_name: "Robledo",
-          is_active: true,
-          nick_name: "PRobledo",
-          role: {
-            id: 2,
-            role_name: "Employee",
-          },
-        },
-      ],
-    }),
+    list: jest.fn().mockResolvedValue({}),
   },
 }));
 describe("UserPage", () => {

@@ -55,7 +55,7 @@ describe("UserPage", () => {
 
   test("redirects on successful add", async () => {
     (Agent.User.add as jest.Mock).mockResolvedValue({
-      data: { nick_name: "GonzaloGonzález", roleId: 2 },
+      data: { nick_name: "GGonzález", roleId: 2 },
     });
 
     renderComponent();
