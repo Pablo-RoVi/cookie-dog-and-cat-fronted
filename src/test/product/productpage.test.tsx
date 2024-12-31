@@ -1,50 +1,57 @@
 import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { BrowserRouter } from "react-router-dom";
+import "@testing-library/jest-dom";
+import { render, screen } from "@testing-library/react";
+import { BrowserRouter as Router } from "react-router-dom";
 import ProductPage from "../../features/product/productpage";
-import Agent from "../../app/api/agent";
-import { useAuth } from "../../app/context/authcontext";
 
-// Mock de Agent y AuthContext
+const mockNavigate = jest.fn();
+
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
+  useNavigate: () => mockNavigate,
+}));
+
 jest.mock("../../app/api/agent", () => ({
   Product: {
-    list: jest.fn(),
-    delete: jest.fn(),
-  },
-}));
-
-jest.mock("../../app/context/authcontext", () => ({
-  useAuth: jest.fn(),
-}));
-
-describe("ProductPage con un solo producto", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-    (Agent.Product.list as jest.Mock).mockResolvedValue({
+    list: jest.fn().mockResolvedValue({
       data: [
         {
           unique_id: "12345678",
           product_name: "Carne",
-          stock: "25",
+          stock: "20",
           price: "2500",
           categoryName: "Alimento",
           brandName: "Royal",
           specieName: "Perro",
         },
       ],
-    });
-    (useAuth as jest.Mock).mockReturnValue({ userRoleId: 1 });
+    }),
+  },
+}));
+describe("ProductPage", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
   const renderComponent = () => {
     render(
-      <BrowserRouter>
+      <Router>
         <ProductPage />
-      </BrowserRouter>
+      </Router>
     );
   };
 
-  test("renderiza los campos básicos y botones", async () => {
+  test("renders all fields", () => {
     renderComponent();
+
+    expect(screen.getByText(/Productos/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Nombre/i)[0]).toBeInTheDocument();
+    expect(screen.getAllByText(/Nombre/i)[1]).toBeInTheDocument();
+    expect(screen.getByText(/Código/i)).toBeInTheDocument();
+    expect(screen.getByText(/Precio/i)).toBeInTheDocument();
+    expect(screen.getByText(/Stock/i)).toBeInTheDocument();
+    expect(screen.getByText(/Categoria/i)).toBeInTheDocument();
+    expect(screen.getByText(/Marca/i)).toBeInTheDocument();
+    expect(screen.getByText(/Especie/i)).toBeInTheDocument();
   });
 });
