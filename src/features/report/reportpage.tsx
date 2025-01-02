@@ -92,7 +92,6 @@ const ReportPage = () => {
   };
 
   useEffect(() => {
-    
     fetchDataInRange(initialDate, finalDate);
   }, []);
 
@@ -145,7 +144,7 @@ const ReportPage = () => {
             headers: headers,
             data: currentReports.map((report: Report) => [
               report.id,
-              report.date.split('T')[0],
+              new Date(report.date).toLocaleDateString().split('T')[0],
               report.total,
               <>
                 <div className="flex justify-center items-center">
