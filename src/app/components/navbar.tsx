@@ -163,7 +163,7 @@ const Navbar = () => {
       >
         <svg
           onClick={toggleSettings}
-          className="w-12 h-12 text-gray-800 dark:text-white mr-6"
+          className="w-12 h-12 text-gray-800 dark:text-white mr-6 cursor-pointer"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           width="24"

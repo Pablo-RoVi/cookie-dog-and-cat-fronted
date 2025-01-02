@@ -250,7 +250,7 @@ const AddSalesPage = () => {
 
         {isConfirmModalOpen && (
           <Modal
-            title="¿Estás seguro de editar la venta?"
+            title={`¿Estás seguro de editar la venta ${saleId}?`}
             activateConfirm={true}
             confirmation="Confirmar"
             confirmAction={() => {

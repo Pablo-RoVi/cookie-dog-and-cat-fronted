@@ -12,7 +12,7 @@ import DetailSalePage from "../../features/sale/detailsalepage";
 import AddSalePage from "../../features/sale/addsalepage";
 import ReportPage from "../../features/report/reportpage";
 import { AuthProvider, useAuth } from "../context/authcontext";
-
+import ReportSalesPDF from "../../features/report/reportsalespdf";
 import ProductPage from "../../features/product/productpage";
 import NotFound from "../../features/error/notfound";
 import EditProductPage from "../../features/product/editproductpage";
@@ -143,6 +143,7 @@ const Routes = () => {
               }
             />
           </Route>
+          <Route path="/reports/pdf?" element={<ReportSalesPDF />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Router>

@@ -1,5 +1,3 @@
-import { Product } from "./product";
-
 export interface Sale {
     id: number;
     nickName: string;
