@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Agent from "../../app/api/agent";
 import TableModule from "../../app/components/tablemodule";
 import jsPDF from "jspdf";
@@ -14,7 +14,51 @@ const headers = [
 ];
 
 const ReportSalesPDF = () => {
-    const generateEmail = async () => {
+  const generateEmail = async () => {
+    const tableElement = document.getElementById("sales-table");
+  
+    if (!tableElement) {
+      console.error("No se encontró la tabla para exportar.");
+      return;
+    }
+  
+    try {
+      // Capturar la tabla como una imagen
+      const canvas = await html2canvas(tableElement, {
+        scale: 1.5, // Mejorar la calidad
+        useCORS: true,
+      });
+  
+      const imgData = canvas.toDataURL("image/jpeg");
+  
+      const pdf = new jsPDF("p", "mm", "a4"); // Formato A4 vertical
+  
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+  
+      pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
+      const pdfBase64Full = pdf.output("datauristring");
+  
+      // Convertir la cadena Base64 a un formato adecuado para enviar como adjunto
+      const pdfData = pdfBase64Full.split(",")[1]; // Solo los datos base64
+  
+      // Enviar el PDF como adjunto a tu backend que usa SendGrid
+      await fetch("http://localhost:3001", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          pdfData: pdfData, // El contenido base64 del PDF
+          filename: "reporte_ventas.pdf", // Nombre del archivo adjunto
+        }),
+      });
+    } catch (error) {
+      console.error("Error al generar el PDF:", error);
+    }
+  };
+
+  const generateSalesPDF = async () => {
       const tableElement = document.getElementById("sales-table");
     
       if (!tableElement) {
@@ -25,54 +69,25 @@ const ReportSalesPDF = () => {
       try {
         // Capturar la tabla como una imagen
         const canvas = await html2canvas(tableElement, {
-          scale: 1.5, // Mejorar la calidad
+          scale: 2, // Mejorar la calidad
           useCORS: true,
         });
     
-        const imgData = canvas.toDataURL("image/jpeg");
+        const imgData = canvas.toDataURL("image/png");
     
         const pdf = new jsPDF("p", "mm", "a4"); // Formato A4 vertical
     
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-    
-        pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
-        const pdfBase64Full = pdf.output("datauristring");
-        Agent.SendEmail("luis.ardiles@alumnos.ucn.cl","Luis Ardiles",pdfBase64Full);
+        pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+        pdf.save(`reporte_ventas${formatDate(date.split('T')[0])}.pdf`);
+        window.close()
       } catch (error) {
         console.error("Error al generar el PDF:", error);
       }
-    };
+  };
 
-    const generateSalesPDF = async () => {
-        const tableElement = document.getElementById("sales-table");
-      
-        if (!tableElement) {
-          console.error("No se encontró la tabla para exportar.");
-          return;
-        }
-      
-        try {
-          // Capturar la tabla como una imagen
-          const canvas = await html2canvas(tableElement, {
-            scale: 2, // Mejorar la calidad
-            useCORS: true,
-          });
-      
-          const imgData = canvas.toDataURL("image/png");
-      
-          const pdf = new jsPDF("p", "mm", "a4"); // Formato A4 vertical
-      
-          const pdfWidth = pdf.internal.pageSize.getWidth();
-          const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-          pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-          pdf.save(`reporte_ventas${formatDate(date.split('T')[0])}.pdf`);
-          window.close()
-        } catch (error) {
-          console.error("Error al generar el PDF:", error);
-        }
-      };
-
+  const hasSentEmail = useRef(false);
   const [sales, setSales] = useState([]);
   const [users, setUsers] = useState([]);
   const date = localStorage.getItem('reportDate');
@@ -105,16 +120,24 @@ const ReportSalesPDF = () => {
           isActive: user.is_active,
         }));
         setUsers(users);
-  
+
+        if (!hasSentEmail.current) {
+          hasSentEmail.current = true; // Marcar que ya se envió
+          await generateEmail();
+
+          const downloadPDF = async () => {
+            await generateSalesPDF();
+          };
+          downloadPDF();
+        }
       } catch (error) {
         console.error("Error fetching sales:", error);
       }
     };
   
     initializeData();
-    setTimeout(generateEmail,1000);
-    setTimeout(generateSalesPDF, 2000); 
   }, []);
+
 
   return (
     <div id = "sales-table" className="max-h-screen bg-white">
@@ -138,4 +161,4 @@ const ReportSalesPDF = () => {
   );
 };
 
-export default ReportSalesPDF ;
+export default ReportSalesPDF;
