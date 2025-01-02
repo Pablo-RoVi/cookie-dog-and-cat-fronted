@@ -22,23 +22,23 @@ const accountStatusOptions = [
 
 const categoryOptions = [
   {
-    value: "Accesorio",
-    label: "Accesorio",
+    value: "Accesorios",
+    label: "Accesorios",
   },
   {
-    value: "Alimento",
-    label: "Alimento",
+    value: "Alimentos",
+    label: "Alimentos",
   },
 ];
 
 const specieOptions = [
   {
-    value: "Perro",
-    label: "Perro",
+    value: "Perros",
+    label: "Perros",
   },
   {
-    value: "Gato",
-    label: "Gato",
+    value: "Gatos",
+    label: "Gatos",
   },
   {
     value: "Roedor",
