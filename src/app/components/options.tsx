@@ -22,12 +22,24 @@ const accountStatusOptions = [
 
 const categoryOptions = [
   {
-    value: "Accesorios",
-    label: "Accesorios",
+    value: "Juguete",
+    label: "Juguete",
   },
   {
-    value: "Alimentos",
-    label: "Alimentos",
+    value: "Alimento",
+    label: "Alimento",
+  },
+  {
+    value: "Farmacia",
+    label: "Farmacia",
+  },
+  {
+    value: "Higiene",
+    label: "Higiene",
+  },
+  {
+    value: "Accesorio",
+    label: "Accesorio",
   },
 ];
 
