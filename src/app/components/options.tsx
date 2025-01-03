@@ -45,16 +45,21 @@ const categoryOptions = [
 
 const specieOptions = [
   {
-    value: "Perros",
-    label: "Perros",
+    value: "Gato",
+    label: "Gato",
   },
   {
-    value: "Gatos",
-    label: "Gatos",
+    value: "Perro",
+    label: "Perro",
   },
   {
     value: "Roedor",
     label: "Roedor",
+  },
+  
+  {
+    value: "Ave",
+    label: "Ave",
   },
 ];
 
