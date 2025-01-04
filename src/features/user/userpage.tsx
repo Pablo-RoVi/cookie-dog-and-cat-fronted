@@ -129,6 +129,15 @@ const UserPage = () => {
     }
   };
 
+  const restartUserList = async () => {
+    try {
+      const response = await Agent.User.list();
+      setUsers(response.data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
   return (
     <div className="max-h-screen bg-white">
       <div className="container mx-auto px-4 py-6">
@@ -247,7 +256,7 @@ const UserPage = () => {
             confirmation="Aceptar"
             confirmAction={() => {
               toggleChangedStateModal();
-              Functions.refreshPage();
+              restartUserList();
             }}
             activateCancel={false}
             activateConfirm={true}
