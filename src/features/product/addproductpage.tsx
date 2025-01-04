@@ -212,9 +212,9 @@ const AddProductPage = () => {
     setName("");
     setPrice("");
     setStock("");
-    setCategoryName("SIN SELECCIÓN");
-    setBrandName("SIN SELECCIÓN");
-    setEspecieName("SIN SELECCIÓN");
+    setCategoryName("SIN ELECCIÓN");
+    setBrandName("SIN ELECCIÓN");
+    setEspecieName("SIN ELECCIÓN");
   };
 
   const handleNavigate = () => {
