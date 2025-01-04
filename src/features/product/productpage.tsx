@@ -3,7 +3,6 @@ import "../../app/static/styles/index.css";
 import Agent from "../../app/api/agent";
 import buttons from "../../app/components/buttons";
 import TableModule from "../../app/components/tablemodule";
-import Functions from "../../app/components/functions";
 import { Product } from "../../app/models/product";
 import Modal from "../../app/components/modal";
 import { useNavigate } from "react-router-dom";
