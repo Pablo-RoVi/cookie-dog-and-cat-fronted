@@ -147,6 +147,13 @@ const ProductPage = () => {
     navigate(path, state ? { state } : undefined);
   };
 
+  const restarProductList = (product: Product) => {
+    const newProducts = products.filter(
+      (p: Product) => p.unique_id !== product.unique_id
+    );
+    setProducts(newProducts);
+  };
+
   return (
     <div className="max-h-screen bg-white">
       <div className="container mx-auto px-4 py-6">
@@ -231,7 +238,7 @@ const ProductPage = () => {
             confirmation="Aceptar"
             confirmAction={() => {
               toggleDeleteModal();
-              Functions.refreshPage();
+              restarProductList(selectedProduct);
             }}
             activateCancel={false}
             activateConfirm={true}
