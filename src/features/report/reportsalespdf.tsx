@@ -23,9 +23,8 @@ const ReportSalesPDF = () => {
     }
   
     try {
-      // Capturar la tabla como una imagen
       const canvas = await html2canvas(tableElement, {
-        scale: 1.5, // Mejorar la calidad
+        scale: 1.5,
         useCORS: true,
       });
   
@@ -39,18 +38,16 @@ const ReportSalesPDF = () => {
       pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
       const pdfBase64Full = pdf.output("datauristring");
   
-      // Convertir la cadena Base64 a un formato adecuado para enviar como adjunto
-      const pdfData = pdfBase64Full.split(",")[1]; // Solo los datos base64
-  
-      // Enviar el PDF como adjunto a tu backend que usa SendGrid
+      const pdfData = pdfBase64Full.split(",")[1];
+
       await fetch("http://localhost:3001", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          pdfData: pdfData, // El contenido base64 del PDF
-          filename: "reporte_ventas.pdf", // Nombre del archivo adjunto
+          pdfData: pdfData,
+          filename: "reporte_ventas.pdf",
         }),
       });
     } catch (error) {
@@ -67,15 +64,14 @@ const ReportSalesPDF = () => {
       }
     
       try {
-        // Capturar la tabla como una imagen
         const canvas = await html2canvas(tableElement, {
-          scale: 2, // Mejorar la calidad
+          scale: 2,
           useCORS: true,
         });
     
         const imgData = canvas.toDataURL("image/png");
     
-        const pdf = new jsPDF("p", "mm", "a4"); // Formato A4 vertical
+        const pdf = new jsPDF("p", "mm", "a4");
     
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
@@ -122,13 +118,9 @@ const ReportSalesPDF = () => {
         setUsers(users);
 
         if (!hasSentEmail.current) {
-          hasSentEmail.current = true; // Marcar que ya se envió
-          await generateEmail();
-
-          const downloadPDF = async () => {
-            await generateSalesPDF();
-          };
-          downloadPDF();
+          hasSentEmail.current = true;
+          setTimeout(generateEmail, 1000);
+          setTimeout(generateSalesPDF, 1000);
         }
       } catch (error) {
         console.error("Error fetching sales:", error);
@@ -136,6 +128,7 @@ const ReportSalesPDF = () => {
     };
   
     initializeData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
 

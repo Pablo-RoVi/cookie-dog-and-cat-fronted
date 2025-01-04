@@ -23,7 +23,7 @@ COPY . .
 RUN npm run build
 
 # Expose port 3000
-EXPOSE 3000
+EXPOSE 3000 3001
 
 # Start React when the container runs
-CMD ["npm", "start"]
+CMD ["sh", "-c", "npm start & node proxy.js"]
