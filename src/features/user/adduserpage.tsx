@@ -67,6 +67,15 @@ const AddUserPage = () => {
     setIsSuccessModalOpen(!isSuccessModalOpen);
   };
 
+  const restartUserForm = () => {
+    setName("");
+    setLastName("");
+    setRut("");
+    setRole("SIN ELECCIÓN");
+    setNewPassword("");
+    setConfirmNewPassword("");
+  };
+
   const registerUser = () => {
     Agent.User.add({
       rut: rut,
@@ -234,7 +243,7 @@ const AddUserPage = () => {
           confirmation="Aceptar"
           confirmAction={() => {
             toggleSuccessModal();
-            handleNavigate();
+            restartUserForm();
           }}
           activateCancel={false}
           activateConfirm={true}
