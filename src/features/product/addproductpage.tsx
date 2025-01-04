@@ -207,6 +207,16 @@ const AddProductPage = () => {
     });
   };
 
+  const restartProductForm = () => {
+    setId("");
+    setName("");
+    setPrice("");
+    setStock("");
+    setCategoryName("SIN SELECCIÓN");
+    setBrandName("SIN SELECCIÓN");
+    setEspecieName("SIN SELECCIÓN");
+  };
+
   const handleNavigate = () => {
     navigate("/products");
   };
@@ -315,7 +325,7 @@ const AddProductPage = () => {
           confirmation="Aceptar"
           confirmAction={() => {
             toggleAddedProductModal();
-            handleNavigate();
+            restartProductForm();
           }}
           activateCancel={false}
           activateConfirm={true}
