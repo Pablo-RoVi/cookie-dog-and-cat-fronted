@@ -196,6 +196,17 @@ const AddProductPage = () => {
       });
   };
 
+  const updateBrand = () => {
+    Agent.Brand.list().then((response) => {
+      setBrands(
+        response.data.map((brand: Brand) => ({
+          value: brand.brand_name,
+          label: brand.brand_name,
+        }))
+      );
+    });
+  };
+
   const handleNavigate = () => {
     navigate("/products");
   };
@@ -304,7 +315,7 @@ const AddProductPage = () => {
           confirmation="Aceptar"
           confirmAction={() => {
             toggleAddedProductModal();
-            Functions.refreshPage();
+            handleNavigate();
           }}
           activateCancel={false}
           activateConfirm={true}
@@ -397,7 +408,8 @@ const AddProductPage = () => {
           confirmation="Aceptar"
           confirmAction={() => {
             toggleAddedBrandModal();
-            Functions.refreshPage();
+            updateBrand();
+            setNewBrandName("");
           }}
           activateCancel={false}
           activateConfirm={true}
