@@ -173,6 +173,29 @@ const EditProductPage = () => {
     setIsConfirmAdminLogged(!isConfirmationAdminLogged);
   };
 
+  const getUpdatedProduct = () => {
+    if (product) {
+      const productUpdated = {
+        unique_id: unique_id,
+        product_name: productName,
+        price: price,
+        stock: stock,
+        categoryName: categoryName,
+        brandName: brandName,
+        specieName: specieName,
+      };
+
+      setOriginalData(productUpdated);
+      setId(productUpdated.unique_id);
+      setName(productUpdated.product_name);
+      setPrice(productUpdated.price);
+      setStock(productUpdated.stock);
+      setCategoryName(productUpdated.categoryName);
+      setBrandName(productUpdated.brandName);
+      setEspecieName(productUpdated.specieName);
+    }
+  };
+
   return (
     <div className="max-h-screen bg-white flex-auto flex h-1/2">
       <div className="container mx-auto mt-6 ml-52">
@@ -287,7 +310,7 @@ const EditProductPage = () => {
           confirmation="Aceptar"
           confirmAction={() => {
             toggleEditedProductModal();
-            handleNavigate();
+            getUpdatedProduct();
           }}
           activateCancel={false}
           activateConfirm={true}
