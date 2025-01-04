@@ -252,6 +252,15 @@ const AddSalesPage = () => {
     navigate("/sales");
   };
 
+  const restartForm = async () => {
+    const productsResponse = await Agent.Product.available();
+    setAvailableProducts(productsResponse.data);
+    setPaymentMethod("SIN ELECCIÓN");
+    setProducts([]);
+    setTotal(0);
+    setModalOpen(false);
+  };
+
   return (
     <div className="max-h-screen bg-white">
       <div className="container mx-auto px-4 py-6">
@@ -419,7 +428,7 @@ const AddSalesPage = () => {
             confirmation="Aceptar"
             confirmAction={() => {
               toggleSuccessModal();
-              Functions.refreshPage();
+              restartForm();
             }}
           />
         )}
