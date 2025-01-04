@@ -9,7 +9,6 @@ import colors from "../../app/static/colors";
 import { Product, SelectedProduct } from "../../app/models/product";
 import { Sale } from "../../app/models/sale";
 import Modal from "../../app/components/modal";
-import Functions from "../../app/components/functions";
 import { useNavigate } from "react-router-dom";
 
 const headersShopping = [

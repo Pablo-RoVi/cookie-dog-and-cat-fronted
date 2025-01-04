@@ -4,7 +4,6 @@ import Agent from "../../app/api/agent";
 import Buttons from "../../app/components/buttons";
 import TableModule from "../../app/components/tablemodule";
 import Modal from "../../app/components/modal";
-import Functions from "../../app/components/functions";
 import ConfirmAdminLogged from "../../app/components/confirmadmin";
 import { useAuth } from "../../app/context/authcontext";
 
@@ -113,14 +112,17 @@ const SalePage = () => {
       toggleConfirmationModal();
       if (selectedSale) {
         await Agent.Sale.delete(id.toString());
-        const newSales = sales.filter((sale) => sale.id !== id); 
-        setSales(newSales);
         toggleDeleteModal();
         toggleConfirmAdminLogged();
       }
     } catch (error) {
       console.error("Error deleting sale:", error);
     }
+  };
+
+  const restartSaleList = (sale: any) => {
+    const newSales = sales.filter((s) => s.saleId !== sale.saleId);
+    setSales(newSales);
   };
 
   return (
@@ -226,7 +228,7 @@ const SalePage = () => {
             confirmation="Aceptar"
             confirmAction={() => {
               toggleDeleteModal();
-              Functions.refreshPage();
+              restartSaleList(selectedSale);
             }}
             activateCancel={false}
             activateConfirm={true}
