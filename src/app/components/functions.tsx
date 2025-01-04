@@ -55,10 +55,6 @@ const verifyBrandName = (name: string): boolean => {
   return nameRegex.test(name) && name !== "";
 }
 
-const refreshPage = () => {
-  window.location.reload();
-};
-
 const Functions = {
   translateRole,
   verifyName,
@@ -69,7 +65,6 @@ const Functions = {
   verifyProductPrice,
   verifyProductStock,
   verifyBrandName,
-  refreshPage,
 };
 
 export default Functions;
