@@ -180,6 +180,18 @@ const AddSalesPage = () => {
     }
   };
 
+  const getUpdatedSale = async () => {
+    if (sale) {
+      const saleUpdated = {
+        nickName: saleNickName,
+        paymentMethod: salePaymentMethod,
+      }
+      setOriginalData(saleUpdated);
+      setSaleNickName(saleUpdated.nickName);
+      setSalePaymentMethod(saleUpdated.paymentMethod);
+    }
+  };
+
   return (
     <div className="max-h-screen bg-white">
       <div className="container mx-auto px-4 py-6">
@@ -282,7 +294,7 @@ const AddSalesPage = () => {
             confirmation="Aceptar"
             confirmAction={() => {
               toggleSuccessModal();
-              navigate("/sales");
+              getUpdatedSale();
             }}
           />
         )}
