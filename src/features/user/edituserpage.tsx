@@ -178,6 +178,26 @@ const EditUserPage = () => {
       });
   };
 
+  const getUpdatedUser = () => {
+    if (user) {
+      const userUpdated = {
+        id: id,
+        name: name,
+        lastName: lastName,
+        rut: rut,
+        nickName: nickName,
+        role: role,
+      };
+      setOriginalData(userUpdated);
+      setId(userUpdated.id);
+      setName(userUpdated.name);
+      setLastName(userUpdated.lastName);
+      setRut(userUpdated.rut);
+      setNickName(userUpdated.nickName);
+      setRole(userUpdated.role);
+    }
+  };
+
   return (
     <div className="max-h-screen bg-white flex-auto flex h-1/2">
       {/* Edit User */}
@@ -260,7 +280,7 @@ const EditUserPage = () => {
           confirmation="Aceptar"
           confirmAction={() => {
             toggleChangedUserModal();
-            handleNavigate();
+            getUpdatedUser();
           }}
           activateCancel={false}
           activateConfirm={true}
@@ -330,7 +350,8 @@ const EditUserPage = () => {
           confirmation="Aceptar"
           confirmAction={() => {
             toggleChangedPasswordModal();
-            handleNavigate();
+            setNewPassword("");
+            setConfirmNewPassword("");
           }}
           activateCancel={false}
           activateConfirm={true}
