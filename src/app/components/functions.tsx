@@ -7,12 +7,12 @@ const translateRole = (role: string) => {
 };
 
 const verifyName = (name: string): boolean => {
-  const nameRegex = /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]+$/;
+  const nameRegex = /^[a-zA-ZÀ-ÖØ-öø-ÿ' -]{3,20}$/;
   return nameRegex.test(name) && name !== "";
 };
 
 const verifyRut = (rut: string): boolean => {
-  const rutRegex = /^[0-9]+[-|‐]{1}[0-9kK]{1}$/;
+  const rutRegex = /^[0-9]{7,8}[-|‐]{1}[0-9kK]{1}$/;
   return rutRegex.test(rut) && rut !== "";
 };
 
@@ -20,7 +20,7 @@ const verifyPasswords = (
   password: string,
   confirmPassword: string
 ): boolean => {
-  const passwordRegex = /^[a-zA-Z0-9]{8,}$/;
+  const passwordRegex = /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{8,}$/;
   return (
     password === confirmPassword && 
     password !== "" && confirmPassword !== "" &&
@@ -55,10 +55,6 @@ const verifyBrandName = (name: string): boolean => {
   return nameRegex.test(name) && name !== "";
 }
 
-const refreshPage = () => {
-  window.location.reload();
-};
-
 const Functions = {
   translateRole,
   verifyName,
@@ -69,7 +65,6 @@ const Functions = {
   verifyProductPrice,
   verifyProductStock,
   verifyBrandName,
-  refreshPage,
 };
 
 export default Functions;

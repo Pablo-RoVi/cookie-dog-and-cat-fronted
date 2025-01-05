@@ -1,49 +1,47 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import TableModule from "../../app/components/tablemodule";
-import colors from '../../app/static/colors';
-import Buttons from '../../app/components/buttons';
-import { useLocation, useNavigate } from 'react-router-dom';
+import colors from "../../app/static/colors";
+import Buttons from "../../app/components/buttons";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const headersShopping = [
-    "Producto",
-    "Marca",
-    "Categoría",
-    "Especie",
-    "Precio Unitario",
-    "Cantidad",
+  "Producto",
+  "Marca",
+  "Categoría",
+  "Especie",
+  "Precio Unitario",
+  "Cantidad",
 ];
 
 const DetailSalePage = () => {
+  const [saleId, setSaleId] = useState<number>(0);
+  const [saleNickName, setSaleNickName] = useState<string>("");
+  const [salePaymentMethod, setSalePaymentMethod] = useState<string>("");
+  const [saleProducts, setSaleProducts] = useState([]);
+  const [saleTotalPrice, setSaleTotalPrice] = useState<number>(0);
 
-    const [saleId, setSaleId] = useState<number>(0);
-    const [saleNickName, setSaleNickName] = useState<string>("");
-    const [salePaymentMethod, setSalePaymentMethod] = useState<string>("");
-    const [saleProducts, setSaleProducts] = useState([]);
-    const [saleTotalPrice, setSaleTotalPrice] = useState<number>(0);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const sale = location.state;
 
-    const location = useLocation();
-    const navigate = useNavigate();
-    const sale = location.state;
+  useEffect(() => {
+    const initializeData = async () => {
+      try {
+        setSaleId(sale.saleId);
+        setSaleNickName(sale.nickName);
+        setSalePaymentMethod(sale.paymentMethod);
+        setSaleProducts(sale.products);
+        setSaleTotalPrice(sale.totalPrice);
+      } catch (error) {
+        console.error("Error cargando datos iniciales:", error);
+      }
+    };
 
-    useEffect(() => {
-        const initializeData = async () => {
-        try {
-            setSaleId(sale.saleId);
-            setSaleNickName(sale.nickName);
-            setSalePaymentMethod(sale.paymentMethod);
-            setSaleProducts(sale.products);
-            setSaleTotalPrice(sale.totalPrice);
-            
-        } catch (error) {
-            console.error("Error cargando datos iniciales:", error);
-        }
-        };
+    initializeData();
+  }, [sale]);
 
-        initializeData();
-    }, [sale]);
-
-    return (
-        <div className="max-h-screen bg-white">
+  return (
+    <div className="max-h-screen bg-white">
       <div className="container mx-auto px-4 py-6">
         {/* Título */}
         {TableModule.title({ title: "Detalles de venta" })}
@@ -52,6 +50,7 @@ const DetailSalePage = () => {
         <div className="flex space-x-4">
           <div className="container max-w-[20%]">
             {TableModule.inputFilter({
+              id: "saleId",
               label: "Código",
               valueFilter: saleId,
               isDisabled: true,
@@ -60,6 +59,7 @@ const DetailSalePage = () => {
 
           <div className="container max-w-[20%]">
             {TableModule.inputFilter({
+              id: "saleNickName",
               label: "Nombre de usuario",
               valueFilter: saleNickName,
               isDisabled: true,
@@ -68,6 +68,7 @@ const DetailSalePage = () => {
 
           <div className="container max-w-[20%]">
             {TableModule.inputFilter({
+              id: "salePaymentMethod",
               label: "Método de pago",
               valueFilter: salePaymentMethod,
               isDisabled: true,

@@ -3,15 +3,20 @@ import colors from "../static/colors";
 
 const EditButton = ({ onClick }) => {
   return (
-    <button className="text-white font-bold rounded" onClick={onClick}>
+    <button
+      className="text-white font-bold rounded"
+      onClick={onClick}
+      aria-label="Edit"
+      title="Edit"
+    >
       <svg
         className="w-10 h-10 text-gray-800 dark:text-black"
-        aria-hidden="true"
         xmlns="http://www.w3.org/2000/svg"
         width="24"
         height="24"
         fill="none"
         viewBox="0 0 24 24"
+        aria-hidden="true"
       >
         <path
           stroke="currentColor"
@@ -27,15 +32,20 @@ const EditButton = ({ onClick }) => {
 
 const DeleteButton = ({ onClick }) => {
   return (
-    <button className="text-white font-bold rounded" onClick={onClick}>
+    <button
+      className="text-white font-bold rounded"
+      onClick={onClick}
+      aria-label="Delete"
+      title="Delete"
+    >
       <svg
         className="w-10 h-10 text-gray-800 dark:text-black"
-        aria-hidden="true"
         xmlns="http://www.w3.org/2000/svg"
         width="24"
         height="24"
         fill="none"
         viewBox="0 0 24 24"
+        aria-hidden="true"
       >
         <path
           stroke="currentColor"
@@ -51,7 +61,12 @@ const DeleteButton = ({ onClick }) => {
 
 const DetailButton = ({ onClick, data }) => {
   return (
-    <button className="text-white font-bold rounded" onClick={onClick}>
+    <button
+      className="text-white font-bold rounded"
+      onClick={onClick}
+      aria-label="Detail"
+      title="Detail"
+    >
       <svg
         className="w-10 h-10 text-gray-800 dark:text-black"
         aria-hidden="true"
@@ -79,6 +94,8 @@ const SetStatusButton = ({ isActive, onClick }) => {
       className="text-white font-bold rounded border-2 border-black flex items-center justify-center"
       onClick={onClick}
       style={{ backgroundColor: colors.white }}
+      aria-label="SetStatus"
+      title="SetStatus"
     >
       {isActive ? (
         <svg
@@ -123,7 +140,12 @@ const SetStatusButton = ({ isActive, onClick }) => {
 
 const DownloadPDFButton = ({ onClick }) => {
   return (
-    <button className="text-white font-bold rounded" onClick={onClick}>
+    <button
+      className="text-white font-bold rounded"
+      onClick={onClick}
+      aria-label="DownloadPDF"
+      title="DownloadPDF"
+    >
       <svg
         className="w-10 h-10 text-gray-800 dark:text-dark"
         aria-hidden="true"
@@ -152,6 +174,8 @@ const TurquoiseButton = ({ onClick, text }) => {
         className="text-white font-bold py-2 px-4 rounded"
         style={{ backgroundColor: colors.turquoise }}
         onClick={onClick}
+        aria-label="TurquoiseButton"
+        title="TurquoiseButton"
       >
         {text}
       </button>
@@ -166,6 +190,8 @@ const FuchsiaButton = ({ onClick, text }) => {
         className="text-white font-bold py-2 px-4 rounded"
         style={{ backgroundColor: colors.fuchsia }}
         onClick={onClick}
+        aria-label="FuhsiaButton"
+        title="FuhsiaButton"
       >
         {text}
       </button>
@@ -180,6 +206,8 @@ const GrayButton = ({ onClick, text }) => {
         className="text-white font-bold py-2 px-4 rounded cursor-not-allowed"
         style={{ backgroundColor: colors.gray }}
         onClick={onClick}
+        aria-label="GrayButton"
+        title="GrayButton"
       >
         {text}
       </button>

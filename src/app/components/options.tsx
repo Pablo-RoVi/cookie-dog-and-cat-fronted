@@ -22,31 +22,44 @@ const accountStatusOptions = [
 
 const categoryOptions = [
   {
+    value: "Juguete",
+    label: "Juguete",
+  },
+  {
     value: "Alimento",
     label: "Alimento",
+  },
+  {
+    value: "Farmacia",
+    label: "Farmacia",
   },
   {
     value: "Higiene",
     label: "Higiene",
   },
   {
-    value: "Juguetes",
-    label: "Juguetes",
+    value: "Accesorio",
+    label: "Accesorio",
   },
 ];
 
 const specieOptions = [
   {
-    value: "Perro",
-    label: "Perro",
-  },
-  {
     value: "Gato",
     label: "Gato",
   },
   {
+    value: "Perro",
+    label: "Perro",
+  },
+  {
     value: "Roedor",
     label: "Roedor",
+  },
+  
+  {
+    value: "Ave",
+    label: "Ave",
   },
 ];
 

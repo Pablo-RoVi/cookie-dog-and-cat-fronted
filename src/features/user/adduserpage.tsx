@@ -26,7 +26,7 @@ const AddUserPage = () => {
 
   const [isErrorModalOpen, setIsErrorModalOpen] = useState<boolean>(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState<boolean>(false);
-  
+
   const [isFormCompleted, setIsFormCompleted] = useState<boolean>(false);
 
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -67,6 +67,15 @@ const AddUserPage = () => {
     setIsSuccessModalOpen(!isSuccessModalOpen);
   };
 
+  const restartUserForm = () => {
+    setName("");
+    setLastName("");
+    setRut("");
+    setRole("SIN ELECCIÓN");
+    setNewPassword("");
+    setConfirmNewPassword("");
+  };
+
   const registerUser = () => {
     Agent.User.add({
       rut: rut,
@@ -76,32 +85,36 @@ const AddUserPage = () => {
       confirmPassword: confirmNewPassword,
       roleName: role,
     })
-      .then((response : AxiosResponse) => {
-        if(response.status === 200){
-          toggleConfirmAdminLogged();
+      .then((response: AxiosResponse) => {
+        if (response.status === 204) {
           toggleSuccessModal();
-        }else if(response.status === 400){
+        } else if (response.status === 400) {
           console.error(response.statusText);
         }
       })
       .catch((error) => {
         console.log("error", error.response);
         let errorMessages = [];
-        if(error.response && error.response.data && error.response.data.errors){
-            const errors = error.response.data.errors;
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.errors
+        ) {
+          const errors = error.response.data.errors;
 
-            for(const key in errors){
-                if (errors.hasOwnProperty(key)) { 
-                    if (Array.isArray(errors[key])) 
-                    {  
-                        errors[key].forEach((msg) => { errorMessages.push(`${msg}`);}); 
-                    } else { 
-                        errorMessages.push(`${key}: ${errors[key]}`); 
-                    } 
-                }
+          for (const key in errors) {
+            if (errors.hasOwnProperty(key)) {
+              if (Array.isArray(errors[key])) {
+                errors[key].forEach((msg) => {
+                  errorMessages.push(`${msg}`);
+                });
+              } else {
+                errorMessages.push(`${key}: ${errors[key]}`);
+              }
             }
-        }else{
-            errorMessages.push(error.response.data)
+          }
+        } else {
+          errorMessages.push(error.response.data);
         }
         setErrorMessage(errorMessages.join("\n"));
         toggleErrorModal();
@@ -113,6 +126,7 @@ const AddUserPage = () => {
       <div className="container mx-auto mt-6 ml-52 max-w-[30%]">
         {TableModule.title({ title: "Registrar nuevo empleado" })}
         {TableModule.inputFilter({
+          id: "name",
           label: "Nombres",
           valueFilter: name,
           setOnChangeFilter: setName,
@@ -121,6 +135,7 @@ const AddUserPage = () => {
           errorMessage: "Nombre inválido",
         })}
         {TableModule.inputFilter({
+          id: "lastName",
           label: "Apellidos",
           valueFilter: lastName,
           setOnChangeFilter: setLastName,
@@ -129,6 +144,7 @@ const AddUserPage = () => {
           errorMessage: "Apellido inválido",
         })}
         {TableModule.inputFilter({
+          id: "rut",
           label: "RUT",
           valueFilter: rut,
           setOnChangeFilter: setRut,
@@ -145,6 +161,7 @@ const AddUserPage = () => {
           isDisabled: true,
         })}
         {TableModule.selectFilter({
+          id: "role",
           label: "Rol",
           valueFilter: role,
           setOnChangeFilter: setRole,
@@ -152,6 +169,7 @@ const AddUserPage = () => {
           firstValue: "SIN ELECCIÓN",
         })}
         {TableModule.inputFilter({
+          id: "newPassword",
           label: "Contraseña",
           valueFilter: newPassword,
           setOnChangeFilter: setNewPassword,
@@ -159,6 +177,7 @@ const AddUserPage = () => {
           placeholder: "Alfanumérica y contener al menos 8 caracteres",
         })}
         {TableModule.inputFilter({
+          id: "confirmNewPassword",
           label: "Confirmar Contraseña",
           valueFilter: confirmNewPassword,
           setOnChangeFilter: setConfirmNewPassword,
@@ -168,7 +187,9 @@ const AddUserPage = () => {
             newPassword,
             confirmNewPassword
           ),
-          errorMessage: newPassword ? "Contraseñas no coinciden o inválidas" : "",
+          errorMessage: newPassword
+            ? "Contraseñas no coinciden o inválidas"
+            : "",
         })}
         <div className="flex items-center space-x-4">
           {isFormCompleted ? (
@@ -179,15 +200,21 @@ const AddUserPage = () => {
           ) : (
             <Buttons.GrayButton text="Añadir" onClick={null} />
           )}
-          <Buttons.FuchsiaButton text="Cancelar" onClick={() => handleNavigate()} />
+          <Buttons.FuchsiaButton
+            text="Cancelar"
+            onClick={() => handleNavigate()}
+          />
         </div>
       </div>
       {isConfirmationModalOpen && (
         <Modal
-          title={`¿Estás seguro de que deseas registrar a ${name} ${lastName} de RUT ${rut} y rol ${Functions.translateRole(
+          title={`¿Estás seguro de que deseas registrar a '${name} ${lastName}' de RUT '${rut}' y rol '${Functions.translateRole(
             role
-          )}?`}
-          confirmAction={() =>  { toggleConfirmAdminLogged(); toggleConfirmationModal(); }}
+          )}'?`}
+          confirmAction={() => {
+            toggleConfirmAdminLogged();
+            toggleConfirmationModal();
+          }}
           confirmation="Añadir"
           confirmCancel={() => toggleConfirmationModal()}
           activateCancel={true}
@@ -199,6 +226,7 @@ const AddUserPage = () => {
         <ConfirmAdminLogged
           confirmation="Confirmar"
           confirmAction={() => {
+            toggleConfirmAdminLogged();
             registerUser();
           }}
           confirmCancel={() => {
@@ -213,7 +241,10 @@ const AddUserPage = () => {
         <Modal
           title={"Usuario registrado con éxito"}
           confirmation="Aceptar"
-          confirmAction={() => {toggleSuccessModal(); handleNavigate();}}
+          confirmAction={() => {
+            toggleSuccessModal();
+            restartUserForm();
+          }}
           activateCancel={false}
           activateConfirm={true}
         />
@@ -228,7 +259,7 @@ const AddUserPage = () => {
           activateConfirm={true}
         />
       )}
-      
+
       <div className="container mx-auto mr-52 ml-40">
         <img src={cookie} alt="cookie" className="h-auto w-auto opacity-10" />
       </div>

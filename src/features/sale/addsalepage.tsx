@@ -9,7 +9,6 @@ import colors from "../../app/static/colors";
 import { Product, SelectedProduct } from "../../app/models/product";
 import { Sale } from "../../app/models/sale";
 import Modal from "../../app/components/modal";
-import Functions from "../../app/components/functions";
 import { useNavigate } from "react-router-dom";
 
 const headersShopping = [
@@ -29,10 +28,9 @@ const headersProducts = [
   "Especie",
   "Precio",
   "Elegir",
-]
+];
 
 const AddSalesPage = () => {
-
   const { userNickName, userRoleId } = useAuth();
 
   const [products, setProducts] = useState([]);
@@ -45,7 +43,7 @@ const AddSalesPage = () => {
   const [total, setTotal] = useState(
     products.reduce((acc, product) => acc + product.price * product.quantity, 0)
   );
-  const [paymentMethodOptions, setPaymentMethodOptions] = useState([]);  
+  const [paymentMethodOptions, setPaymentMethodOptions] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -81,7 +79,7 @@ const AddSalesPage = () => {
     };
 
     initializeData();
-  },[userNickName]);
+  }, [userNickName]);
 
   useEffect(() => {
     const initializeData = async () => {
@@ -100,17 +98,21 @@ const AddSalesPage = () => {
   }, []);
 
   useEffect(() => {
-          if ( selectedEmployee !== "SIN ELECCIÓN" && paymentMethod !== "SIN ELECCIÓN" && products.length > 0 &&
-              selectedEmployee !== "" && paymentMethod !== ""
-          ) {
-              setIsSaleCompleted(true);
-          } else {
-              setIsSaleCompleted(false);
-          }
+    if (
+      selectedEmployee !== "SIN ELECCIÓN" &&
+      paymentMethod !== "SIN ELECCIÓN" &&
+      products.length > 0 &&
+      selectedEmployee !== "" &&
+      paymentMethod !== ""
+    ) {
+      setIsSaleCompleted(true);
+    } else {
+      setIsSaleCompleted(false);
+    }
   }, [selectedEmployee, paymentMethod, products]);
 
   const handleQuantityChange = (id, change) => {
-    const updatedProducts = products.map((product : SelectedProduct) => {
+    const updatedProducts = products.map((product: SelectedProduct) => {
       if (product.unique_id === id) {
         const newQuantity = product.quantity + change;
         if (newQuantity < 1 || newQuantity > product.stock) return product;
@@ -123,23 +125,29 @@ const AddSalesPage = () => {
   };
 
   const handleRemoveProduct = (id) => {
-    const updatedProducts = products.filter((product : SelectedProduct) => product.unique_id !== id);
+    const updatedProducts = products.filter(
+      (product: SelectedProduct) => product.unique_id !== id
+    );
     setProducts(updatedProducts);
     updateTotal(updatedProducts);
   };
 
   const updateTotal = (updatedProducts) => {
     const newTotal = updatedProducts.reduce(
-      (acc, product : SelectedProduct) => acc + parseInt(product.price) * product.quantity,
+      (acc, product: SelectedProduct) =>
+        acc + parseInt(product.price) * product.quantity,
       0
     );
     setTotal(newTotal);
   };
 
   const handleAddProducts = () => {
-
-    if(products.find((product : SelectedProduct) => selectedProducts.find((p) => p.unique_id === product.unique_id))) {
-      const updatedProducts = products.map((product : SelectedProduct) => {
+    if (
+      products.find((product: SelectedProduct) =>
+        selectedProducts.find((p) => p.unique_id === product.unique_id)
+      )
+    ) {
+      const updatedProducts = products.map((product: SelectedProduct) => {
         if (selectedProducts.find((p) => p.unique_id === product.unique_id)) {
           const newQuantity = product.quantity + 1;
           return { ...product, quantity: newQuantity };
@@ -155,9 +163,12 @@ const AddSalesPage = () => {
 
     const updatedProducts = [
       ...products,
-      ...selectedProducts.map((product : SelectedProduct) => ({ ...product, quantity: 1 })),
+      ...selectedProducts.map((product: SelectedProduct) => ({
+        ...product,
+        quantity: 1,
+      })),
     ];
-    console.log("Updated products",updatedProducts);
+    console.log("Updated products", updatedProducts);
     setProducts(updatedProducts);
     setSelectedProducts([]);
     setModalOpen(false);
@@ -171,7 +182,7 @@ const AddSalesPage = () => {
   const toggleErrorModal = () => {
     setIsErrorModalOpen(!isErrorModalOpen);
   };
-  
+
   const toggleConfirmModal = () => {
     setIsConfirmModalOpen(!isConfirmModalOpen);
   };
@@ -181,14 +192,17 @@ const AddSalesPage = () => {
   };
 
   const addSale = () => {
-    const sale : Sale = {
+    const sale: Sale = {
       id: null,
       nickName: selectedEmployee,
-      totalQuantity: products.reduce((acc, product) => acc + product.quantity, 0),
+      totalQuantity: products.reduce(
+        (acc, product) => acc + product.quantity,
+        0
+      ),
       paymentMethod: paymentMethod,
       totalPrice: total,
       saleProducts: [
-        ...products.map((product : SelectedProduct) => ({
+        ...products.map((product: SelectedProduct) => ({
           productId: parseInt(product.unique_id),
           productBrand: product.brandName,
           productCategory: product.categoryName,
@@ -196,40 +210,54 @@ const AddSalesPage = () => {
           totalPricePerProduct: parseInt(product.price) * product.quantity,
           quantity: product.quantity,
         })),
-      ]
+      ],
     };
 
     Agent.Sale.add(sale)
       .then((response) => {
-        if (response.status === 200) {
+        if (response.status === 204) {
           toggleSuccessModal();
         }
       })
       .catch((error) => {
         let errorMessages = [];
-        if(error.response && error.response.data && error.response.data.errors){
-            const errors = error.response.data.errors;
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.errors
+        ) {
+          const errors = error.response.data.errors;
 
-            for(const key in errors){
-                if (errors.hasOwnProperty(key)) { 
-                    if (Array.isArray(errors[key])) 
-                    {  
-                        errors[key].forEach((msg) => { errorMessages.push(`${key}: ${msg}`);}); 
-                    } else { 
-                        errorMessages.push(`${key}: ${errors[key]}`); 
-                    } 
-                }
+          for (const key in errors) {
+            if (errors.hasOwnProperty(key)) {
+              if (Array.isArray(errors[key])) {
+                errors[key].forEach((msg) => {
+                  errorMessages.push(`${key}: ${msg}`);
+                });
+              } else {
+                errorMessages.push(`${key}: ${errors[key]}`);
+              }
             }
-        }else{
-            errorMessages.push(error.response.data)
+          }
+        } else {
+          errorMessages.push(error.response.data);
         }
         setErrorMessage(errorMessages.join("\n"));
         toggleErrorModal();
       });
-  }
+  };
 
   const handleNavigate = () => {
     navigate("/sales");
+  };
+
+  const restartForm = async () => {
+    const productsResponse = await Agent.Product.available();
+    setAvailableProducts(productsResponse.data);
+    setPaymentMethod("SIN ELECCIÓN");
+    setProducts([]);
+    setTotal(0);
+    setModalOpen(false);
   };
 
   return (
@@ -242,6 +270,7 @@ const AddSalesPage = () => {
         <div className="flex space-x-4">
           <div className="container max-w-[20%]">
             {TableModule.selectFilter({
+              id: "userName",
               label: "Nombre de usuario",
               valueFilter: selectedEmployee,
               setOnChangeFilter: setSelectedEmployee,
@@ -253,6 +282,7 @@ const AddSalesPage = () => {
 
           <div className="container max-w-[20%]">
             {TableModule.selectFilter({
+              id: "paymentMethod",
               label: "Método de pago",
               valueFilter: paymentMethod,
               setOnChangeFilter: setPaymentMethod,
@@ -300,7 +330,7 @@ const AddSalesPage = () => {
 
           {TableModule.table({
             headers: headersShopping,
-            data: products.map((product : SelectedProduct) => [
+            data: products.map((product: SelectedProduct) => [
               product.product_name,
               product.brandName,
               product.categoryName,
@@ -333,38 +363,45 @@ const AddSalesPage = () => {
 
         {/* Modal */}
         {modalOpen && (
-            <TableModal
+          <TableModal
             title="Añadir producto"
             valueFilter={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             headers={headersProducts}
-            data={availableProducts
-              .map((product : Product) => [
-                product.product_name,
-                product.brandName,
-                product.categoryName,
-                product.specieName,
-                `${product.price}`,
-                <input
-                  type="checkbox"
-                  onChange={(e) => {
-                    if (e.target.checked) {
-                      setSelectedProducts([...selectedProducts, product]);
-                    } else if(e.target.checked === false) {
-                      setSelectedProducts(
-                        selectedProducts.filter(p => p.unique_id !== product.unique_id)
-                      );
-                    }
-                  }}
-                  className="h-5 w-5"
-                />,
+            data={availableProducts.map((product: Product) => [
+              product.product_name,
+              product.brandName,
+              product.categoryName,
+              product.specieName,
+              `${product.price}`,
+              <input
+                type="checkbox"
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    setSelectedProducts([...selectedProducts, product]);
+                  } else if (e.target.checked === false) {
+                    setSelectedProducts(
+                      selectedProducts.filter(
+                        (p) => p.unique_id !== product.unique_id
+                      )
+                    );
+                  }
+                }}
+                className="h-5 w-5"
+              />,
             ])}
             activateConfirm={true}
             confirmation="Añadir"
-            confirmAction={() => {handleAddProducts();toggleModal()}}
+            confirmAction={() => {
+              handleAddProducts();
+              toggleModal();
+            }}
             activateCancel={true}
-            confirmCancel={() => {toggleModal(); setSelectedProducts([]);}}
-            />
+            confirmCancel={() => {
+              toggleModal();
+              setSelectedProducts([]);
+            }}
+          />
         )}
 
         {/* Modales de  confirmación, éxito y error*/}
@@ -374,7 +411,10 @@ const AddSalesPage = () => {
             title="¿Estás seguro de añadir la venta?"
             activateConfirm={true}
             confirmation="Confirmar"
-            confirmAction={() => {addSale(); toggleConfirmModal()}}
+            confirmAction={() => {
+              addSale();
+              toggleConfirmModal();
+            }}
             activateCancel={true}
             confirmCancel={() => toggleConfirmModal()}
           />
@@ -385,7 +425,10 @@ const AddSalesPage = () => {
             title="Venta añadida con éxito"
             activateConfirm={true}
             confirmation="Aceptar"
-            confirmAction={() => {toggleSuccessModal(); Functions.refreshPage();}}
+            confirmAction={() => {
+              toggleSuccessModal();
+              restartForm();
+            }}
           />
         )}
 
@@ -412,17 +455,14 @@ const AddSalesPage = () => {
             </span>
           </div>
           <div className="flex justify-end space-x-4">
-            {isSaleCompleted ? 
+            {isSaleCompleted ? (
               <Buttons.TurquoiseButton
-              text="Añadir"
-              onClick={() => toggleConfirmModal()}
+                text="Añadir"
+                onClick={() => toggleConfirmModal()}
               />
-              :
-              <Buttons.GrayButton
-              text="Añadir"
-              onClick={() => null}
-              />
-            }
+            ) : (
+              <Buttons.GrayButton text="Añadir" onClick={() => null} />
+            )}
             <Buttons.FuchsiaButton
               text="Cancelar"
               onClick={() => handleNavigate()}

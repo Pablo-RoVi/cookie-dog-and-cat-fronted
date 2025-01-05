@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "../static/styles/navbar.css";
 import colors from "../static/colors";
 import cookie from "../static/images/cookie.png";
 import { useAuth } from "../../app/context/authcontext";
@@ -9,16 +8,16 @@ import Modal from "../../app/components/modal";
 
 const adminMenu = [
   {
-    value: "/users",
-    label: "Empleados",
+    value: "/sales",
+    label: "Ventas",
   },
   {
     value: "/products",
     label: "Productos",
   },
   {
-    value: "/sales",
-    label: "Ventas",
+    value: "/users",
+    label: "Empleados",
   },
   {
     value: "/reports",
@@ -27,12 +26,12 @@ const adminMenu = [
 ];
 const employeeMenu = [
   {
-    value: "/products",
-    label: "Productos",
-  },
-  {
     value: "/sales",
     label: "Ventas",
+  },
+  {
+    value: "/products",
+    label: "Productos",
   },
 ];
 const adminSettings = [{ value: "/", label: "Cerrar Sesión" }];
@@ -48,7 +47,11 @@ const employeeSettings = [
 ];
 
 const Navbar = () => {
-  const { logout, userRoleId, userNickName } = useAuth();
+  const {
+    userRoleId,
+    userNickName,
+    logout,
+  } = useAuth();
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
   const [menu, setMenu] = useState([]);
@@ -160,7 +163,7 @@ const Navbar = () => {
       >
         <svg
           onClick={toggleSettings}
-          className="w-12 h-12 text-gray-800 dark:text-white mr-6"
+          className="w-12 h-12 text-gray-800 dark:text-white mr-6 cursor-pointer"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -203,7 +206,7 @@ const Navbar = () => {
                 }}
                 onClick={() =>
                   item.label === "Cerrar Sesión"
-                    ? [logout(), navigate(item.value), toggleSettings()]
+                    ? [logout(), toggleSettings()]
                     : [toggleConfirmationModal(), toggleSettings()]
                 }
               >

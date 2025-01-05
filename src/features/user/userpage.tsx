@@ -75,7 +75,7 @@ const UserPage = () => {
 
   const deleteText = (selectedUser: User) => {
     const actionText = selectedUser.is_active ? "eliminar" : "restaurar";
-    const text = `¿Desear ${actionText} a '${selectedUser.name} ${selectedUser.last_name}' de RUT '${selectedUser.rut}'?`;
+    const text = `¿Desea ${actionText} a '${selectedUser.name} ${selectedUser.last_name}' de RUT '${selectedUser.rut}'?`;
     return text;
   };
 
@@ -129,6 +129,15 @@ const UserPage = () => {
     }
   };
 
+  const restartUserList = async () => {
+    try {
+      const response = await Agent.User.list();
+      setUsers(response.data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
   return (
     <div className="max-h-screen bg-white">
       <div className="container mx-auto px-4 py-6">
@@ -137,6 +146,7 @@ const UserPage = () => {
         <div className="flex space-x-4">
           <div className="container max-w-[20%]">
             {TableModule.inputFilter({
+              id: "searchName",
               label: "Nombre",
               valueFilter: searchName,
               setOnChangeFilter: setSearchName,
@@ -144,6 +154,7 @@ const UserPage = () => {
           </div>
           <div className="container max-w-[20%]">
             {TableModule.selectFilter({
+              id: "searchRole",
               label: "Rol",
               valueFilter: roleFilter,
               setOnChangeFilter: setRoleFilter,
@@ -153,6 +164,7 @@ const UserPage = () => {
           </div>
           <div className="container max-w-[20%]">
             {TableModule.selectFilter({
+              id: "searchAccountStatus",
               label: "Estado de la Cuenta",
               valueFilter: accountStatusFilter,
               setOnChangeFilter: setAccountStatusFilter,
@@ -244,7 +256,7 @@ const UserPage = () => {
             confirmation="Aceptar"
             confirmAction={() => {
               toggleChangedStateModal();
-              Functions.refreshPage();
+              restartUserList();
             }}
             activateCancel={false}
             activateConfirm={true}
