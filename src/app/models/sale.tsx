@@ -8,7 +8,7 @@ export interface Sale {
 }
 
 export interface SaleProducts {
-    productId: number;
+    productId: string;
     productBrand: string;
     productCategory: string;
     productSpecie: string;

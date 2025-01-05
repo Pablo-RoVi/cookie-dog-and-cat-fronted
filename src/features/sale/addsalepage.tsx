@@ -203,7 +203,7 @@ const AddSalesPage = () => {
       totalPrice: total,
       saleProducts: [
         ...products.map((product: SelectedProduct) => ({
-          productId: parseInt(product.unique_id),
+          productId: product.unique_id,
           productBrand: product.brandName,
           productCategory: product.categoryName,
           productSpecie: product.specieName,
