@@ -366,9 +366,11 @@ const AddSalesPage = () => {
           <TableModal
             title="Añadir producto"
             valueFilter={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            setOnChangeFilter={(e) => setSearchTerm(e.target.value)}
             headers={headersProducts}
-            data={availableProducts.map((product: Product) => [
+            data={availableProducts.filter(
+              (p) => !products.some((product) => product.unique_id === p.unique_id)
+            ).map((product: Product) => [
               product.product_name,
               product.brandName,
               product.categoryName,
@@ -390,7 +392,7 @@ const AddSalesPage = () => {
                 className="h-5 w-5"
               />,
             ])}
-            activateConfirm={true}
+            activateConfirm={selectedProducts.length > 0}
             confirmation="Añadir"
             confirmAction={() => {
               handleAddProducts();
