@@ -23,12 +23,12 @@ const server = http.createServer(async (req, res) => {
 
         req.on('end', async () => {
             try {
-            const {pdfData, filename } = JSON.parse(body);
+            const {pdfData, filename, subject } = JSON.parse(body);
 
             const msg = {
                 to: 'pablo.robledo@alumnos.ucn.cl',
                 from: 'nunezseba1605@gmail.com', // Tu correo
-                subject: "Reporte de ventas", // Asunto
+                subject: subject, // Asunto
                 text: "Adjunto encontrarás el reporte de ventas.",
                 html: "<strong>Adjunto encontrarás el reporte de ventas.</strong>",
                 attachments: [

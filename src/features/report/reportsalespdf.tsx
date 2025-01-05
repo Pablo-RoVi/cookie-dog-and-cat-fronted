@@ -46,6 +46,7 @@ const ReportSalesPDF = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          subject: "Reporte de ventas " + formatDate(date.split('T')[0]),
           pdfData: pdfData,
           filename: "reporte_ventas.pdf",
         }),
