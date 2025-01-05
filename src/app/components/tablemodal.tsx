@@ -1,6 +1,8 @@
 import React from "react";
 import Buttons from "./buttons";
 import TableModule from "../../app/components/tablemodule";
+// eslint-disable-next-line
+import { isDisabled } from "@testing-library/user-event/dist/utils";
 
 const tablemodal = (props) => {
     return (
@@ -14,6 +16,7 @@ const tablemodal = (props) => {
                         placeholder: "Buscar producto por nombre...",
                         onChange: props.onChange,
                         value: props.valueFilter,
+                        isDisabled: props.data.length === 0,
                     })}
                 </div>
                 <div className="flex-grow overflow-y-auto">
@@ -28,6 +31,11 @@ const tablemodal = (props) => {
                     Buttons.TurquoiseButton({
                     text: props.confirmation,
                     onClick: props.confirmAction,
+                    })}
+                    {props.data.length === 0 &&
+                    Buttons.GrayButton({
+                    text: props.confirmation,
+                    onClick: null,
                     })}
                     {props.activateCancel &&
                     Buttons.FuchsiaButton({
