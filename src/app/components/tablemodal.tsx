@@ -27,12 +27,12 @@ const tablemodal = (props) => {
                     })}
                 </div>
                 <div className="flex justify-center gap-8 mt-4">
-                    {props.activateConfirm &&
+                    {props.activateConfirm && !props.disableButton &&
                     Buttons.TurquoiseButton({
                     text: props.confirmation,
                     onClick: props.confirmAction,
                     })}
-                    {props.data.length === 0 &&
+                    {(props.data.length === 0 || props.disableButton) &&
                     Buttons.GrayButton({
                     text: props.confirmation,
                     onClick: null,

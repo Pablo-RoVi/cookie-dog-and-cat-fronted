@@ -10,6 +10,7 @@ import { Product, SelectedProduct } from "../../app/models/product";
 import { Sale } from "../../app/models/sale";
 import Modal from "../../app/components/modal";
 import { useNavigate } from "react-router-dom";
+import { isDisabled } from '@testing-library/user-event/dist/utils';
 
 const headersShopping = [
   "Producto",
@@ -393,6 +394,7 @@ const AddSalesPage = () => {
               />,
             ])}
             activateConfirm={selectedProducts.length > 0}
+            disableButton={selectedProducts.length < 1}
             confirmation="Añadir"
             confirmAction={() => {
               handleAddProducts();
