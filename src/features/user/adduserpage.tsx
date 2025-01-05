@@ -39,7 +39,8 @@ const AddUserPage = () => {
       role &&
       Functions.verifyName(name + " " + lastName) &&
       Functions.verifyPasswords(newPassword, confirmNewPassword) &&
-      Functions.verifyRut(rut)
+      Functions.verifyRut(rut) &&
+      Functions.verifyPassword(newPassword) === 2
     ) {
       setIsFormCompleted(true);
     } else {
@@ -174,7 +175,14 @@ const AddUserPage = () => {
           valueFilter: newPassword,
           setOnChangeFilter: setNewPassword,
           isPassword: true,
+          errorInput: Functions.verifyPassword(newPassword) === 0 || Functions.verifyPassword(newPassword) === 1,
           placeholder: "Alfanumérica y contener al menos 8 caracteres",
+          errorMessage: 
+            Functions.verifyPassword(newPassword) === 0
+              ? "Debe tener al menos un número y una letra, sin símbolos especiales"
+              : Functions.verifyPassword(newPassword) === 1
+              ? "Contraseña debe contener al menos 8 caracteres"
+              : "",
         })}
         {TableModule.inputFilter({
           id: "confirmNewPassword",

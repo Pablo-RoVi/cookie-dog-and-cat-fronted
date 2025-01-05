@@ -20,13 +20,28 @@ const verifyPasswords = (
   password: string,
   confirmPassword: string
 ): boolean => {
-  const passwordRegex = /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{8,}$/;
   return (
-    password === confirmPassword && 
-    password !== "" && confirmPassword !== "" &&
-    passwordRegex.test(password)
+    password === confirmPassword
   );
 };
+
+const verifyPassword = (
+  password: string
+): number => {
+  const passwordRegex = /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$/;
+  const largeRegex = /.{8,}/;
+
+  if (!passwordRegex.test(password)) {
+    return 0;
+  }
+
+  if (!largeRegex.test(password)) {
+    return 1;
+  }
+
+  return 2;
+}
+
 
 //Product validations
 const verifyProductCode = (code: string): boolean => {
@@ -59,6 +74,7 @@ const Functions = {
   translateRole,
   verifyName,
   verifyRut,
+  verifyPassword,
   verifyPasswords,
   verifyProductCode,
   verifyProductName,
