@@ -10,6 +10,7 @@ import { Product, SelectedProduct } from "../../app/models/product";
 import { Sale } from "../../app/models/sale";
 import Modal from "../../app/components/modal";
 import { useNavigate } from "react-router-dom";
+// eslint-disable-next-line
 import { isDisabled } from '@testing-library/user-event/dist/utils';
 
 const headersShopping = [
