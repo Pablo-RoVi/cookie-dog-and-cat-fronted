@@ -14,8 +14,8 @@ const tablemodal = (props) => {
                 <div className="max-w-[50%] mb-4">
                     {TableModule.inputFilter({
                         placeholder: "Buscar producto por nombre...",
-                        onChange: props.onChange,
-                        value: props.valueFilter,
+                        setOnChangeFilter: props.setOnChangeFilter,
+                        valueFilter: props.valueFilter,
                         isDisabled: props.data.length === 0,
                     })}
                 </div>

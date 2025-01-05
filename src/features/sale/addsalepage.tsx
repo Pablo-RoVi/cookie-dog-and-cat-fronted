@@ -193,6 +193,12 @@ const AddSalesPage = () => {
     setModalOpen(!modalOpen);
   };
 
+  const filtreredAvailableProducts = availableProducts.filter((product) => {
+    return product.product_name
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+  });
+
   const addSale = () => {
     const sale: Sale = {
       id: null,
@@ -368,9 +374,9 @@ const AddSalesPage = () => {
           <TableModal
             title="Añadir producto"
             valueFilter={searchTerm}
-            setOnChangeFilter={(e) => setSearchTerm(e.target.value)}
+            setOnChangeFilter={setSearchTerm}
             headers={headersProducts}
-            data={availableProducts.filter(
+            data={filtreredAvailableProducts.filter(
               (p) => !products.some((product) => product.unique_id === p.unique_id)
             ).map((product: Product) => [
               product.product_name,
@@ -400,6 +406,7 @@ const AddSalesPage = () => {
             confirmAction={() => {
               handleAddProducts();
               toggleModal();
+              setSearchTerm("");
             }}
             activateCancel={true}
             confirmCancel={() => {
