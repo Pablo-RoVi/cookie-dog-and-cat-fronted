@@ -26,7 +26,7 @@ const server = http.createServer(async (req, res) => {
             const {pdfData, filename, subject } = JSON.parse(body);
 
             const msg = {
-                to: 'pablo.robledo@alumnos.ucn.cl',
+                to: process.env.ADMIN_EMAIL,
                 from: 'nunezseba1605@gmail.com', // Tu correo
                 subject: subject, // Asunto
                 text: "Adjunto encontrarás el reporte de ventas.",
