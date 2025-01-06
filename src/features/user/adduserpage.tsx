@@ -175,13 +175,13 @@ const AddUserPage = () => {
           valueFilter: newPassword,
           setOnChangeFilter: setNewPassword,
           isPassword: true,
-          errorInput: Functions.verifyPassword(newPassword) === 0 || Functions.verifyPassword(newPassword) === 1,
+          errorInput: (Functions.verifyPassword(newPassword) === 0 || Functions.verifyPassword(newPassword) === 1 ) && newPassword !== "",
           placeholder: "Alfanumérica y contener al menos 8 caracteres",
           errorMessage: 
             Functions.verifyPassword(newPassword) === 0
               ? "Debe tener al menos un número y una letra, sin símbolos especiales"
               : Functions.verifyPassword(newPassword) === 1
-              ? "Contraseña debe contener al menos 8 caracteres"
+              ? "La contraseña debe contener al menos 8 caracteres"
               : "",
         })}
         {TableModule.inputFilter({
