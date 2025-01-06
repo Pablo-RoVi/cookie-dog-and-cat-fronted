@@ -16,7 +16,7 @@ const tablemodal = (props) => {
                         placeholder: "Buscar producto por nombre...",
                         setOnChangeFilter: props.setOnChangeFilter,
                         valueFilter: props.valueFilter,
-                        isDisabled: props.data.length === 0,
+                        isDisabled: props.disableInput,
                     })}
                 </div>
                 <div className="flex-grow overflow-y-auto">
@@ -32,7 +32,7 @@ const tablemodal = (props) => {
                     text: props.confirmation,
                     onClick: props.confirmAction,
                     })}
-                    {(props.data.length === 0 || props.disableButton) &&
+                    {props.disableButton &&
                     Buttons.GrayButton({
                     text: props.confirmation,
                     onClick: null,

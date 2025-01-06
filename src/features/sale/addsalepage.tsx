@@ -402,6 +402,7 @@ const AddSalesPage = () => {
             ])}
             activateConfirm={selectedProducts.length > 0}
             disableButton={selectedProducts.length < 1}
+            disableInput = {availableProducts.length === 0}
             confirmation="Añadir"
             confirmAction={() => {
               handleAddProducts();
