@@ -413,6 +413,7 @@ const AddSalesPage = () => {
             confirmCancel={() => {
               toggleModal();
               setSelectedProducts([]);
+              setSearchTerm("");
             }}
           />
         )}
